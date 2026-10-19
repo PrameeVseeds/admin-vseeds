@@ -1,0 +1,372 @@
+<div class="product-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header__info">
+      <h1 class="page-header__title">Products</h1>
+      <p class="page-header__subtitle">Manage your product catalog and inventory</p>
+    </div>
+    <div class="page-header__actions">
+      <div class="search-box">
+        <lucide-icon name="search" [size]="18" class="search-box__icon"></lucide-icon>
+        <input
+          type="text"
+          placeholder="Search products..."
+          class="search-box__input"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="onSearchChange($event)"
+        />
+      </div>
+      <button class="add-btn" (click)="openAddForm()">
+        <lucide-icon name="plus" [size]="18"></lucide-icon>
+        <span>Add Product</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="package" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ paginationMeta().total }}</span>
+        <span class="stat-card__label">Total Products</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="check-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ activeCount() }}</span>
+        <span class="stat-card__label">Active</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--error">
+        <lucide-icon name="alert-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ outOfStockCount() }}</span>
+        <span class="stat-card__label">Out of Stock</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--warning">
+        <lucide-icon name="info" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ lowStockCount() }}</span>
+        <span class="stat-card__label">Low Stock</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inline Add / Edit Product Form -->
+  @if (showForm()) {
+    <app-product-form
+      [product]="editingProduct()"
+      [categories]="categories()"
+      (saved)="onFormSaved()"
+      (cancelled)="onFormCancelled()"
+    ></app-product-form>
+  }
+
+  <!-- Table Card -->
+  <div class="table-card">
+    <nz-table
+      #table
+      [nzData]="products()"
+      [nzLoading]="productService.loading()"
+      [nzFrontPagination]="false"
+      [nzTotal]="paginationMeta().total"
+      [nzPageIndex]="paginationMeta().page"
+      [nzPageSize]="pageSize"
+      [nzShowPagination]="paginationMeta().total > 10"
+      [nzShowSizeChanger]="true"
+      [nzPageSizeOptions]="[10, 20, 50]"
+      (nzPageIndexChange)="onPageChange($event)"
+      (nzPageSizeChange)="onPageSizeChange($event)"
+      nzSize="middle"
+      [nzScroll]="{ x: '1600px' }"
+      [nzNoResult]="emptyTpl"
+    >
+      <thead>
+        <tr>
+          <th class="table-th table-th--first" nzWidth="200px" nzLeft>Product</th>
+          <th class="table-th" nzWidth="130px">Category</th>
+          <th class="table-th" nzWidth="190px">Pricing</th>
+          <th class="table-th" nzWidth="160px">Inventory</th>
+          <th class="table-th" nzWidth="140px">Status</th>
+          <th class="table-th" nzWidth="110px" style="text-align: center">Featured</th>
+          <th class="table-th" nzWidth="160px">Tags &amp; Links</th>
+          <th class="table-th" nzWidth="90px" style="text-align: center">Media</th>
+          <th class="table-th" nzWidth="140px">Dates</th>
+          <th class="table-th table-th--last" nzWidth="140px" nzRight>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of table.data; track item.id) {
+          <tr class="table-row group">
+            <!-- ── Product ── -->
+            <td class="table-td table-td--first" nzLeft>
+              <div class="pl-product">
+                @if (item.thumbnailImage) {
+                  <img
+                    [src]="item.thumbnailImage"
+                    class="pl-product__thumb"
+                    (click)="productModals.previewImage(item.thumbnailImage, item.name)"
+                  />
+                } @else {
+                  <div class="pl-product__thumb pl-product__thumb--empty">
+                    <lucide-icon name="image-off" [size]="16"></lucide-icon>
+                  </div>
+                }
+                <div class="pl-product__info">
+                  <div class="pl-product__name-row">
+                    <span class="pl-product__name">{{ item.name }}</span>
+                    @if (item.isFeatured) {
+                      <lucide-icon name="star" [size]="12" class="pl-product__star"></lucide-icon>
+                    }
+                  </div>
+                  <span class="pl-product__ids">
+                    SKU: {{ item.sku || '—' }}
+                    @if (item.storeId && item.storeId !== item.sku) {
+                      <span class="pl-product__sep">·</span> ID: {{ item.storeId }}
+                    }
+                  </span>
+                  @if (item.description) {
+                    <span class="pl-product__desc">{{ item.description }}</span>
+                  }
+                </div>
+              </div>
+            </td>
+
+            <!-- ── Category ── -->
+            <td class="table-td">
+              <div class="pl-stack">
+                <span class="pl-table__tag">{{ item.categoryName || item.category || '—' }}</span>
+                @if (item.subCategory) {
+                  <span class="pl-table__sub-tag">{{ item.subCategory }}</span>
+                }
+              </div>
+            </td>
+
+            <!-- ── Pricing ── -->
+            <td class="table-td">
+              <div class="pl-prices">
+                <div class="pl-prices__row">
+                  <span class="pl-prices__label">1+</span>
+                  <span class="pl-prices__value">Rs. {{ item.price1 | number: '1.2-2' }}</span>
+                </div>
+                <div class="pl-prices__row">
+                  <span class="pl-prices__label">10+</span>
+                  <span class="pl-prices__value">Rs. {{ item.price10 | number: '1.2-2' }}</span>
+                </div>
+                <div class="pl-prices__row">
+                  <span class="pl-prices__label">100+</span>
+                  <span class="pl-prices__value">Rs. {{ item.price100 | number: '1.2-2' }}</span>
+                </div>
+                <div class="pl-prices__divider"></div>
+                <div class="pl-prices__row pl-prices__row--cost">
+                  <span class="pl-prices__label">Cost</span>
+                  <span class="pl-prices__value">
+                    @if (item.purchasedPrice != null) {
+                      Rs. {{ item.purchasedPrice | number: '1.2-2' }}
+                    } @else {
+                      —
+                    }
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <!-- ── Inventory ── -->
+            <td class="table-td">
+              <div class="pl-inv">
+                <div class="pl-inv__row">
+                  <div
+                    class="pl-table__stock-dot"
+                    [class.pl-table__stock-dot--high]="item.inHandQty > 10"
+                    [class.pl-table__stock-dot--low]="item.inHandQty > 0 && item.inHandQty <= 10"
+                    [class.pl-table__stock-dot--out]="item.inHandQty === 0"
+                  ></div>
+                  <span class="pl-inv__primary">{{ item.inHandQty }} in hand</span>
+                </div>
+                <div class="pl-inv__secondary">{{ item.orderedQty || 0 }} ordered</div>
+                @if (item.expectedDate) {
+                  <div class="pl-inv__date">
+                    <lucide-icon name="calendar" [size]="10"></lucide-icon>
+                    {{ item.expectedDate | dateOnly }}
+                  </div>
+                }
+              </div>
+            </td>
+
+            <!-- ── Status ── -->
+            <td class="table-td">
+              <div class="pl-stack" style="gap: 6px">
+                <span class="status-badge status-badge--{{ item.statusType }}">
+                  {{ item.status }}
+                </span>
+                <label class="pl-toggle">
+                  <nz-switch
+                    [ngModel]="item.status?.toLowerCase() === 'active'"
+                    (ngModelChange)="toggleStatus(item, $event)"
+                    nzSize="small"
+                    nz-tooltip
+                    nzTooltipTitle="Active / Inactive"
+                  ></nz-switch>
+                  <span class="pl-toggle__label">Active</span>
+                </label>
+                @if (item.inStock) {
+                  <span class="pl-stock-label pl-stock-label--yes">In Stock</span>
+                } @else {
+                  <span class="pl-stock-label pl-stock-label--no">Out of Stock</span>
+                }
+              </div>
+            </td>
+
+            <!-- ── Featured ── -->
+            <td class="table-td" style="text-align: center">
+              <label class="pl-toggle pl-toggle--center">
+                <nz-switch
+                  [ngModel]="!!item.isFeatured"
+                  (ngModelChange)="toggleFeatured(item, $event)"
+                  nzSize="small"
+                  nz-tooltip
+                  nzTooltipTitle="Featured (New Arrivals)"
+                ></nz-switch>
+                <lucide-icon
+                  name="star"
+                  [size]="13"
+                  class="pl-product__star"
+                  [class.pl-product__star--off]="!item.isFeatured"
+                ></lucide-icon>
+              </label>
+            </td>
+
+            <!-- ── Tags & Links ── -->
+            <td class="table-td">
+              <div class="pl-stack" style="gap: 6px">
+                @if (item.tags?.length) {
+                  <div class="flex flex-wrap gap-1">
+                    @for (tag of item.tags; track tag; let i = $index) {
+                      @if (i < 2) {
+                        <span class="pl-table__tag">{{ tag }}</span>
+                      }
+                    }
+                    @if (item.tags!.length > 2) {
+                      <span class="pl-table__mono">+{{ item.tags!.length - 2 }}</span>
+                    }
+                  </div>
+                }
+                @if (item.productLink || item.datasheetUrl || item.dataSheet) {
+                  <div class="pl-links">
+                    @if (item.productLink) {
+                      <span class="pl-links__item" nz-tooltip [nzTooltipTitle]="item.productLink">
+                        <lucide-icon name="link" [size]="11"></lucide-icon>
+                        Link
+                      </span>
+                    }
+                    @if (item.datasheetUrl || item.dataSheet) {
+                      <span
+                        class="pl-links__item"
+                        style="cursor: pointer"
+                        (click)="productModals.openDataSheet(item)"
+                      >
+                        <lucide-icon name="file-text" [size]="11"></lucide-icon>
+                        Sheet
+                      </span>
+                    }
+                  </div>
+                }
+              </div>
+            </td>
+
+            <!-- ── Media ── -->
+            <td class="table-td" style="text-align: center">
+              <div
+                class="pl-media-count"
+                [class.pl-media-count--has]="(item.imageCount || 0) > 0"
+                (click)="productModals.previewAllImages(item)"
+              >
+                <lucide-icon name="images" [size]="14"></lucide-icon>
+                <span>{{ item.imageCount || 0 }}</span>
+              </div>
+            </td>
+
+            <!-- ── Dates ── -->
+            <td class="table-td">
+              <div class="pl-dates">
+                <div class="pl-dates__row">
+                  <span class="pl-dates__label">Created</span>
+                  <span class="pl-dates__value">
+                    {{ item.createdAt ? (item.createdAt | dateTime) : '—' }}
+                  </span>
+                </div>
+                <div class="pl-dates__row">
+                  <span class="pl-dates__label">Updated</span>
+                  <span class="pl-dates__value">
+                    {{ item.updatedAt ? (item.updatedAt | dateTime) : '—' }}
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <!-- ── Actions ── -->
+            <td class="table-td table-td--last" nzRight>
+              <div class="action-btns">
+                <button
+                  class="action-btn"
+                  aria-label="Specifications"
+                  nz-tooltip
+                  nzTooltipTitle="Specifications"
+                  (click)="productModals.viewSpecs(item)"
+                >
+                  <lucide-icon name="settings-2" [size]="16"></lucide-icon>
+                </button>
+                <button
+                  class="action-btn"
+                  aria-label="View Details"
+                  nz-tooltip
+                  nzTooltipTitle="View Details"
+                  (click)="productModals.viewProduct(item)"
+                >
+                  <lucide-icon name="eye" [size]="16"></lucide-icon>
+                </button>
+                <button
+                  class="action-btn"
+                  aria-label="Edit"
+                  nz-tooltip
+                  nzTooltipTitle="Edit"
+                  (click)="openEditForm(item)"
+                >
+                  <lucide-icon name="edit" [size]="16"></lucide-icon>
+                </button>
+                <button
+                  class="action-btn action-btn--danger"
+                  aria-label="Delete"
+                  nz-tooltip
+                  nzTooltipTitle="Delete"
+                  (click)="productModals.deleteProduct(item.id)"
+                >
+                  <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+
+    <ng-template #emptyTpl>
+      <div class="empty-state">
+        <lucide-icon name="package" [size]="40" class="empty-state__icon"></lucide-icon>
+        <p class="empty-state__text">No products found</p>
+        <p class="empty-state__sub">Try adjusting your filters or add a new product</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<nz-layout class="admin-layout">
+  <!-- Mobile backdrop overlay -->
+  @if (!sidebarCollapsed()) {
+    <div class="sidebar-backdrop" (click)="toggleSidebar()"></div>
+  }
+
+  <!-- Sidebar -->
+  <app-sidebar
+    [collapsed]="sidebarCollapsed()"
+    [class.mobile-open]="!sidebarCollapsed()"
+    (collapsedChange)="sidebarCollapsed.set($event)"
+  />
+
+  <!-- Main content area -->
+  <nz-layout class="main-area" [class.main-area--expanded]="sidebarCollapsed()">
+    <app-header-bar [collapsed]="sidebarCollapsed()" (toggleSidebar)="toggleSidebar()" />
+
+    <nz-content class="content-area">
+      <div class="content-inner animate-fade-in">
+        <router-outlet />
+      </div>
+    </nz-content>
+
+    <nz-footer class="app-footer">
+      <span>&copy; {{ currentYear }} VSEEDS Admin Portal</span>
+      <span class="footer-dot">&middot;</span>
+      <!-- <span class="developer-credit">
+        Design and Developed by
+        <a href="https://kajamohan.vercel.app/" target="_blank">Kajamohan K</a>
+      </span> -->
+    </nz-footer>
+  </nz-layout>
+</nz-layout>

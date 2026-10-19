@@ -1,0 +1,233 @@
+<div class="admin-form-workspace">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <button (click)="goBack()" class="btn-back" aria-label="Go back">
+          <lucide-icon name="arrow-left" [size]="18"></lucide-icon>
+        </button>
+        <div class="title-group">
+          <nav class="breadcrumb-nav">
+            <span class="nav-item">Admin Users</span>
+            <lucide-icon name="chevron-right" [size]="14"></lucide-icon>
+            <span class="nav-item active">{{ isEditMode ? 'Edit Admin' : 'Add Admin' }}</span>
+          </nav>
+          <h1>{{ isEditMode ? 'Update Admin' : 'Create New Admin' }}</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button nz-button class="btn-cancel" (click)="goBack()">Discard</button>
+        <button nz-button nzType="primary" class="btn-primary" (click)="submit()">
+          <lucide-icon name="check" [size]="18"></lucide-icon>
+          <span>{{ isEditMode ? 'Save Changes' : 'Create Admin' }}</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <form [formGroup]="form" nz-form nzLayout="vertical" class="workspace-body">
+    <div class="form-grid">
+      <!-- Main Column -->
+      <div class="form-main">
+        <!-- Personal Info Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <lucide-icon name="user" [size]="20"></lucide-icon>
+            <div>
+              <h3>Personal Information</h3>
+              <p>Basic details about the admin user</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="usernameErr">
+                <app-float-label label="Username" [required]="true">
+                  <input nz-input formControlName="username" placeholder=" " />
+                </app-float-label>
+                <ng-template #usernameErr>
+                  <app-form-error [control]="form.controls.username" label="Username" />
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="emailErr">
+                <app-float-label label="Email Address" [required]="true">
+                  <nz-input-group nzPrefixIcon="mail">
+                    <input
+                      nz-input
+                      formControlName="email"
+                      placeholder=" "
+                      [readOnly]="isEditMode"
+                    />
+                  </nz-input-group>
+                </app-float-label>
+                <ng-template #emailErr>
+                  <app-form-error [control]="form.controls.email" label="Email" />
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-control>
+                <app-float-label label="Phone Number">
+                  <nz-input-group nzPrefixIcon="phone">
+                    <input nz-input formControlName="phone" placeholder=" " />
+                  </nz-input-group>
+                </app-float-label>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+
+        <!-- Password Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <lucide-icon name="lock" [size]="20"></lucide-icon>
+            <div>
+              <h3>{{ isEditMode ? 'Change Password' : 'Set Password' }}</h3>
+              <p>
+                {{
+                  isEditMode
+                    ? 'Leave blank to keep current password'
+                    : 'Set a secure password for this admin'
+                }}
+              </p>
+            </div>
+          </div>
+          <div class="card-body">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="pwErr">
+                <app-float-label
+                  [label]="isEditMode ? 'New Password (optional)' : 'Password'"
+                  [required]="!isEditMode"
+                >
+                  <nz-input-group [nzSuffix]="pwSuffix">
+                    <input
+                      nz-input
+                      [type]="showPassword ? 'text' : 'password'"
+                      formControlName="password"
+                      placeholder=" "
+                    />
+                  </nz-input-group>
+                </app-float-label>
+                <ng-template #pwSuffix>
+                  <button type="button" class="pw-toggle" (click)="showPassword = !showPassword">
+                    <lucide-icon
+                      [name]="showPassword ? 'eye-off' : 'eye'"
+                      [size]="16"
+                    ></lucide-icon>
+                  </button>
+                </ng-template>
+                <ng-template #pwErr>
+                  <app-form-error [control]="form.controls.password" label="Password" />
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="confirmErr">
+                <app-float-label label="Confirm Password" [required]="!isEditMode">
+                  <nz-input-group [nzSuffix]="cpwSuffix">
+                    <input
+                      nz-input
+                      [type]="showConfirmPassword ? 'text' : 'password'"
+                      formControlName="confirmPassword"
+                      placeholder=" "
+                    />
+                  </nz-input-group>
+                </app-float-label>
+                <ng-template #cpwSuffix>
+                  <button
+                    type="button"
+                    class="pw-toggle"
+                    (click)="showConfirmPassword = !showConfirmPassword"
+                  >
+                    <lucide-icon
+                      [name]="showConfirmPassword ? 'eye-off' : 'eye'"
+                      [size]="16"
+                    ></lucide-icon>
+                  </button>
+                </ng-template>
+                <ng-template #confirmErr>
+                  <app-form-error [control]="form.controls.confirmPassword" label="Password" />
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            @if (!isEditMode) {
+              <div class="pw-requirements">
+                <p class="pw-requirements__title">Password requirements:</p>
+                <ul class="pw-requirements__list">
+                  <li>At least 8 characters long</li>
+                  <li>Include uppercase and lowercase letters</li>
+                  <li>Include at least one number</li>
+                </ul>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Column -->
+      <aside class="form-sidebar">
+        <!-- Role & Status Card -->
+        <div class="sidebar-card">
+          <div class="card-header">
+            <lucide-icon name="shield" [size]="18"></lucide-icon>
+            <h3>Role & Access</h3>
+          </div>
+          <div class="card-body">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="roleErr">
+                <app-float-label label="Assign Role" [required]="true">
+                  <nz-select formControlName="roleId" nzPlaceHolder=" ">
+                    @for (role of filteredRoles(); track role.id) {
+                      <nz-option [nzValue]="role.id" [nzLabel]="role.name"></nz-option>
+                    }
+                  </nz-select>
+                </app-float-label>
+                <ng-template #roleErr>
+                  <app-form-error [control]="form.controls.roleId" label="Role" />
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+
+            @if (!isEditMode) {
+              <div class="role-restriction-notice">
+                <lucide-icon name="shield-alert" [size]="14"></lucide-icon>
+                <span>Super admin role cannot be assigned through this form</span>
+              </div>
+            }
+
+            @if (form.value.roleId) {
+              <div class="role-preview">
+                <lucide-icon name="info" [size]="14"></lucide-icon>
+                <span>{{ getRoleDescription(form.value.roleId) }}</span>
+              </div>
+            }
+
+            <nz-divider></nz-divider>
+
+            <nz-form-item>
+              <nz-form-control>
+                <app-float-label label="Account Status" [required]="true">
+                  <nz-select formControlName="status" nzPlaceHolder=" ">
+                    <nz-option nzValue="active" nzLabel="Active"></nz-option>
+                    <nz-option nzValue="inactive" nzLabel="Inactive"></nz-option>
+                    <nz-option nzValue="suspended" nzLabel="Suspended"></nz-option>
+                  </nz-select>
+                </app-float-label>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="info-card">
+          <div class="info-card__icon">
+            <lucide-icon name="sparkles" [size]="28"></lucide-icon>
+          </div>
+          <h4>Admin Access</h4>
+          <p>Admins have access to the portal based on their assigned role and permissions.</p>
+        </div>
+      </aside>
+    </div>
+  </form>
+</div>

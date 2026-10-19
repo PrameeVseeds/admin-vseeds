@@ -1,0 +1,262 @@
+<div class="promo-workspace">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <button (click)="goBack()" class="btn-back" aria-label="Go back">
+          <lucide-icon name="arrow-left" [size]="18"></lucide-icon>
+        </button>
+        <div class="title-group">
+          <nav class="breadcrumb-nav">
+            <span class="nav-item">Promo Codes</span>
+            <lucide-icon name="chevron-right" [size]="14"></lucide-icon>
+            <span class="nav-item active">{{ isEditMode ? 'Edit Code' : 'New Code' }}</span>
+          </nav>
+          <h1>{{ isEditMode ? 'Edit Promo Code' : 'Create Promo Code' }}</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button nz-button class="btn-cancel" (click)="goBack()">Discard</button>
+        <button
+          nz-button
+          nzType="primary"
+          class="btn-primary"
+          (click)="submit()"
+          [disabled]="loading()"
+        >
+          <lucide-icon name="check" [size]="18"></lucide-icon>
+          <span>{{ isEditMode ? 'Save Changes' : 'Create Code' }}</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <form [formGroup]="form" nz-form nzLayout="vertical" class="workspace-body">
+    <div class="form-grid">
+      <!-- Main Content -->
+      <div class="form-main">
+        <!-- Code & Discount -->
+        <div class="form-card">
+          <div class="card-header">
+            <lucide-icon name="ticket" [size]="20"></lucide-icon>
+            <div>
+              <h3>Code & Discount</h3>
+              <p>Define the promo code and its discount value</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="codeErr">
+                <app-float-label label="Promo Code" [required]="true">
+                  <input
+                    nz-input
+                    formControlName="code"
+                    placeholder=" "
+                    (input)="onCodeInput($event)"
+                    style="text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700"
+                  />
+                </app-float-label>
+                <ng-template #codeErr>
+                  <app-form-error [control]="form.controls.code" label="Promo Code" />
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-control>
+                <app-float-label label="Description">
+                  <input nz-input formControlName="description" placeholder=" " />
+                </app-float-label>
+              </nz-form-control>
+            </nz-form-item>
+
+            <div class="field-row">
+              <nz-form-item class="flex-1">
+                <nz-form-control>
+                  <app-float-label label="Discount Type" [required]="true">
+                    <nz-select formControlName="discountType" nzPlaceHolder=" ">
+                      <nz-option nzValue="percentage" nzLabel="Percentage (%)"></nz-option>
+                      <nz-option nzValue="fixed" nzLabel="Fixed Amount (Rs.)"></nz-option>
+                    </nz-select>
+                  </app-float-label>
+                </nz-form-control>
+              </nz-form-item>
+
+              <nz-form-item class="flex-1">
+                <nz-form-control [nzErrorTip]="discountValueErr">
+                  <app-float-label
+                    [label]="form.value.discountType === 'percentage' ? 'Discount (%)' : 'Discount (Rs.)'"
+                    [required]="true"
+                  >
+                    <nz-input-number
+                      formControlName="discountValue"
+                      class="w-full"
+                      [nzMin]="0.01"
+                      [nzMax]="form.value.discountType === 'percentage' ? 100 : 999999"
+                      [nzStep]="form.value.discountType === 'percentage' ? 1 : 10"
+                    ></nz-input-number>
+                  </app-float-label>
+                  <ng-template #discountValueErr>
+                    <app-form-error [control]="form.controls.discountValue" label="Discount Value" />
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            @if (form.value.discountType === 'percentage') {
+              <nz-form-item>
+                <nz-form-control>
+                  <app-float-label label="Max Discount Cap (Rs.)">
+                    <nz-input-number
+                      formControlName="maximumDiscountAmount"
+                      class="w-full"
+                      [nzMin]="0"
+                      [nzStep]="50"
+                      nzPlaceHolder="No cap"
+                    ></nz-input-number>
+                  </app-float-label>
+                </nz-form-control>
+              </nz-form-item>
+            }
+
+            <nz-form-item>
+              <nz-form-control>
+                <app-float-label label="Minimum Order Amount (Rs.)">
+                  <nz-input-number
+                    formControlName="minimumOrderAmount"
+                    class="w-full"
+                    [nzMin]="0"
+                    [nzStep]="100"
+                  ></nz-input-number>
+                </app-float-label>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+
+        <!-- Usage & Validity -->
+        <div class="form-card">
+          <div class="card-header">
+            <lucide-icon name="calendar" [size]="20"></lucide-icon>
+            <div>
+              <h3>Usage & Validity</h3>
+              <p>Set limits and date range for this code</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="field-row">
+              <nz-form-item class="flex-1">
+                <nz-form-control>
+                  <app-float-label label="Total Usage Limit (0 = unlimited)">
+                    <nz-input-number
+                      formControlName="usageLimit"
+                      class="w-full"
+                      [nzMin]="0"
+                    ></nz-input-number>
+                  </app-float-label>
+                </nz-form-control>
+              </nz-form-item>
+
+              <nz-form-item class="flex-1">
+                <nz-form-control>
+                  <app-float-label label="Per User Limit">
+                    <nz-input-number
+                      formControlName="perUserLimit"
+                      class="w-full"
+                      [nzMin]="1"
+                    ></nz-input-number>
+                  </app-float-label>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <div class="field-row">
+              <nz-form-item class="flex-1">
+                <nz-form-control>
+                  <label class="field-label">Start Date</label>
+                  <nz-date-picker
+                    formControlName="startDate"
+                    class="w-full"
+                    nzPlaceHolder="Optional"
+                    nzFormat="yyyy-MM-dd"
+                  ></nz-date-picker>
+                </nz-form-control>
+              </nz-form-item>
+
+              <nz-form-item class="flex-1">
+                <nz-form-control>
+                  <label class="field-label">Expiry Date</label>
+                  <nz-date-picker
+                    formControlName="expiryDate"
+                    class="w-full"
+                    nzPlaceHolder="Optional"
+                    nzFormat="yyyy-MM-dd"
+                  ></nz-date-picker>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="form-sidebar">
+        <!-- Target Site -->
+        <div class="sidebar-card">
+          <div class="card-header">
+            <lucide-icon name="globe" [size]="18"></lucide-icon>
+            <h3>Target Site</h3>
+          </div>
+          <div class="card-body">
+            <div class="site-toggle-group">
+              @for (opt of siteOptions; track opt.value) {
+                <button
+                  type="button"
+                  class="site-toggle"
+                  [class.site-toggle--active]="form.value.applicableSite === opt.value"
+                  [class]="'site-toggle--' + opt.value"
+                  (click)="form.patchValue({ applicableSite: opt.value })"
+                >
+                  <span class="site-toggle__radio"></span>
+                  <lucide-icon
+                    [name]="opt.value === 'electronics' ? 'monitor' : opt.value === 'embedded' ? 'cpu' : 'layers'"
+                    [size]="15"
+                  ></lucide-icon>
+                  <span class="site-toggle__text">{{ opt.label }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="sidebar-card">
+          <div class="card-header">
+            <lucide-icon name="settings" [size]="18"></lucide-icon>
+            <h3>Status</h3>
+          </div>
+          <div class="card-body">
+            <div class="toggle-row">
+              <div class="toggle-row__info">
+                <span class="toggle-row__label">Active</span>
+                <span class="toggle-row__desc">Code can be used by customers</span>
+              </div>
+              <nz-switch formControlName="isActive"></nz-switch>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tip -->
+        <div class="info-card">
+          <div class="info-card__icon">
+            <lucide-icon name="lightbulb" [size]="20"></lucide-icon>
+          </div>
+          <p>
+            Set usage limit to <strong>0</strong> for unlimited uses.
+            Percentage discounts can be capped with the max discount field.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </form>
+</div>

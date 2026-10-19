@@ -1,0 +1,208 @@
+<div class="stats-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header__info">
+      <h1 class="page-header__title">Statistics</h1>
+      <p class="page-header__subtitle">
+        Detailed analytics, trends, and performance reports
+      </p>
+    </div>
+    <div class="page-header__actions">
+      <button class="btn-outline" type="button" (click)="refresh()">
+        <lucide-icon name="refresh-cw" [size]="18"></lucide-icon>
+        <span>Refresh</span>
+      </button>
+    </div>
+  </div>
+
+  @if (error(); as err) {
+    <div class="stats-error">
+      <lucide-icon name="alert-circle" [size]="20"></lucide-icon>
+      <span>{{ err }}</span>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="stats-loading">
+      <lucide-icon name="refresh-cw" [size]="32" class="spin"></lucide-icon>
+      <p>Loading statistics…</p>
+    </div>
+  } @else {
+  <!-- KPI Cards -->
+  <div class="kpi-row">
+    @for (stat of stats(); track stat.label) {
+      <div class="kpi-card">
+        <div class="kpi-card__header">
+          <div
+            class="kpi-card__icon"
+            [style.background]="stat.iconBg"
+            [style.color]="stat.iconColor"
+          >
+            <lucide-icon [name]="stat.icon" [size]="20"></lucide-icon>
+          </div>
+          <div
+            class="kpi-card__trend"
+            [class.kpi-card__trend--up]="stat.trendUp"
+            [class.kpi-card__trend--down]="!stat.trendUp"
+          >
+            <lucide-icon
+              [name]="stat.trendUp ? 'trending-up' : 'trending-down'"
+              [size]="14"
+            ></lucide-icon>
+            {{ stat.trend }}
+          </div>
+        </div>
+        <p class="kpi-card__value">{{ stat.value }}</p>
+        <p class="kpi-card__label">{{ stat.label }}</p>
+      </div>
+    }
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-row">
+    <!-- Revenue Chart -->
+    <div class="chart-card chart-card--wide">
+      <div class="chart-card__header">
+        <div class="chart-card__text">
+          <h3 class="chart-card__title">Revenue Overview</h3>
+          <p class="chart-card__subtitle">Monthly revenue breakdown</p>
+        </div>
+        <div class="chart-card__legend">
+          <span class="legend-item">
+            <span class="legend-item__dot legend-item__dot--primary"></span>
+            Revenue
+          </span>
+          <span class="legend-item">
+            <span class="legend-item__dot legend-item__dot--success"></span>
+            Profit
+          </span>
+        </div>
+      </div>
+      <div class="bar-chart">
+        <div class="bar-chart__grid">
+          <div class="bar-chart__gridline"><span>Rs. 1,750K</span></div>
+          <div class="bar-chart__gridline"><span>Rs. 1,250K</span></div>
+          <div class="bar-chart__gridline"><span>Rs. 750K</span></div>
+          <div class="bar-chart__gridline"><span>Rs. 250K</span></div>
+        </div>
+        <div class="bar-chart__bars">
+          @for (m of monthlyRevenue(); track m.month) {
+            <div class="bar-chart__col">
+              <div class="bar-chart__stack">
+                <div
+                  class="bar-chart__bar bar-chart__bar--revenue"
+                  [style.height.%]="(m.revenue / maxRevenue()) * 100"
+                  [title]="'Revenue: Rs. ' + m.revenue + 'K'"
+                ></div>
+                <div
+                  class="bar-chart__bar bar-chart__bar--profit"
+                  [style.height.%]="(m.profit / maxRevenue()) * 100"
+                  [title]="'Profit: Rs. ' + m.profit + 'K'"
+                ></div>
+              </div>
+              <span class="bar-chart__label">{{ m.month }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="chart-card">
+      <div class="chart-card__header">
+        <div class="chart-card__text">
+          <h3 class="chart-card__title">Order Summary</h3>
+          <p class="chart-card__subtitle">Current month order breakdown</p>
+        </div>
+      </div>
+
+      <div class="donut-section">
+        <!-- Donut Ring -->
+        <div class="donut-ring">
+          <svg viewBox="0 0 120 120" class="donut-ring__svg">
+            @for (seg of orderSegments(); track seg.label; let i = $index) {
+              <circle
+                cx="60" cy="60" r="48"
+                fill="none"
+                [attr.stroke]="seg.color"
+                stroke-width="14"
+                [attr.stroke-dasharray]="seg.dash"
+                [attr.stroke-dashoffset]="seg.offset"
+                stroke-linecap="round"
+                class="donut-ring__segment"
+              />
+            }
+          </svg>
+          <div class="donut-ring__center">
+            <span class="donut-ring__total">{{ totalOrders() }}</span>
+            <span class="donut-ring__label">Orders</span>
+          </div>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="donut-breakdown">
+          @for (seg of orderSegments(); track seg.label) {
+            <div class="donut-breakdown__item">
+              <span class="donut-breakdown__dot" [style.background]="seg.color"></span>
+              <span class="donut-breakdown__name">{{ seg.label }}</span>
+              <span class="donut-breakdown__value">{{ seg.count }}</span>
+              <span class="donut-breakdown__pct">{{ seg.pct }}%</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Row -->
+  <div class="bottom-row">
+    <!-- Top Products -->
+    <div class="panel-card">
+      <div class="panel-card__header">
+        <h3 class="panel-card__title">Top Products</h3>
+        <p class="panel-card__subtitle">Best sellers this month</p>
+      </div>
+      <div class="product-list">
+        @for (product of topProducts(); track product.name; let i = $index) {
+          <div class="product-item">
+            <span class="product-item__rank">{{ i + 1 }}</span>
+            <div class="product-item__info">
+              <span class="product-item__name">{{ product.name }}</span>
+              <span class="product-item__category">{{ product.category }}</span>
+            </div>
+            <div class="product-item__stats">
+              <span class="product-item__revenue">{{ product.revenue }}</span>
+              <span class="product-item__units">{{ product.units }} units</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="panel-card">
+      <div class="panel-card__header">
+        <h3 class="panel-card__title">Recent Activity</h3>
+        <p class="panel-card__subtitle">Latest system events</p>
+      </div>
+      <div class="activity-list">
+        @for (event of recentActivity(); track event.text) {
+          <div class="activity-item">
+            <div
+              class="activity-item__icon"
+              [style.background]="event.iconBg"
+              [style.color]="event.iconColor"
+            >
+              <lucide-icon [name]="event.icon" [size]="14"></lucide-icon>
+            </div>
+            <div class="activity-item__content">
+              <p class="activity-item__text">{{ event.text }}</p>
+              <p class="activity-item__time">{{ event.time }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+  }
+</div>

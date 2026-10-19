@@ -1,0 +1,192 @@
+<header class="header" [style.left]="collapsed() ? '80px' : '256px'">
+  <!-- Left: hamburger + search -->
+  <div class="header__left">
+    <button class="header__icon-btn" aria-label="Toggle sidebar" (click)="toggleSidebar.emit()">
+      <lucide-icon name="menu" [size]="20"></lucide-icon>
+    </button>
+
+    <div class="header__search" (click)="openSearch()">
+      <lucide-icon name="search" [size]="16" class="header__search-icon"></lucide-icon>
+      <span class="header__search-placeholder">Search...</span>
+      <kbd class="header__search-kbd">Ctrl K</kbd>
+    </div>
+  </div>
+
+  <!-- Right: actions + profile -->
+  <div class="header__right">
+    <!-- Action Group -->
+    <div class="header__actions">
+      <button
+        class="header__icon-btn"
+        aria-label="Toggle Theme"
+        (click)="themeService.toggle()"
+        nz-tooltip
+        nzTooltipTitle="Toggle Theme"
+      >
+        @if (themeService.theme() === 'light') {
+          <lucide-icon name="moon" [size]="20"></lucide-icon>
+        } @else {
+          <lucide-icon name="sun" [size]="20"></lucide-icon>
+        }
+      </button>
+
+      <button
+        class="header__icon-btn header__notif-btn"
+        aria-label="Notifications"
+        nz-dropdown
+        [nzDropdownMenu]="notifMenu"
+        nzTrigger="click"
+        nzPlacement="bottomRight"
+      >
+        <nz-badge [nzCount]="unreadCount()" [nzOverflowCount]="9" [nzOffset]="[10, -12]">
+          <lucide-icon name="bell" [size]="20"></lucide-icon>
+        </nz-badge>
+      </button>
+
+      <nz-dropdown-menu #notifMenu>
+        <div class="notif-panel">
+          <div class="notif-panel__header">
+            <span class="notif-panel__title">Notifications</span>
+            @if (unreadCount() > 0) {
+              <button class="notif-panel__mark-read" (click)="markAllRead()">Mark all read</button>
+            }
+          </div>
+
+          <div class="notif-panel__list">
+            @for (n of notifications(); track n.uid) {
+              <a
+                class="notif-panel__item"
+                [class.notif-panel__item--unread]="!n.read"
+                [routerLink]="n.routerLink"
+                (click)="markAsRead(n)"
+              >
+                <div class="notif-panel__icon" [class]="'notif-panel__icon--' + n.type">
+                  <lucide-icon [name]="n.icon" [size]="16"></lucide-icon>
+                </div>
+                <div class="notif-panel__content">
+                  <div class="notif-panel__top-row">
+                    <strong class="notif-panel__title-text">{{ n.title }}</strong>
+                    <nz-tag
+                      class="notif-panel__source-tag"
+                      [nzColor]="n.type === 'order' ? 'blue' : 'purple'"
+                    >
+                      {{ n.source }}
+                    </nz-tag>
+                  </div>
+                  <p class="notif-panel__text">{{ n.description }}</p>
+                  <div class="notif-panel__meta">
+                    <nz-tag [nzColor]="n.status === 'pending' ? 'orange' : 'green'" class="notif-panel__status-tag">
+                      {{ n.status }}
+                    </nz-tag>
+                    <span class="notif-panel__time">
+                      <lucide-icon name="clock" [size]="12"></lucide-icon>
+                      {{ n.time }}
+                    </span>
+                  </div>
+                </div>
+                @if (!n.read) {
+                  <span class="notif-panel__dot"></span>
+                }
+              </a>
+            } @empty {
+              <div class="notif-panel__empty empty-state">
+                <lucide-icon name="bell" [size]="28" class="text-[var(--text-disabled)]"></lucide-icon>
+                <p>No new orders or quotes</p>
+              </div>
+            }
+          </div>
+
+          <div class="notif-panel__footer">
+            <a [routerLink]="'/orders'" class="notif-panel__footer-link notif-panel__footer-link--orders">
+              <lucide-icon name="shopping-bag" [size]="14"></lucide-icon>
+              <span>Orders</span>
+              <lucide-icon name="arrow-right" [size]="12" class="notif-panel__footer-arrow"></lucide-icon>
+            </a>
+            <span class="notif-panel__footer-sep"></span>
+            <a [routerLink]="'/quotes'" class="notif-panel__footer-link notif-panel__footer-link--quotes">
+              <lucide-icon name="file-text" [size]="14"></lucide-icon>
+              <span>Quotes</span>
+              <lucide-icon name="arrow-right" [size]="12" class="notif-panel__footer-arrow"></lucide-icon>
+            </a>
+          </div>
+        </div>
+      </nz-dropdown-menu>
+    </div>
+
+    <div class="header__divider"></div>
+
+    <!-- User Profile -->
+    <div class="header__profile" nz-dropdown [nzDropdownMenu]="profileMenu" nzTrigger="click">
+      <div class="header__profile-info">
+        <span class="header__profile-name">{{
+          tokenStorage.user()?.firstName || tokenStorage.user()?.username
+        }}</span>
+        <span class="header__profile-role">{{ tokenStorage.user()?.role || 'Admin' }}</span>
+      </div>
+      <nz-avatar
+        [nzSrc]="tokenStorage.user()?.avatar ?? undefined"
+        [nzText]="(tokenStorage.user()?.firstName || tokenStorage.user()?.username || 'A')[0]"
+        [nzSize]="40"
+        class="header__avatar"
+      ></nz-avatar>
+      <div class="header__profile-indicator">
+        <lucide-icon name="chevron-down" [size]="14"></lucide-icon>
+      </div>
+    </div>
+
+    <!-- Profile Menu -->
+    <nz-dropdown-menu #profileMenu>
+      <ul nz-menu class="header__dropdown">
+        <li class="header__dropdown-header">
+          <div class="header__dropdown-user">
+            <nz-avatar
+              [nzSrc]="tokenStorage.user()?.avatar ?? undefined"
+              [nzText]="(tokenStorage.user()?.firstName || tokenStorage.user()?.username || 'A')[0]"
+              [nzSize]="48"
+              class="header__avatar"
+            ></nz-avatar>
+            <div class="header__dropdown-details">
+              <span class="header__dropdown-name">
+                @if (tokenStorage.user()?.firstName) {
+                  {{ tokenStorage.user()?.firstName }} {{ tokenStorage.user()?.lastName }}
+                } @else {
+                  {{ tokenStorage.user()?.username }}
+                }
+              </span>
+              <span class="header__dropdown-email">
+                {{ tokenStorage.user()?.email ?? 'admin@vseeds.com' }}
+              </span>
+            </div>
+          </div>
+        </li>
+        <li nz-menu-divider></li>
+        <li
+          nz-menu-item
+          [routerLink]="'/profile'"
+          class="header__dropdown-item flex items-center gap-2 flex-row"
+        >
+          <lucide-icon name="user" [size]="16"></lucide-icon>
+          <span>View Profile</span>
+        </li>
+        <li
+          nz-menu-item
+          [routerLink]="'/settings'"
+          class="header__dropdown-item flex items-center gap-2 flex-row"
+        >
+          <lucide-icon name="settings" [size]="16"></lucide-icon>
+          <span>Settings</span>
+        </li>
+        <li nz-menu-divider></li>
+        <li
+          nz-menu-item
+          (click)="logout()"
+          class="header__dropdown-item header__dropdown-item--danger mt-2"
+        >
+          <lucide-icon name="log-out" [size]="14"></lucide-icon>
+          <span>Logout</span>
+        </li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+</header>
+<app-command-palette #commandPalette></app-command-palette>

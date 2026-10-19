@@ -1,0 +1,88 @@
+<div class="quote-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--info">
+        <lucide-icon name="file-text" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total Requests</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--warning">
+        <lucide-icon name="clock" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ pendingCount() }}</span>
+        <span class="stat-card__label">Pending Review</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="check-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ quotedCount() }}</span>
+        <span class="stat-card__label">Quoted</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #requestCell let-quote>
+    <div class="customer-cell">
+      <div class="customer-cell__avatar">
+        {{ quote.customer.charAt(0) }}
+      </div>
+      <div class="customer-cell__info">
+        <span class="customer-cell__name">{{ quote.customer }}</span>
+        <div class="customer-cell__sub">
+          <span class="quote-id">{{ quote.quoteId }}</span>
+          <span> • {{ quote.date }}</span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #specificationsCell let-quote>
+    <div class="flex flex-wrap gap-2">
+      <span class="spec-badge">{{ quote.service }}</span>
+      <span class="spec-badge">{{ quote.layers }} Layers</span>
+      <span class="spec-badge">Qty: {{ quote.quantity }}</span>
+    </div>
+  </ng-template>
+
+  <ng-template #estimateCell let-quote>
+    <span class="amount-text">{{ quote.estimatedCost }}</span>
+  </ng-template>
+
+  <ng-template #statusCell let-quote>
+    <span class="status-badge status-badge--{{ quote.statusType || 'info' }}">
+      {{ quote.status }}
+    </span>
+  </ng-template>
+
+  <ng-template #actionsCell let-quote>
+    <div class="action-btns">
+      <button class="action-btn" aria-label="View Quote" nz-tooltip nzTooltipTitle="View Quote" (click)="viewQuote(quote)">
+        <lucide-icon name="eye" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="PCB Quotes"
+    [columns]="columns"
+    [items]="quotes()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    searchPlaceholder="Search quotes..."
+    [pageSize]="pageSize"
+    [cellTemplates]="{ request: requestCell, specifications: specificationsCell, estimate: estimateCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  ></app-base-list>
+</div>

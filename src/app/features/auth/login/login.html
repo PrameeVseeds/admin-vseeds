@@ -1,0 +1,167 @@
+<div class="login-card">
+  <!-- Header -->
+  <header class="login-header">
+    <div class="login-logo">
+      <div class="login-logo-image">
+        <img src="assets/images/logo/logo.png" alt="VSEEDS" class="dark-logo" />
+        <img src="assets/images/logo/logoGreen.png" alt="VSEEDS" class="light-logo" />
+      </div>
+      <span class="login-logo-badge">Admin Console</span>
+    </div>
+    @if (step() === 'credentials') {
+      <h1 class="login-title">Welcome Back</h1>
+      <p class="login-subtitle">Management Console Authentication</p>
+    } @else {
+      <h1 class="login-title">Two-Factor Authentication</h1>
+      <p class="login-subtitle">Enter the 6-digit code from your authenticator app</p>
+    }
+  </header>
+
+  <!-- Step 1: Credentials -->
+  @if (step() === 'credentials') {
+    <form nz-form [formGroup]="form" (ngSubmit)="submit()" nzLayout="vertical">
+      <div nz-row [nzGutter]="[16, 16]">
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="emailErr">
+              <app-float-label label="Email Address">
+                <nz-input-group [nzPrefix]="emailIcon">
+                  <input
+                    nz-input
+                    formControlName="email"
+                    id="email"
+                    placeholder=" "
+                    autocomplete="email"
+                  />
+                </nz-input-group>
+              </app-float-label>
+              <ng-template #emailIcon>
+                <lucide-icon
+                  name="mail"
+                  [size]="18"
+                  class="text-[var(--text-disabled)]"
+                ></lucide-icon>
+              </ng-template>
+              <ng-template #emailErr>
+                <app-form-error [control]="form.controls.email" label="Email" />
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="pwErr">
+              <app-float-label label="Password">
+                <nz-input-group [nzPrefix]="lockIcon" [nzSuffix]="eyeBtn">
+                  <input
+                    nz-input
+                    formControlName="password"
+                    id="password"
+                    [type]="showPassword() ? 'text' : 'password'"
+                    placeholder=" "
+                    autocomplete="current-password"
+                  />
+                </nz-input-group>
+              </app-float-label>
+              <ng-template #lockIcon>
+                <lucide-icon
+                  name="lock"
+                  [size]="18"
+                  class="text-[var(--text-disabled)]"
+                ></lucide-icon>
+              </ng-template>
+              <ng-template #eyeBtn>
+                <button
+                  type="button"
+                  aria-label="Toggle password visibility"
+                  class="flex items-center border-none bg-transparent text-[var(--text-disabled)] cursor-pointer p-0 hover:text-[var(--text-primary)] transition-colors"
+                  (click)="togglePassword()"
+                >
+                  <lucide-icon [name]="showPassword() ? 'eye-off' : 'eye'" [size]="18"></lucide-icon>
+                </button>
+              </ng-template>
+              <ng-template #pwErr>
+                <app-form-error [control]="form.controls.password" label="Password" />
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzSpan="24">
+          <div class="login-form-extras">
+            <label nz-checkbox formControlName="remember" class="font-medium">Remember me</label>
+            <a routerLink="/auth/forgot-password" class="forgot-password-link">Forgot password?</a>
+          </div>
+        </div>
+      </div>
+
+      <button nz-button nzType="primary" nzBlock [nzLoading]="loading()" type="submit">
+        Sign In
+      </button>
+    </form>
+  }
+
+  <!-- Step 2: 2FA Verification -->
+  @if (step() === '2fa') {
+    <form nz-form [formGroup]="otpForm" (ngSubmit)="submitOtp()" nzLayout="vertical">
+      <div class="otp-icon-wrapper">
+        <lucide-icon name="shield-check" [size]="40"></lucide-icon>
+      </div>
+
+      <div nz-row [nzGutter]="[16, 16]">
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="otpErr">
+              <app-float-label label="Verification Code">
+                <nz-input-group [nzPrefix]="keyIcon">
+                  <input
+                    nz-input
+                    formControlName="code"
+                    id="otp-code"
+                    placeholder=" "
+                    maxlength="6"
+                    autocomplete="one-time-code"
+                    inputmode="numeric"
+                    class="otp-input"
+                  />
+                </nz-input-group>
+              </app-float-label>
+              <ng-template #keyIcon>
+                <lucide-icon
+                  name="key-round"
+                  [size]="18"
+                  class="text-[var(--text-disabled)]"
+                ></lucide-icon>
+              </ng-template>
+              <ng-template #otpErr>
+                <app-form-error [control]="otpForm.controls.code" label="Verification code" />
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col nzSpan="24">
+          <p class="text-xs text-[var(--text-disabled)] mt-0.5">
+            Code refreshes every 30 seconds
+          </p>
+        </div>
+
+        <div nz-col nzSpan="24">
+  
+        <button nz-button nzType="primary" nzBlock [nzLoading]="loading()" type="submit">
+          Verify & Sign In
+        </button>
+      </div>
+      </div>
+      
+      <button
+        type="button"
+        class="back-btn"
+        (click)="backToCredentials()"
+      >
+        <lucide-icon name="arrow-left" [size]="16"></lucide-icon>
+        Back to login
+      </button>
+    </form>
+  }
+</div>

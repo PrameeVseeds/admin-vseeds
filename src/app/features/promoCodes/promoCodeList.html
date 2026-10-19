@@ -1,0 +1,142 @@
+<div class="promo-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="ticket" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ stats().total }}</span>
+        <span class="stat-card__label">Total Codes</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="check-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ stats().active }}</span>
+        <span class="stat-card__label">Active</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--error">
+        <lucide-icon name="x-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ stats().inactive }}</span>
+        <span class="stat-card__label">Inactive</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--warning">
+        <lucide-icon name="clock" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ stats().expired }}</span>
+        <span class="stat-card__label">Expired</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #codeCell let-item>
+    <div class="code-cell">
+      <div class="code-cell__icon">
+        <lucide-icon name="ticket" [size]="18"></lucide-icon>
+      </div>
+      <div class="code-cell__info">
+        <span class="code-cell__code">{{ item.code }}</span>
+        <span class="code-cell__desc">{{ item.description || '—' }}</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #discountCell let-item>
+    <div class="discount-cell">
+      <span class="discount-cell__value">{{ formatDiscount(item) }}</span>
+      <span class="discount-cell__type">{{ item.discountType }}</span>
+    </div>
+  </ng-template>
+
+  <ng-template #siteCell let-item>
+    <span
+      class="site-badge"
+      [class.site-badge--electronics]="item.applicableSite === 'electronics'"
+      [class.site-badge--embedded]="item.applicableSite === 'embedded'"
+      [class.site-badge--both]="item.applicableSite === 'both'"
+    >
+      {{ getSiteLabel(item.applicableSite) }}
+    </span>
+  </ng-template>
+
+  <ng-template #usageCell let-item>
+    <div class="usage-cell">
+      <span class="usage-cell__count">{{ item.usedCount }}</span>
+      <span class="usage-cell__limit">/&nbsp;{{ item.usageLimit > 0 ? item.usageLimit : '∞' }}</span>
+    </div>
+  </ng-template>
+
+  <ng-template #validPeriodCell let-item>
+    <div class="date-cell">
+      <span class="date-cell__range">{{ formatDate(item.startDate) }} — {{ formatDate(item.expiryDate) }}</span>
+      @if (isExpired(item)) {
+        <span class="date-cell__expired">Expired</span>
+      }
+    </div>
+  </ng-template>
+
+  <ng-template #statusCell let-item>
+    <nz-switch
+      [ngModel]="item.isActive"
+      (ngModelChange)="onToggleActive(item, $event)"
+      nzSize="small"
+    ></nz-switch>
+  </ng-template>
+
+  <ng-template #actionsCell let-item>
+    <div class="action-btns">
+      <button
+        class="action-btn"
+        aria-label="Edit"
+        nz-tooltip
+        nzTooltipTitle="Edit"
+        (click)="onEdit(item)"
+      >
+        <lucide-icon name="edit" [size]="16"></lucide-icon>
+      </button>
+      <button
+        class="action-btn action-btn--danger"
+        aria-label="Delete"
+        nz-tooltip
+        nzTooltipTitle="Delete"
+        (click)="onDelete(item)"
+      >
+        <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="Promo Codes"
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="pagedCodes()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    [pageSize]="pageSize"
+    searchPlaceholder="Search codes..."
+    [cellTemplates]="{ code: codeCell, discount: discountCell, site: siteCell, usage: usageCell, validPeriod: validPeriodCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  >
+    <div actions>
+      <button class="btn-primary" routerLink="create">
+        <lucide-icon name="plus" [size]="18"></lucide-icon>
+        <span>Add Promo Code</span>
+      </button>
+    </div>
+  </app-base-list>
+</div>

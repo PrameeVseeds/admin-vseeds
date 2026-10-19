@@ -1,0 +1,121 @@
+<div class="order-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="shopping-cart" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ statusCounts().total }}</span>
+        <span class="stat-card__label">Total Orders</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--warning">
+        <lucide-icon name="clock" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ processingCount() }}</span>
+        <span class="stat-card__label">Processing</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="check-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ deliveredCount() }}</span>
+        <span class="stat-card__label">Delivered</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--error">
+        <lucide-icon name="x-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ cancelledCount() }}</span>
+        <span class="stat-card__label">Cancelled</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #orderCell let-order>
+    <span class="order-id">{{ order.order || order.id }}</span>
+  </ng-template>
+
+  <ng-template #customerCell let-order>
+    <div class="customer-cell">
+      <div class="customer-cell__avatar">
+        {{ order.customer.charAt(0) }}
+      </div>
+      <div class="customer-cell__info">
+        <span class="customer-cell__name">{{ order.customer }}</span>
+        <span class="customer-cell__date">
+          <lucide-icon name="calendar" [size]="11"></lucide-icon>
+          {{ order.date | dateTime }}
+        </span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #itemsCell let-order>
+    <span class="items-badge">
+      <lucide-icon name="package" [size]="12"></lucide-icon>
+      {{ order.items }} items
+    </span>
+  </ng-template>
+
+  <ng-template #amountCell let-order>
+    <span class="amount-text">{{ order.amount }}</span>
+  </ng-template>
+
+  <ng-template #statusCell let-order>
+    @if (order.status === 'Delivered' || order.status === 'Cancelled' || order.status === 'Refunded') {
+      <span class="status-badge status-badge--{{ order.statusType }} status-badge--locked">
+        <lucide-icon [name]="order.status === 'Delivered' ? 'check-circle' : order.status === 'Refunded' ? 'rotate-ccw' : 'x-circle'" [size]="12"></lucide-icon>
+        {{ order.status }}
+      </span>
+    } @else {
+      <button
+        class="status-badge status-badge--{{ order.statusType }}"
+        (click)="openStatusModal(order)"
+      >
+        {{ order.status }}
+        <lucide-icon name="chevron-down" [size]="12"></lucide-icon>
+      </button>
+    }
+  </ng-template>
+
+  <ng-template #actionsCell let-order>
+    <div class="action-btns">
+      <button class="action-btn" aria-label="View Order" nz-tooltip nzTooltipTitle="View Order" (click)="viewOrder(order)">
+        <lucide-icon name="eye" [size]="16"></lucide-icon>
+      </button>
+      @if (order.status !== 'Cancelled' && order.status !== 'Delivered' && order.status !== 'Refunded') {
+        <button class="action-btn" aria-label="Edit Order" nz-tooltip nzTooltipTitle="Edit Order" (click)="editOrder(order)">
+          <lucide-icon name="pen-line" [size]="16"></lucide-icon>
+        </button>
+      }
+      <button class="action-btn" aria-label="Download Invoice" nz-tooltip nzTooltipTitle="Download Invoice" (click)="downloadInvoice(order)">
+        <lucide-icon name="file-text" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="Orders"
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="orders()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    searchPlaceholder="Search orders..."
+    [pageSize]="pageSize"
+    [cellTemplates]="{ order: orderCell, customer: customerCell, items: itemsCell, amount: amountCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  ></app-base-list>
+</div>

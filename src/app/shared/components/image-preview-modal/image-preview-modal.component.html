@@ -1,0 +1,56 @@
+<div class="img-modal">
+  <!-- Header -->
+  <div class="img-modal__header">
+    <div class="img-modal__title">
+      <div class="img-modal__icon">
+        <lucide-icon name="image" [size]="18"></lucide-icon>
+      </div>
+      <div class="img-modal__info">
+        <h3>{{ data.title }}</h3>
+        @if (hasMultiple) {
+          <span>{{ currentIndex() + 1 }} of {{ totalImages }}</span>
+        }
+      </div>
+    </div>
+    <div class="img-modal__actions">
+      <button class="img-modal__btn" aria-label="Open in new tab" (click)="openExternal()" title="Open in new tab">
+        <lucide-icon name="external-link" [size]="16"></lucide-icon>
+      </button>
+      <button class="img-modal__btn img-modal__btn--close" aria-label="Close" (click)="close()" title="Close">
+        <lucide-icon name="x" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Image Area -->
+  <div class="img-modal__body">
+    @if (hasMultiple) {
+      <button class="img-modal__nav img-modal__nav--prev" aria-label="Previous image" (click)="prev()">
+        <lucide-icon name="chevron-left" [size]="24"></lucide-icon>
+      </button>
+    }
+
+    <img [src]="currentImage()" [alt]="data.title" class="img-modal__image" />
+
+    @if (hasMultiple) {
+      <button class="img-modal__nav img-modal__nav--next" aria-label="Next image" (click)="next()">
+        <lucide-icon name="chevron-right" [size]="24"></lucide-icon>
+      </button>
+    }
+  </div>
+
+  <!-- Thumbnails -->
+  @if (hasMultiple) {
+    <div class="img-modal__thumbs">
+      @for (img of data.images; track img; let i = $index) {
+        <button
+          class="img-modal__thumb"
+          [class.img-modal__thumb--active]="currentIndex() === i"
+          (click)="goTo(i)"
+        >
+          <img [src]="img" [alt]="'Thumbnail ' + (i + 1)" />
+        </button>
+      }
+    </div>
+  }
+</div>

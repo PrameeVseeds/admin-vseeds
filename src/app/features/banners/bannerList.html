@@ -1,0 +1,150 @@
+<div class="banner-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="image" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total Banners</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="check-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ activeCount() }}</span>
+        <span class="stat-card__label">Active</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--info">
+        <lucide-icon name="clock" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ scheduledCount() }}</span>
+        <span class="stat-card__label">Scheduled</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--warning">
+        <lucide-icon name="x-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ expiredCount() }}</span>
+        <span class="stat-card__label">Expired</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #promotionCell let-item>
+    <div class="promo-cell">
+      <div class="promo-cell__thumb">
+        @if (!item.imageUrl) {
+          <lucide-icon name="image" [size]="20"></lucide-icon>
+        } @else {
+          <img [src]="item.imageUrl" alt="Promo" class="promo-cell__img" />
+        }
+      </div>
+      <div class="promo-cell__info">
+        <span class="promo-cell__title">{{ item.title }}</span>
+        <span class="promo-cell__id">BNR-{{ item.id }}</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #placementCell let-item>
+    <span class="placement-badge">{{ item.position }}</span>
+  </ng-template>
+
+  <ng-template #durationCell let-item>
+    <div class="duration-cell">
+      <div class="duration-cell__row">
+        <lucide-icon name="calendar" [size]="12"></lucide-icon>
+        <span>{{ item.startDate }}</span>
+      </div>
+      <span class="duration-cell__end">Until {{ item.endDate }}</span>
+    </div>
+  </ng-template>
+
+  <ng-template #statusCell let-item>
+    <span class="status-badge status-badge--{{ item.statusType }}">
+      {{ item.status }}
+    </span>
+  </ng-template>
+
+  <ng-template #actionsCell let-item>
+    <div class="action-btns">
+      @if (item.status === 'Active') {
+        <button
+          class="action-btn action-btn--warn"
+          aria-label="Deactivate"
+          nz-tooltip
+          nzTooltipTitle="Deactivate"
+          (click)="toggleStatus(item)"
+        >
+          <lucide-icon name="eye-off" [size]="16"></lucide-icon>
+        </button>
+      }
+      @if (
+        item.status === 'Expired' ||
+        item.status === 'Scheduled' ||
+        item.status === 'Inactive'
+      ) {
+        <button
+          class="action-btn action-btn--success"
+          aria-label="Activate"
+          nz-tooltip
+          nzTooltipTitle="Activate"
+          (click)="toggleStatus(item)"
+        >
+          <lucide-icon name="eye" [size]="16"></lucide-icon>
+        </button>
+      }
+      <button
+        class="action-btn"
+        aria-label="Edit Banner"
+        nz-tooltip
+        nzTooltipTitle="Edit Banner"
+        (click)="onEdit(item)"
+      >
+        <lucide-icon name="edit" [size]="16"></lucide-icon>
+      </button>
+      <button
+        class="action-btn action-btn--danger"
+        aria-label="Delete Banner"
+        nz-tooltip
+        nzTooltipTitle="Delete Banner"
+        (click)="onDelete(item)"
+      >
+        <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="Banners"
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="pagedBanners()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="bannerService.loading()"
+    [pageSize]="pageSize"
+    searchPlaceholder="Search banners..."
+    [cellTemplates]="{ promotion: promotionCell, placement: placementCell, duration: durationCell, status: statusCell, actions: actionsCell }"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  >
+    <div actions>
+      
+      <button class="btn-add" (click)="createBanner()">
+        <lucide-icon name="plus" [size]="18"></lucide-icon>
+        <span>Add Banner</span>
+      </button>
+    </div>
+  </app-base-list>
+</div>

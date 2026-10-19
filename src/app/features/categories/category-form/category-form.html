@@ -1,0 +1,175 @@
+<div class="category-form-shell">
+  <header class="top-bar">
+    <div class="top-bar__left">
+      <button class="icon-btn" aria-label="Go back" (click)="goBack()">
+        <lucide-icon name="arrow-left" [size]="18"></lucide-icon>
+      </button>
+      <div class="top-bar__title">
+        <span class="top-bar__crumb">Categories</span>
+        <lucide-icon name="chevron-right" [size]="12"></lucide-icon>
+        <span class="top-bar__crumb --active">{{ isEditMode ? 'Edit' : 'Create' }}</span>
+      </div>
+    </div>
+    <div class="top-bar__right">
+      <button class="btn --ghost" (click)="goBack()">
+        <lucide-icon name="x" [size]="16"></lucide-icon>
+        Discard
+      </button>
+      <button class="btn --primary" (click)="submit()">
+        <lucide-icon name="check" [size]="16"></lucide-icon>
+        {{ isEditMode ? 'Save Changes' : 'Create Category' }}
+      </button>
+    </div>
+  </header>
+
+  <form [formGroup]="form" nz-form nzLayout="vertical" class="form-body">
+    <div class="col-main">
+      <section class="card">
+        <h2 class="card__title">
+          <lucide-icon name="layers" [size]="18"></lucide-icon>
+          General Information
+        </h2>
+
+        <div class="field-group">
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="nameErr">
+              <app-float-label label="Category Name" [required]="true">
+                <input nz-input formControlName="name" placeholder=" " />
+              </app-float-label>
+              <ng-template #nameErr>
+                <app-form-error [control]="form.controls.name" label="Name" />
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+
+          <div class="field-row">
+            <nz-form-item class="field-row__item">
+              <nz-form-control [nzErrorTip]="slugErr">
+                <app-float-label label="URL Slug" [required]="true">
+                  <nz-input-group [nzPrefix]="slugPrefix">
+                    <input nz-input formControlName="slug" placeholder=" " />
+                  </nz-input-group>
+                </app-float-label>
+                <ng-template #slugPrefix>
+                  <lucide-icon name="link-2" [size]="14"></lucide-icon>
+                </ng-template>
+                <ng-template #slugErr>
+                  <app-form-error [control]="form.controls.slug" label="URL Slug" />
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item class="field-row__item">
+              <nz-form-control>
+                <app-float-label label="Status" [required]="true">
+                  <nz-select formControlName="status" nzPlaceHolder=" ">
+                    <nz-option nzValue="active" nzLabel="Active"></nz-option>
+                    <nz-option nzValue="inactive" nzLabel="Inactive"></nz-option>
+                  </nz-select>
+                </app-float-label>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <nz-form-item>
+            <nz-form-control>
+              <app-float-label label="Description">
+                <textarea
+                  nz-input
+                  formControlName="description"
+                  [rows]="4"
+                  placeholder=" "
+                ></textarea>
+              </app-float-label>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </section>
+    </div>
+
+    <aside class="col-side">
+      <section class="card">
+        <h2 class="card__title">
+          <lucide-icon name="image" [size]="18"></lucide-icon>
+          Image
+        </h2>
+
+        <div class="img-drop" [class.--filled]="previewImage">
+          @if (previewImage) {
+            <img [src]="previewImage" class="img-drop__preview" alt="Category icon" />
+            <div class="img-drop__overlay">
+              <div class="img-drop__actions">
+                <button
+                  type="button"
+                  class="action-btn"
+                  aria-label="View"
+                  nz-tooltip
+                  nzTooltipTitle="View"
+                  (click)="previewFullImage()"
+                >
+                  <lucide-icon name="eye" [size]="18"></lucide-icon>
+                </button>
+                <button
+                  type="button"
+                  class="action-btn"
+                  aria-label="Replace"
+                  nz-tooltip
+                  nzTooltipTitle="Replace"
+                  (click)="fileInput.click()"
+                >
+                  <lucide-icon name="refresh-cw" [size]="18"></lucide-icon>
+                </button>
+                <button
+                  type="button"
+                  class="action-btn --danger"
+                  aria-label="Remove"
+                  nz-tooltip
+                  nzTooltipTitle="Remove"
+                  (click)="removeImage()"
+                >
+                  <lucide-icon name="trash-2" [size]="18"></lucide-icon>
+                </button>
+              </div>
+            </div>
+          } @else {
+            <div class="img-drop__empty" (click)="fileInput.click()">
+              <div class="img-drop__icon-ring">
+                <lucide-icon name="upload" [size]="22"></lucide-icon>
+              </div>
+              <p>Upload image</p>
+              <span>PNG, JPG up to 2 MB</span>
+            </div>
+          }
+        </div>
+        <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" hidden />
+
+        @if (suggestedImagePrompt) {
+          <div class="ai-prompt">
+            <div class="ai-prompt__label">
+              <lucide-icon name="sparkles" [size]="13"></lucide-icon>
+              AI Image Prompt
+            </div>
+            <div class="ai-prompt__box">
+              <p>{{ suggestedImagePrompt }}</p>
+              <button class="ai-prompt__copy" aria-label="Copy image prompt" (click)="copyImagePrompt()">
+                <lucide-icon name="copy" [size]="13"></lucide-icon>
+              </button>
+            </div>
+          </div>
+        }
+      </section>
+
+      <section class="card --muted">
+        <h2 class="card__title --sm">
+          <lucide-icon name="lightbulb" [size]="16"></lucide-icon>
+          Quick Tips
+        </h2>
+        <ul class="tips">
+          <li>Slugs should be lowercase with hyphens.</li>
+          <li>Inactive categories are hidden from public view.</li>
+          <li>Good descriptions improve product discoverability.</li>
+        </ul>
+      </section>
+    </aside>
+  </form>
+</div>

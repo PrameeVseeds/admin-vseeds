@@ -1,0 +1,104 @@
+<div class="wo-container">
+  <!-- Page Header -->
+  <header class="wo-header">
+    <div class="wo-header__info">
+      <h1 class="wo-header__title">Wishlist Analytics</h1>
+      <p class="wo-header__subtitle">Analyze product demand and track customer interest</p>
+    </div>
+
+    <div class="wo-header__actions">
+      <!-- Search -->
+      <div class="wo-header__search">
+        <lucide-icon name="search" [size]="18" class="wo-header__search-icon"></lucide-icon>
+        <input
+          type="text"
+          placeholder="Find a product..."
+          class="wo-header__search-input"
+          [value]="searchTerm()"
+          (input)="searchTerm.set($any($event.target).value)"
+        />
+      </div>
+
+      <!-- Export -->
+      <button class="wo-header__export" (click)="exportWishlists()">
+        <lucide-icon name="download" [size]="18"></lucide-icon>
+        <span>Export Data</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Filter & Tab Section -->
+  <div class="wo-tabs">
+    @for (tab of stockTabs; track tab.value) {
+      <button
+        class="wo-tabs__btn"
+        [class.wo-tabs__btn--active]="activeTab() === tab.value"
+        (click)="activeTab.set(tab.value)"
+      >
+        <span>{{ tab.label }}</span>
+        <span class="wo-tabs__count">{{ getTabCount(tab.value) }}</span>
+      </button>
+    }
+  </div>
+
+  <!-- Cards Grid -->
+  <div class="wo-grid">
+    @for (item of filteredWishlists(); track item.productId + ':' + item.product) {
+      <div class="wo-card">
+        <div class="wo-card__top">
+          <div class="wo-card__icon">
+            <lucide-icon name="package" [size]="24"></lucide-icon>
+          </div>
+          <div class="wo-card__demand">
+            <span class="wo-card__demand-label">Wishlists</span>
+            <span class="wo-card__demand-value">{{ item.count }}</span>
+            <span class="wo-card__demand-hint">unique saves</span>
+          </div>
+        </div>
+
+        <div class="wo-card__body">
+          <span class="wo-card__section-label">Product</span>
+          <h3
+            class="wo-card__name"
+            nz-tooltip
+            [nzTooltipTitle]="item.product + (item.sku ? ' · SKU: ' + item.sku : '')"
+            nzTooltipPlacement="bottom"
+          >
+            {{ item.product }}
+          </h3>
+          @if (item.sku) {
+            <p class="wo-card__sku">SKU: {{ item.sku }}</p>
+          }
+        </div>
+
+        <div class="wo-card__footer">
+          <span class="status-badge" [class]="'status-badge--' + (item.stockType || 'info')">
+            {{ item.stock }}
+          </span>
+          <lucide-icon
+            name="chevron-right"
+            [size]="16"
+            style="color: var(--text-disabled)"
+          ></lucide-icon>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <lucide-icon name="heart" [size]="48" class="empty-state__icon"></lucide-icon>
+        <p class="empty-state__text">No matching products found</p>
+        <p class="empty-state__sub">Try adjusting your filters or search query</p>
+      </div>
+    }
+  </div>
+
+  <!-- Pagination (Optional - if needed for many items) -->
+  @if (filteredWishlists().length > 12) {
+    <div style="display: flex; justify-content: flex-end; margin-top: 1rem">
+      <nz-pagination
+        [nzPageIndex]="1"
+        [nzTotal]="filteredWishlists().length"
+        [nzPageSize]="12"
+      ></nz-pagination>
+    </div>
+  }
+</div>

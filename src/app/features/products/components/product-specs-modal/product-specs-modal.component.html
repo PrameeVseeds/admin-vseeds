@@ -1,0 +1,14 @@
+<div class="product-specs-edit">
+  <quill-editor
+    [formControl]="specsControl"
+    placeholder="List technical specs here..."
+    [styles]="{ 'min-height': '300px' }"
+    [modules]="quillModules"
+  ></quill-editor>
+  <p class="pf-hint">Use the toolbar to format with headings, lists, and more.</p>
+
+  <div class="modal-footer">
+    <button nz-button nzType="default" (click)="cancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="save()">Save Changes</button>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+<div class="del-detail">
+  <!-- Header -->
+  <div class="dd-header">
+    <div class="dd-header__icon">
+      <lucide-icon name="truck" [size]="24"></lucide-icon>
+    </div>
+    <div class="dd-header__info">
+      <h2 class="dd-header__title">{{ data.tracking }}</h2>
+      <p class="dd-header__sub">Shipment Tracking</p>
+    </div>
+    <span class="dd-badge" [class]="'dd-badge--' + data.statusType">
+      {{ data.status }}
+    </span>
+  </div>
+
+  <!-- Grid -->
+  <div class="dd-grid">
+    <div class="dd-field">
+      <div class="dd-field__icon">
+        <lucide-icon name="user" [size]="14"></lucide-icon>
+      </div>
+      <div>
+        <span class="dd-field__label">Customer</span>
+        <span class="dd-field__value">{{ data.customer }}</span>
+      </div>
+    </div>
+
+    <div class="dd-field">
+      <div class="dd-field__icon">
+        <lucide-icon name="shopping-cart" [size]="14"></lucide-icon>
+      </div>
+      <div>
+        <span class="dd-field__label">Order Reference</span>
+        <span class="dd-field__value dd-field__value--mono">{{ data.order }}</span>
+      </div>
+    </div>
+
+    <div class="dd-field">
+      <div class="dd-field__icon">
+        <lucide-icon name="truck" [size]="14"></lucide-icon>
+      </div>
+      <div>
+        <span class="dd-field__label">Carrier</span>
+        <span class="dd-field__value">{{ data.carrier }}</span>
+      </div>
+    </div>
+
+    <div class="dd-field">
+      <div class="dd-field__icon">
+        <lucide-icon name="calendar" [size]="14"></lucide-icon>
+      </div>
+      <div>
+        <span class="dd-field__label">Shipped Date</span>
+        <span class="dd-field__value">{{ data.shipped }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estimated delivery highlight -->
+  <div class="dd-estimate">
+    <div class="dd-estimate__left">
+      <lucide-icon name="clock" [size]="18"></lucide-icon>
+      <span>Estimated Delivery</span>
+    </div>
+    <span class="dd-estimate__value">{{ data.estimated }}</span>
+  </div>
+
+  <!-- Footer -->
+  <div class="dd-footer">
+    <button nz-button class="dd-btn-close" (click)="close()">Close</button>
+  </div>
+</div>

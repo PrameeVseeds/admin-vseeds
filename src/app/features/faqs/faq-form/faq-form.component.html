@@ -1,0 +1,195 @@
+<div class="faq-workspace">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <button (click)="goBack()" class="btn-back" aria-label="Go back">
+          <lucide-icon name="arrow-left" [size]="18"></lucide-icon>
+        </button>
+        <div class="title-group">
+          <nav class="breadcrumb-nav">
+            <span class="nav-item">Support</span>
+            <lucide-icon name="chevron-right" [size]="14"></lucide-icon>
+            <span class="nav-item active">{{ isEditMode ? 'Edit Entry' : 'New Entry' }}</span>
+          </nav>
+          <h1>{{ isEditMode ? 'Update FAQ Entry' : 'Create FAQ' }}</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button nz-button class="btn-cancel" (click)="goBack()">Discard</button>
+        <button nz-button nzType="primary" class="btn-primary" (click)="submit()">
+          <lucide-icon name="check" [size]="18"></lucide-icon>
+          <span>{{ isEditMode ? 'Save Changes' : 'Publish FAQ' }}</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <form [formGroup]="form" nz-form nzLayout="vertical" class="workspace-body">
+    <div class="form-grid">
+      <!-- Main Content -->
+      <div class="form-main">
+        <div class="form-card">
+          <div class="card-header">
+            <lucide-icon name="help-circle" [size]="20"></lucide-icon>
+            <div>
+              <h3>Question & Answer</h3>
+              <p>The core content that users will see</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="questionErr">
+                <app-float-label label="Question" [required]="true">
+                  <input nz-input formControlName="question" placeholder=" " />
+                </app-float-label>
+                <ng-template #questionErr>
+                  <app-form-error [control]="form.controls.question" label="Question" />
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item class="mb-0">
+              <nz-form-control [nzErrorTip]="answerErr">
+                <div class="editor-wrapper">
+                  <label class="editor-label">Detailed Answer <span class="req">*</span></label>
+                  <div class="editor-container">
+                    <quill-editor
+                      formControlName="answer"
+                      [modules]="editorModules"
+                      placeholder="Provide a clear, helpful response..."
+                      theme="snow"
+                    ></quill-editor>
+                  </div>
+                </div>
+                <ng-template #answerErr>
+                  <app-form-error [control]="form.controls.answer" label="Answer" />
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="form-sidebar">
+        <!-- Target Site -->
+        <div class="sidebar-card">
+          <div class="card-header">
+            <lucide-icon name="globe" [size]="18"></lucide-icon>
+            <h3>Target Site</h3>
+          </div>
+          <div class="card-body">
+            <div class="site-toggle-group">
+              @for (opt of siteOptions; track opt.value) {
+                <button
+                  type="button"
+                  class="site-toggle"
+                  [class.site-toggle--active]="form.value.site === opt.value"
+                  [class]="'site-toggle--' + opt.value"
+                  (click)="form.patchValue({ site: opt.value })"
+                >
+                  <span class="site-toggle__radio"></span>
+                  <lucide-icon
+                    [name]="
+                      opt.value === 'electronics'
+                        ? 'monitor'
+                        : opt.value === 'embedded'
+                          ? 'code'
+                          : 'layers'
+                    "
+                    [size]="15"
+                  ></lucide-icon>
+                  <span class="site-toggle__text">{{ opt.label }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="sidebar-card">
+          <div class="card-header">
+            <lucide-icon name="settings" [size]="18"></lucide-icon>
+            <h3>Settings</h3>
+          </div>
+          <div class="card-body">
+            <nz-form-item>
+              <nz-form-control>
+                <app-float-label label="Category" [required]="true">
+                  <nz-select
+                    formControlName="category"
+                    nzPlaceHolder=" "
+                    [nzDropdownRender]="addCategoryTpl"
+                  >
+                    @for (cat of categoryOptions(); track cat) {
+                      <nz-option [nzValue]="cat" [nzLabel]="cat"></nz-option>
+                    }
+                  </nz-select>
+                </app-float-label>
+                <ng-template #addCategoryTpl>
+                  <nz-divider></nz-divider>
+                  <div class="add-category-row">
+                    <input
+                      nz-input
+                      nzSize="small"
+                      placeholder="New category..."
+                      #newCatInput
+                      (keydown.enter)="addCategory(newCatInput)"
+                    />
+                    <button
+                      nz-button
+                      nzSize="small"
+                      nzType="text"
+                      class="add-category-btn"
+                      (click)="addCategory(newCatInput)"
+                    >
+                      <lucide-icon name="plus" [size]="14"></lucide-icon>
+                      Add
+                    </button>
+                  </div>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-divider></nz-divider>
+
+            <nz-form-item>
+              <nz-form-control>
+                <app-float-label label="Display Priority" [required]="true">
+                  <nz-input-number
+                    formControlName="order"
+                    class="w-full"
+                    [nzMin]="0"
+                  ></nz-input-number>
+                </app-float-label>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-control>
+                <app-float-label label="Status" [required]="true">
+                  <nz-select formControlName="status" nzPlaceHolder=" ">
+                    <nz-option nzValue="Active" nzLabel="Active"></nz-option>
+                    <nz-option nzValue="Inactive" nzLabel="Inactive"></nz-option>
+                  </nz-select>
+                </app-float-label>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+
+        <!-- Tip -->
+        <div class="info-card">
+          <div class="info-card__icon">
+            <lucide-icon name="lightbulb" [size]="20"></lucide-icon>
+          </div>
+          <p>
+            Lower priority numbers appear first. Keep answers concise and use bullet points for
+            clarity.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </form>
+</div>

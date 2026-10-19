@@ -1,0 +1,195 @@
+<div class="invoice-page">
+  <div class="page-header no-print">
+    <div>
+      <h1>Invoice Templates</h1>
+      <p class="page-subtitle">Pick a layout, customize content, and save versions to print from.</p>
+    </div>
+    <button class="btn-new" (click)="startNew()">+ New Template</button>
+  </div>
+
+  <div class="versions-list no-print">
+    @if (versions().length === 0) {
+      <div class="empty-state">No templates saved yet. Click "New Template" to create one.</div>
+    }
+    @for (version of versions(); track version.id) {
+      <div class="version-card" [class.active-card]="version.isActive">
+        <span class="accent-dot" [style.background]="version.settings.accentColor"></span>
+        <div class="version-info">
+          <div class="version-name">
+            {{ version.name }}
+            <span class="layout-chip">{{ version.settings.layout }}</span>
+            @if (version.isActive) {
+              <span class="badge-active">Active</span>
+            } @else {
+              <span class="badge-inactive">Inactive</span>
+            }
+          </div>
+          <div class="version-meta">
+            {{ version.settings.companyName }} &middot; Updated {{ version.updatedAt | date: 'medium' }}
+          </div>
+        </div>
+        <div class="version-actions">
+          @if (version.isActive) {
+            <button class="action-btn" (click)="setInactive(version.id)">Set Inactive</button>
+          } @else {
+            <button class="action-btn primary" (click)="setActive(version.id)">Set Active</button>
+          }
+          <button class="action-btn" (click)="printSample(version.settings)">Print Sample</button>
+          <button class="action-btn" (click)="editVersion(version)">Edit</button>
+          <button class="action-btn danger" (click)="deleteVersion(version)">Delete</button>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (isEditorOpen()) {
+    <div class="workbench">
+      <div class="editor-panel no-print">
+        <div class="editor-header">
+          <input
+            class="editor-name-input"
+            [ngModel]="draftName()"
+            (ngModelChange)="draftName.set($event)"
+            placeholder="Template name"
+          />
+          <div class="editor-header-actions">
+            <button class="btn-cancel" (click)="cancelEdit()">Cancel</button>
+            <button class="btn-print-sample" (click)="printSample()">Print Sample</button>
+            <button class="btn-save" (click)="saveVersion()">Save Version</button>
+          </div>
+        </div>
+
+        <div class="editor-section">
+          <div class="section-title">Layout</div>
+          <div class="layout-picker">
+            @for (l of layouts; track l.id) {
+              <button
+                type="button"
+                class="layout-card"
+                [class.selected]="draft().layout === l.id"
+                (click)="setLayout(l.id)"
+              >
+                <span class="layout-thumb" [class.lt-classic]="l.id === 'classic'" [class.lt-modern]="l.id === 'modern'" [class.lt-minimal]="l.id === 'minimal'">
+                  @if (l.id === 'modern') {
+                    <span class="th-band"><i></i><u></u></span>
+                    <span class="th-strip"></span>
+                  } @else if (l.id === 'minimal') {
+                    <span class="th-wordmark"></span>
+                  } @else {
+                    <span class="th-headrow"><i></i><u></u></span>
+                  }
+                  <span class="th-line w70"></span>
+                  <span class="th-table"></span>
+                  <span class="th-cols"><i></i><b></b></span>
+                </span>
+                <span class="layout-name">{{ l.name }}</span>
+                <span class="layout-desc">{{ l.description }}</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="editor-section">
+          <div class="section-title">Sections</div>
+          <div class="toggle-row">
+            <button type="button" class="toggle-pill" [class.on]="draft().showLogo" (click)="toggleFlag('showLogo')">Logo</button>
+            <button type="button" class="toggle-pill" [class.on]="draft().showNotes" (click)="toggleFlag('showNotes')">Notes</button>
+            <button type="button" class="toggle-pill" [class.on]="draft().showTerms" (click)="toggleFlag('showTerms')">Terms &amp; Conditions</button>
+            <button type="button" class="toggle-pill" [class.on]="draft().showSignature" (click)="toggleFlag('showSignature')">Signature</button>
+          </div>
+        </div>
+
+        <div class="editor-section">
+          <div class="section-title">Company Details</div>
+          <div class="editor-grid">
+            <div class="editor-field">
+              <label>Company Name</label>
+              <input [ngModel]="draft().companyName" (ngModelChange)="updateDraftField('companyName', $event)" />
+            </div>
+            <div class="editor-field">
+              <label>Accent Color</label>
+              <div class="color-row">
+                <input type="color" [ngModel]="draft().accentColor" (ngModelChange)="updateDraftField('accentColor', $event)" />
+                <span class="color-value">{{ draft().accentColor }}</span>
+              </div>
+            </div>
+            <div class="editor-field span-2">
+              <label>Company Address</label>
+              <textarea rows="2" [ngModel]="draft().companyAddress" (ngModelChange)="updateDraftField('companyAddress', $event)"></textarea>
+            </div>
+            <div class="editor-field">
+              <label>Phone</label>
+              <input [ngModel]="draft().companyPhone" (ngModelChange)="updateDraftField('companyPhone', $event)" />
+            </div>
+            <div class="editor-field">
+              <label>Email</label>
+              <input [ngModel]="draft().companyEmail" (ngModelChange)="updateDraftField('companyEmail', $event)" />
+            </div>
+            <div class="editor-field span-2">
+              <label>Logo</label>
+              <div class="logo-row">
+                @if (draft().companyLogo) {
+                  <img class="logo-preview" [src]="draft().companyLogo" alt="Logo preview" />
+                  <button class="link-btn" (click)="removeLogo()">Remove</button>
+                } @else {
+                  <input type="file" accept="image/*" (change)="onLogoSelected($event)" />
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-section">
+          <div class="section-title">Invoice Content</div>
+          <div class="editor-grid">
+            <div class="editor-field">
+              <label>Tax Label</label>
+              <input [ngModel]="draft().taxLabel" (ngModelChange)="updateDraftField('taxLabel', $event)" />
+            </div>
+            <div class="editor-field"></div>
+            <div class="editor-field span-2">
+              <label>Notes</label>
+              <textarea rows="2" [ngModel]="draft().notes" (ngModelChange)="updateDraftField('notes', $event)"></textarea>
+            </div>
+            <div class="editor-field span-2">
+              <label>Terms &amp; Conditions</label>
+              <textarea rows="2" [ngModel]="draft().terms" (ngModelChange)="updateDraftField('terms', $event)"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-section">
+          <div class="section-title">Signature</div>
+          <div class="editor-grid">
+            <div class="editor-field">
+              <label>Signatory Name</label>
+              <input [ngModel]="draft().signatureName" (ngModelChange)="updateDraftField('signatureName', $event)" />
+            </div>
+            <div class="editor-field">
+              <label>Signatory Title</label>
+              <input [ngModel]="draft().signatureTitle" (ngModelChange)="updateDraftField('signatureTitle', $event)" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="preview-col no-print">
+        <div class="preview-sticky">
+          <div class="preview-label">Live Preview</div>
+          <div class="invoice-paper preview-scroll">
+            <div class="doc-style" [innerHTML]="docStyle"></div>
+            <div class="inv-host" [innerHTML]="previewHtml()"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  } @else {
+    <div class="preview-label no-print">
+      {{ activeVersion() ? 'Active Template Preview' : 'Default Preview (no active template)' }}
+    </div>
+    <div class="invoice-paper">
+      <div class="doc-style" [innerHTML]="docStyle"></div>
+      <div class="inv-host" [innerHTML]="previewHtml()"></div>
+    </div>
+  }
+</div>

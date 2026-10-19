@@ -1,0 +1,445 @@
+<form nz-form nzLayout="vertical" class="pf" [formGroup]="form">
+  <div class="pf-bar">
+    <div class="pf-bar__left">
+      <div class="pf-bar__icon" [class.pf-bar__icon--edit]="product">
+        <lucide-icon
+          [name]="product ? 'pencil-line' : 'plus'"
+          [size]="16"
+        ></lucide-icon>
+      </div>
+      <div>
+        <h2 class="pf-bar__title">{{ product ? 'Edit Product' : 'New Product' }}</h2>
+        <p class="pf-bar__sub">
+          {{ product ? 'ID: ' + product.id : 'Fill in the details below' }}
+        </p>
+      </div>
+    </div>
+    <div class="pf-bar__right">
+      <div class="pf-bar__status">
+        <span
+          class="pf-bar__status-dot"
+          [class.pf-bar__status-dot--on]="form.get('status')!.value"
+        ></span>
+        {{ form.get('status')!.value ? 'Active' : 'Inactive' }}
+        <nz-switch formControlName="status" nzSize="small"></nz-switch>
+      </div>
+      <div class="pf-bar__status">
+        <span
+          class="pf-bar__status-dot"
+          [class.pf-bar__status-dot--on]="form.get('isFeatured')!.value"
+        ></span>
+        Featured (New Arrivals)
+        <nz-switch formControlName="isFeatured" nzSize="small"></nz-switch>
+      </div>
+      <button type="button" class="pf-bar__btn pf-bar__btn--ghost" (click)="cancel()">
+        <lucide-icon name="x" [size]="14"></lucide-icon> Discard
+      </button>
+      <button
+        type="button"
+        class="pf-bar__btn pf-bar__btn--primary"
+        [disabled]="saving()"
+        (click)="submitForm()"
+      >
+        @if (saving()) {
+          <lucide-icon name="loader" [size]="14" class="animate-spin"></lucide-icon>
+          {{ product ? 'Saving…' : 'Creating…' }}
+        } @else {
+          <lucide-icon name="check" [size]="14"></lucide-icon>
+          {{ product ? 'Save Changes' : 'Create Product' }}
+        }
+      </button>
+    </div>
+  </div>
+
+  <div class="pf-body">
+    <!-- Section: Product Info -->
+    <section class="pf-section">
+      <div class="pf-section__head">
+        <lucide-icon name="package" [size]="15"></lucide-icon>
+        <span>Product Information</span>
+      </div>
+      <div class="pf-grid pf-grid--2">
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="nameErr">
+            <app-float-label label="Product Name" [required]="true">
+              <input nz-input formControlName="name" placeholder=" " />
+            </app-float-label>
+            <ng-template #nameErr>
+              <app-form-error [control]="form.controls.name" label="Name" />
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="SKU">
+              <input nz-input formControlName="sku" placeholder=" " class="font-mono" />
+            </app-float-label>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="pf-grid pf-grid--2">
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="Store ID">
+              <input nz-input formControlName="storeId" placeholder=" " class="font-mono" />
+            </app-float-label>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="Manufacturer">
+              <input nz-input formControlName="manufacturer" placeholder=" " />
+            </app-float-label>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="pf-grid pf-grid--2">
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="Category" [required]="true">
+              <input
+                nz-input
+                formControlName="category"
+                [nzAutocomplete]="categoryAuto"
+                placeholder=" "
+              />
+              <nz-autocomplete #categoryAuto>
+                @for (c of categoryNames; track c) {
+                  <nz-auto-option [nzValue]="c" [nzLabel]="c">{{ c }}</nz-auto-option>
+                }
+              </nz-autocomplete>
+            </app-float-label>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="Sub-Category">
+              <input
+                nz-input
+                formControlName="subCategory"
+                [nzAutocomplete]="subAuto"
+                placeholder=" "
+              />
+              <nz-autocomplete #subAuto>
+                @for (sub of availableSubcategories(); track sub) {
+                  <nz-auto-option [nzValue]="sub" [nzLabel]="sub">{{ sub }}</nz-auto-option>
+                }
+              </nz-autocomplete>
+            </app-float-label>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="pf-grid pf-grid--2">
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="Manufacturer Product Number">
+              <input
+                nz-input
+                formControlName="manufacturerProductNumber"
+                placeholder=" "
+                class="font-mono"
+              />
+            </app-float-label>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+         <nz-form-item>
+        <nz-form-control>
+          <app-float-label label="Short Description">
+            <textarea
+              nz-input
+              formControlName="shortDescription"
+              [rows]="2"
+              placeholder=" "
+            ></textarea>
+          </app-float-label>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control>
+          <app-float-label label="Description">
+            <textarea
+              nz-input
+              formControlName="description"
+              [rows]="3"
+              placeholder=" "
+            ></textarea>
+          </app-float-label>
+        </nz-form-control>
+      </nz-form-item>
+   
+    </section>
+
+    <!-- Section: Inventory & Pricing -->
+    <section class="pf-section">
+      <div class="pf-section__head">
+        <lucide-icon name="box" [size]="15"></lucide-icon>
+        <span>Inventory &amp; Pricing</span>
+      </div>
+      <div class="pf-grid pf-grid--3">
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="inHandQtyErr">
+            <app-float-label label="In Hand Qty" [required]="true">
+              <nz-input-number formControlName="inHandQty" [nzMin]="0"></nz-input-number>
+            </app-float-label>
+            <ng-template #inHandQtyErr>
+              <app-form-error [control]="form.controls.inHandQty" label="In Hand Qty" />
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="Ordered Qty">
+              <nz-input-number formControlName="orderedQty" [nzMin]="0"></nz-input-number>
+            </app-float-label>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="Expected Date">
+              <nz-date-picker formControlName="expectedDate" nzPlaceHolder=" "></nz-date-picker>
+            </app-float-label>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="pf-divider"></div>
+      <div class="pf-grid pf-grid--4">
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="price1Err">
+            <app-float-label label="Selling Price (Qty 1)" [required]="true">
+              <nz-input-number
+                formControlName="price1"
+                [nzMin]="0"
+                [nzFormatter]="formatterPrice"
+                [nzParser]="parserPrice"
+              ></nz-input-number>
+            </app-float-label>
+            <ng-template #price1Err>
+              <app-form-error [control]="form.controls.price1" label="Selling Price" />
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="Selling Price (Qty 10)">
+              <nz-input-number
+                formControlName="price10"
+                [nzMin]="0"
+                [nzFormatter]="formatterPrice"
+                [nzParser]="parserPrice"
+              ></nz-input-number>
+            </app-float-label>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="Selling Price (Qty 100)">
+              <nz-input-number
+                formControlName="price100"
+                [nzMin]="0"
+                [nzFormatter]="formatterPrice"
+                [nzParser]="parserPrice"
+              ></nz-input-number>
+            </app-float-label>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="Purchased Price">
+              <nz-input-number
+                formControlName="purchasedPrice"
+                [nzMin]="0"
+                [nzFormatter]="formatterPrice"
+                [nzParser]="parserPrice"
+              ></nz-input-number>
+            </app-float-label>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="minPurchaseErr">
+            <app-float-label label="Minimum Purchase Qty">
+              <nz-input-number
+                formControlName="minPurchaseValue"
+                [nzMin]="1"
+                [nzPrecision]="0"
+              ></nz-input-number>
+            </app-float-label>
+            <ng-template #minPurchaseErr>
+              <app-form-error [control]="form.controls.minPurchaseValue" label="Minimum Purchase Qty" />
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </section>
+
+    <!-- Section: Links & Tags -->
+    <section class="pf-section">
+      <div class="pf-section__head">
+        <lucide-icon name="link" [size]="15"></lucide-icon>
+        <span>Links &amp; Tags</span>
+      </div>
+      <div class="pf-grid pf-grid--3">
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="Product Link">
+              <nz-input-group [nzSuffix]="copyTpl">
+                <input nz-input formControlName="productLink" placeholder=" " readonly />
+              </nz-input-group>
+            </app-float-label>
+            <ng-template #copyTpl>
+              <button
+                nz-button
+                nzType="text"
+                aria-label="Copy Link"
+                (click)="copyProductLink()"
+                nz-tooltip
+                nzTooltipTitle="Copy Link"
+              >
+                <lucide-icon name="copy" [size]="14"></lucide-icon>
+              </button>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="Data Sheet (PDF)">
+              <input nz-input formControlName="dataSheet" placeholder=" " />
+            </app-float-label>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <app-float-label label="3D CAD Model URL">
+              <input nz-input formControlName="model3dUrl" placeholder=" " />
+            </app-float-label>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <nz-form-item>
+        <nz-form-control>
+          <app-float-label label="Tags">
+            <nz-select
+              nzMode="tags"
+              [nzTokenSeparators]="[',']"
+              formControlName="tags"
+              nzPlaceHolder=" "
+            ></nz-select>
+          </app-float-label>
+        </nz-form-control>
+        <p class="pf-hint">Separate with commas or press Enter.</p>
+      </nz-form-item>
+    </section>
+
+    <!-- Section: Product Attributes -->
+    <section class="pf-section p-3">
+      <div class="pf-section__head mb-2 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <lucide-icon name="list" [size]="14"></lucide-icon>
+          <span class="text-gray-900 dark:text-white text-xs font-semibold uppercase tracking-wider">Product Attributes</span>
+        </div>
+        <button
+          type="button"
+          class="pf-bar__btn pf-bar__btn--ghost text-xs"
+          (click)="addAttribute()"
+        >
+          <lucide-icon name="plus" [size]="12"></lucide-icon>
+          Add Attribute
+        </button>
+      </div>
+      <div formArrayName="attributes">
+        @for (attr of attributesFormArray.controls; track $index; let i = $index) {
+          <div
+            [formGroupName]="i"
+            class="grid grid-cols-1 md:grid-cols-[auto_auto_1fr_1fr_auto] gap-2 items-start md:items-center py-2 border-b border-slate-700/30 last:border-b-0"
+          >
+            <span class="text-slate-500 text-xs cursor-grab select-none pt-2.5 md:pt-0">☰</span>
+            <span class="text-xs font-mono text-slate-400 w-6 pt-2.5 md:pt-0">#{{ i + 1 }}</span>
+            <nz-form-item class="mb-0 min-w-0">
+              <nz-form-control [nzErrorTip]="attrNameErr">
+                <app-float-label label="Attribute Name" [required]="true">
+                  <input
+                    nz-input
+                    formControlName="name"
+                    [nzAutocomplete]="attrAuto"
+                    placeholder=" "
+                    class="h-10 text-sm w-full"
+                  />
+                  <nz-autocomplete #attrAuto [nzDataSource]="attributeNames()" />
+                </app-float-label>
+                <ng-template #attrNameErr>
+                  <app-form-error [control]="attr.get('name')" label="Attribute" />
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item class="mb-0 min-w-0">
+              <nz-form-control [nzErrorTip]="attrValueErr">
+                <app-float-label label="Value" [required]="true">
+                  <input
+                    nz-input
+                    formControlName="value"
+                    placeholder=" "
+                    class="h-10 text-sm w-full"
+                  />
+                </app-float-label>
+                <ng-template #attrValueErr>
+                  <app-form-error [control]="attr.get('value')" label="Value" />
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <button
+              type="button"
+              class="w-8 h-8 flex items-center justify-center rounded text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 justify-self-end md:justify-self-start"
+              (click)="removeAttribute(i)"
+              title="Remove"
+            >
+              <lucide-icon name="x" [size]="14"></lucide-icon>
+            </button>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Section: Attachments -->
+    <section class="pf-section">
+      <div class="pf-section__head">
+        <lucide-icon name="paperclip" [size]="15"></lucide-icon>
+        <span>Attachments</span>
+      </div>
+      <div class="pf-attach-row">
+        <button type="button" class="pf-attach" (click)="openSpecsModal()">
+          <div class="pf-attach__icon">
+            <lucide-icon name="settings-2" [size]="18"></lucide-icon>
+          </div>
+          <div class="pf-attach__body">
+            <span class="pf-attach__name">Specifications</span>
+            <span class="pf-attach__meta">Technical details</span>
+          </div>
+          @if (form.get('specifications')?.value) {
+            <span class="pf-attach__badge pf-attach__badge--ok">Added</span>
+          } @else {
+            <span class="pf-attach__badge">Empty</span>
+          }
+          <lucide-icon name="chevron-right" [size]="14" class="pf-attach__arrow"></lucide-icon>
+        </button>
+        <button type="button" class="pf-attach" (click)="openImagesModal()">
+          <div class="pf-attach__icon">
+            <lucide-icon name="image" [size]="18"></lucide-icon>
+          </div>
+          <div class="pf-attach__body">
+            <span class="pf-attach__name">Product Images</span>
+            <span class="pf-attach__meta">Thumbnail &amp; gallery</span>
+          </div>
+          @if (thumbnailFile.length + otherFiles.length > 0) {
+            <span class="pf-attach__badge pf-attach__badge--ok">{{
+              thumbnailFile.length + otherFiles.length
+            }}</span>
+          } @else {
+            <span class="pf-attach__badge">None</span>
+          }
+          <lucide-icon name="chevron-right" [size]="14" class="pf-attach__arrow"></lucide-icon>
+        </button>
+      </div>
+    </section>
+  </div>
+</form>

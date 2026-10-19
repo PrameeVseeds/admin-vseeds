@@ -1,0 +1,313 @@
+.quote-detail-container {
+  padding: 1.5rem;
+  background: var(--bg-card);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .icon-box {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.75rem;
+      background: color-mix(in srgb, #f59e0b, transparent 90%);
+      color: #f59e0b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .title-group {
+      h3 {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+      }
+      p {
+        font-size: 0.75rem;
+        color: var(--text-disabled);
+        margin: 0;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .btn-close {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    &:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+  }
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  background: var(--bg-hover);
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  border: 1px dashed var(--border-base);
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    .label {
+      font-size: 0.7rem;
+      color: var(--text-disabled);
+      font-weight: 700;
+      text-transform: capitalize;
+    }
+    .value {
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
+  .status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &.status--info {
+      background: color-mix(in srgb, #3b82f6, transparent 90%);
+      color: #3b82f6;
+    }
+    &.status--success {
+      background: color-mix(in srgb, #10b981, transparent 90%);
+      color: #10b981;
+    }
+    &.status--warning {
+      background: color-mix(in srgb, #f59e0b, transparent 90%);
+      color: #f59e0b;
+    }
+  }
+}
+
+.info-section {
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-disabled);
+    text-transform: capitalize;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    padding-left: 0.25rem;
+  }
+}
+
+.customer-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--bg-component);
+  border: 1px solid var(--border-base);
+  border-radius: 1rem;
+
+  .avatar {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary), transparent 80%);
+  }
+
+  .details {
+    .name {
+      font-weight: 700;
+      color: var(--text-primary);
+      font-size: 0.9375rem;
+    }
+    .email {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.1rem;
+    }
+  }
+}
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+
+  .spec-card {
+    padding: 1rem;
+    background: var(--bg-component);
+    border: 1px solid var(--border-base);
+    border-radius: 0.875rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .spec-icon {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 0.625rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &.blue {
+        background: color-mix(in srgb, #3b82f6, transparent 90%);
+        color: #3b82f6;
+      }
+      &.emerald {
+        background: color-mix(in srgb, #10b981, transparent 90%);
+        color: #10b981;
+      }
+      &.amber {
+        background: color-mix(in srgb, #f59e0b, transparent 90%);
+        color: #f59e0b;
+      }
+    }
+
+    .spec-info {
+      .spec-label {
+        font-size: 0.7rem;
+        color: var(--text-disabled);
+        font-weight: 600;
+        display: block;
+      }
+      .spec-value {
+        font-size: 0.875rem;
+        color: var(--text-primary);
+        font-weight: 700;
+        margin-top: 0.1rem;
+        display: block;
+      }
+    }
+  }
+}
+
+.cost-section {
+  .cost-summary {
+    background: color-mix(in srgb, var(--color-primary), transparent 95%);
+    border: 1px solid color-mix(in srgb, var(--color-primary), transparent 85%);
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+
+    .cost-main {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      color: var(--color-primary);
+
+      .currency {
+        font-size: 0.875rem;
+        font-weight: 700;
+        opacity: 0.7;
+      }
+      .amount {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+    }
+
+    .cost-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      color: var(--text-disabled);
+      font-weight: 600;
+      background: var(--bg-component);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border-base);
+    }
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-base);
+
+  .footer-right {
+    display: flex;
+    gap: 0.75rem;
+
+    .btn-respond {
+      background: var(--color-primary);
+      height: 2.75rem;
+      padding: 0 1.25rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      &:hover {
+        background: color-mix(in srgb, var(--color-primary), black 10%);
+      }
+    }
+
+    .btn-reject {
+      height: 2.75rem;
+      padding: 0 1.25rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
+  .btn-secondary {
+    height: 2.75rem;
+    padding: 0 1.25rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    &:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+  }
+}

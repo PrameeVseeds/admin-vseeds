@@ -1,0 +1,137 @@
+<div class="role-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="shield" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total Roles</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="shield-check" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ activeCount() }}</span>
+        <span class="stat-card__label">System</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--error">
+        <lucide-icon name="shield-off" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ inactiveCount() }}</span>
+        <span class="stat-card__label">Custom</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--violet">
+        <lucide-icon name="users" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalMembers() }}</span>
+        <span class="stat-card__label">Total Members</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #roleCell let-item>
+    <div class="role-cell">
+      <div class="role-cell__icon" [class.role-cell__icon--super]="item.isSystem">
+        <lucide-icon name="shield-check" [size]="20"></lucide-icon>
+      </div>
+      <div class="role-cell__info">
+        <span class="role-cell__name">{{ item.name }}</span>
+        <span class="role-cell__desc">{{ item.description || '-' }}</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #membersCell let-item>
+    <div class="member-count">
+      <lucide-icon name="users" [size]="13" class="member-count__icon"></lucide-icon>
+      <span class="member-count__value">{{ item.members }}</span>
+      <span class="member-count__label">assigned</span>
+    </div>
+  </ng-template>
+
+  <ng-template #permissionsCell let-item>
+    <div class="permission-tags">
+      @for (perm of getPermissionList(item.permissions); track perm; let i = $index) {
+        @if (i < 3) {
+          <span class="perm-tag">
+            <lucide-icon name="lock" [size]="10"></lucide-icon>
+            {{ perm }}
+          </span>
+        }
+      }
+      @if (getPermissionList(item.permissions).length > 3) {
+        <span class="perm-tag perm-tag--more">
+          +{{ getPermissionList(item.permissions).length - 3 }} more
+        </span>
+      }
+    </div>
+  </ng-template>
+
+  <ng-template #statusCell let-item>
+    <span class="status-badge" [class]="'status-badge--' + (item.statusType || 'info')">
+      {{ item.status }}
+    </span>
+  </ng-template>
+
+  <ng-template #actionsCell let-item>
+    <div class="action-btns">
+      <button
+        class="action-btn"
+        aria-label="Edit Role"
+        nz-tooltip
+        nzTooltipTitle="Edit Role"
+        (click)="onEdit(item)"
+      >
+        <lucide-icon name="edit" [size]="16"></lucide-icon>
+      </button>
+      <button
+        class="action-btn action-btn--danger"
+        aria-label="Delete Role"
+        nz-tooltip
+        nzTooltipTitle="Delete Role"
+        nz-popconfirm
+        nzPopconfirmTitle="Delete this role? Admins assigned to it will lose permissions."
+        nzOkText="Delete"
+        nzCancelText="Cancel"
+        nzOkDanger
+        (nzOnConfirm)="onDelete(item)"
+      >
+        <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="Roles & Permissions"
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="pagedRoles()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    [pageSize]="pageSize"
+    searchPlaceholder="Search roles..."
+    [cellTemplates]="{ role: roleCell, members: membersCell, permissions: permissionsCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  >
+    <div actions>
+      <button class="btn-add" routerLink="create">
+        <lucide-icon name="plus" [size]="18"></lucide-icon>
+        <span>Add Role</span>
+      </button>
+    </div>
+  </app-base-list>
+</div>

@@ -1,0 +1,148 @@
+<div class="contact-modal">
+  <!-- Modal Header -->
+  <header class="modal-header">
+    <div class="modal-header__left">
+      <div class="modal-header__icon">
+        <lucide-icon name="message-square" [size]="20"></lucide-icon>
+      </div>
+      <div class="modal-header__text">
+        <h3 class="modal-header__title">Message Details</h3>
+        <p class="modal-header__id">#MSG-{{ data().id }}</p>
+      </div>
+    </div>
+    <button class="modal-header__close" aria-label="Close" (click)="close()">
+      <lucide-icon name="x" [size]="20"></lucide-icon>
+    </button>
+  </header>
+
+  <!-- Status Banner -->
+  <div class="status-banner" [class]="'status-banner--' + (data().statusType || 'info')">
+    <div class="status-banner__left">
+      <lucide-icon
+        [name]="data().status === 'Resolved' || data().status === 'Replied' ? 'check-circle' : data().status === 'Pending' ? 'clock' : 'mail'"
+        [size]="16"
+      ></lucide-icon>
+      <span class="status-banner__label">{{ data().status }}</span>
+    </div>
+    <div class="status-banner__right">
+      <lucide-icon name="calendar" [size]="14"></lucide-icon>
+      <span>{{ data().date }}</span>
+    </div>
+  </div>
+
+  <!-- Scrollable Body -->
+  <div class="modal-body">
+    <!-- Sender Card -->
+    <section class="section">
+      <div class="section__label">
+        <lucide-icon name="user" [size]="14"></lucide-icon>
+        <span>Sender Information</span>
+      </div>
+      <div class="sender-card">
+        <div class="sender-card__avatar">{{ data().name.charAt(0) }}</div>
+        <div class="sender-card__details">
+          <span class="sender-card__name">{{ data().name }}</span>
+          <div class="sender-card__meta">
+            <a class="sender-card__link" [href]="'mailto:' + data().email">
+              <lucide-icon name="mail" [size]="13"></lucide-icon>
+              {{ data().email }}
+            </a>
+            <a class="sender-card__link" [href]="'tel:' + data().phone">
+              <lucide-icon name="phone" [size]="13"></lucide-icon>
+              {{ data().phone }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Subject -->
+    <section class="section">
+      <div class="section__label">
+        <lucide-icon name="file-text" [size]="14"></lucide-icon>
+        <span>Subject</span>
+      </div>
+      <div class="subject-card">
+        {{ data().subject }}
+      </div>
+    </section>
+
+    <!-- Message Body -->
+    <section class="section">
+      <div class="section__label">
+        <lucide-icon name="message-square" [size]="14"></lucide-icon>
+        <span>Message</span>
+      </div>
+      <div class="message-card">
+        <p class="message-card__text">{{ data().message }}</p>
+      </div>
+    </section>
+
+    <!-- Reply Section -->
+    @if (showReply()) {
+      <section class="section reply-section">
+        <div class="section__label section__label--primary">
+          <lucide-icon name="reply" [size]="14"></lucide-icon>
+          <span>Reply to {{ data().name }}</span>
+        </div>
+        <div class="reply-card">
+          <div class="reply-card__to">
+            <lucide-icon name="mail" [size]="14"></lucide-icon>
+            <span>To: {{ data().email }}</span>
+          </div>
+          <textarea
+            nz-input
+            [(ngModel)]="replyMessage"
+            placeholder="Type your reply message here..."
+            [nzAutosize]="{ minRows: 4, maxRows: 8 }"
+            class="reply-card__textarea"
+          ></textarea>
+          <div class="reply-card__actions">
+            <button class="reply-card__attach" aria-label="Attach file" type="button">
+              <lucide-icon name="paperclip" [size]="16"></lucide-icon>
+            </button>
+            <button
+              class="reply-card__send"
+              type="button"
+              [disabled]="!replyMessage.trim()"
+              (click)="sendReply()"
+            >
+              <lucide-icon name="send" [size]="16"></lucide-icon>
+              <span>Send Reply</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+
+  <!-- Modal Footer -->
+  <footer class="modal-footer">
+    <div class="modal-footer__left">
+      @if (data().status !== 'archived') {
+        <button class="modal-footer__btn modal-footer__btn--archive" (click)="archive()">
+          <lucide-icon name="package" [size]="16"></lucide-icon>
+          <span>Archive</span>
+        </button>
+      }
+    </div>
+    <div class="modal-footer__right">
+      @if (data().status !== 'read' && data().status !== 'replied' && data().status !== 'archived') {
+        <button class="modal-footer__btn modal-footer__btn--read" (click)="markAsRead()">
+          <lucide-icon name="eye" [size]="16"></lucide-icon>
+          <span>Mark as Read</span>
+        </button>
+      }
+      @if (data().status !== 'replied' && data().status !== 'archived') {
+        <button class="modal-footer__btn modal-footer__btn--resolve" (click)="markResolved()">
+          <lucide-icon name="check-circle" [size]="16"></lucide-icon>
+          <span>Mark Resolved</span>
+        </button>
+      }
+      <button class="modal-footer__btn modal-footer__btn--reply" (click)="toggleReply()">
+        <lucide-icon [name]="showReply() ? 'x' : 'reply'" [size]="16"></lucide-icon>
+        <span>{{ showReply() ? 'Cancel Reply' : 'Reply' }}</span>
+      </button>
+    </div>
+  </footer>
+</div>

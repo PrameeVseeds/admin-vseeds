@@ -1,0 +1,57 @@
+.confirm-content {
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+
+.icon-wrapper {
+  width: 4rem;
+  height: 4rem;
+  background: #fee2e2;
+  color: #ef4444;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  margin-bottom: 0.75rem;
+}
+
+p {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.modal-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.btn-cancel {
+  height: 3rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  border-color: var(--border-base);
+}
+
+.btn-confirm {
+  height: 3rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  background: #ef4444;
+  border: none;
+  color: white;
+
+  &:hover {
+    background: #dc2626;
+    box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
+  }
+}

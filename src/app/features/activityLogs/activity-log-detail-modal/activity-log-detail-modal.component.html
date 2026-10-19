@@ -1,0 +1,100 @@
+<div class="log-detail">
+  <!-- Actor Section -->
+  <div class="detail-section">
+    <h4 class="detail-section__title">
+      <lucide-icon name="user" [size]="16"></lucide-icon>
+      Actor
+    </h4>
+    <div class="detail-grid">
+      <div class="detail-field">
+        <span class="detail-field__label">Name</span>
+        <span class="detail-field__value">{{ log?.userName ?? '-' }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="detail-field__label">Email</span>
+        <span class="detail-field__value">{{ log?.userEmail || '-' }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="detail-field__label">Role</span>
+        <span class="detail-field__value detail-field__value--role">{{ log?.userRole ?? '-' }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="detail-field__label">IP Address</span>
+        <span class="detail-field__value">{{ log?.ip ?? '-' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event Section -->
+  <div class="detail-section">
+    <h4 class="detail-section__title">
+      <lucide-icon name="activity" [size]="16"></lucide-icon>
+      Event
+    </h4>
+    <div class="detail-grid">
+      <div class="detail-field">
+        <span class="detail-field__label">Action</span>
+        <span class="status-badge" [class]="'status-badge--' + (log?.actionType ?? 'info')">
+          {{ log?.action ?? '-' }}
+        </span>
+      </div>
+      <div class="detail-field">
+        <span class="detail-field__label">Resource</span>
+        <span class="detail-field__value">{{ log?.resourceLabel ?? '-' }}</span>
+      </div>
+      <div class="detail-field detail-field--full">
+        <span class="detail-field__label">Description</span>
+        <span class="detail-field__value">{{ log?.description ?? '-' }}</span>
+      </div>
+      <div class="detail-field">
+        <span class="detail-field__label">Timestamp</span>
+        <span class="detail-field__value">{{ (log?.date | dateTime) || '-' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Changes Section (only for updates) -->
+  @if (hasChanges) {
+    <div class="detail-section">
+      <h4 class="detail-section__title">
+        <lucide-icon name="git-compare" [size]="16"></lucide-icon>
+        Changes
+      </h4>
+      <div class="changes-table">
+        <div class="changes-table__header">
+          <span class="changes-table__col changes-table__col--field">Field</span>
+          <span class="changes-table__col changes-table__col--from">Previous Value</span>
+          <span class="changes-table__col changes-table__col--to">New Value</span>
+        </div>
+        @for (change of changes; track change.field) {
+          <div class="changes-table__row">
+            <span class="changes-table__col changes-table__col--field">{{ formatField(change.field) }}</span>
+            <span class="changes-table__col changes-table__col--from">
+              <span class="diff-val diff-val--old">{{ formatValue(change.from) }}</span>
+            </span>
+            <span class="changes-table__col changes-table__col--to">
+              <span class="diff-val diff-val--new">{{ formatValue(change.to) }}</span>
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Previous State (fallback if no diff but oldData exists) -->
+  @if (!hasChanges && oldData) {
+    <div class="detail-section">
+      <h4 class="detail-section__title">
+        <lucide-icon name="database" [size]="16"></lucide-icon>
+        Previous State
+      </h4>
+      <div class="raw-data">
+        <pre class="raw-data__pre">{{ oldData | json }}</pre>
+      </div>
+    </div>
+  }
+
+  <div class="detail-footer">
+    <button class="btn-close" (click)="close()">Close</button>
+  </div>
+</div>

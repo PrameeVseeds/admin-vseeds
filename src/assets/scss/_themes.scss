@@ -1,0 +1,87 @@
+@use "variables" as *;
+
+/* =========================
+   Light Theme
+   ========================= */
+:root {
+  /* Spacing */
+  --space-xxs: #{$space-xxs};
+  --space-xs: #{$space-xs};
+  --space-sm: #{$space-sm};
+  --space-md: #{$space-md};
+  --space-lg: #{$space-lg};
+  --space-xl: #{$space-xl};
+  --space-2xl: #{$space-2xl};
+  --space-3xl: #{$space-3xl};
+
+  /* Fonts */
+  --fs-xs: #{$fs-xs};
+  --fs-sm: #{$fs-sm};
+  --fs-md: #{$fs-md};
+  --fs-lg: #{$fs-lg};
+  --fs-xl: #{$fs-xl};
+  --fs-2xl: #{$fs-2xl};
+  --fs-3xl: #{$fs-3xl};
+  --fs-4xl: #{$fs-4xl};
+
+  /* Line heights */
+  --lh-body: #{$lh-body};
+  --lh-heading: #{$lh-heading};
+
+  /* Radius */
+  --radius-sm: #{$radius-sm};
+  --radius-md: #{$radius-md};
+  --radius-lg: #{$radius-lg};
+
+  /* Colors */
+  --color-primary: #{$color-primary};
+  --color-primary-dark: #{$color-primary-dark};
+  --color-secondary: #{$color-secondary};
+
+  --color-bg: #{$color-bg-light};
+  --color-bg-card: #{$color-bg-light};
+
+  --color-text: #{$color-text-light};
+  --color-text-muted: #{$color-text-muted-light};
+  --color-text-inverse: #{$color-white};
+
+  --color-border: #{$color-border-light};
+
+  /* NG-ZORRO */
+  --ant-primary-color: #{$color-primary};
+  --ant-primary-color-hover: #{$color-primary-dark};
+  --ant-primary-color-active: #{$color-primary-dark};
+
+  --ant-layout-body-background: #{$color-bg-light};
+  --ant-component-background: #{$color-bg-light};
+
+  --ant-text-color: #{$color-text-light};
+  --ant-text-color-secondary: #{$color-text-muted-light};
+  --ant-heading-color: #{$color-text-light};
+
+  --ant-border-color-base: #{$color-border-light};
+}
+
+/* =========================
+   Dark Theme
+   ========================= */
+[data-theme="dark"] {
+  --color-bg: #{$color-bg-dark};
+  --color-bg-card: #{$color-bg-dark};
+
+  --color-text: #{$color-text-dark};
+  --color-text-muted: #{$color-text-dark};
+  --color-text-inverse: #{$color-bg-dark};
+
+  --color-border: #{$color-border-dark};
+
+  /* NG-ZORRO */
+  --ant-layout-body-background: #{$color-bg-dark};
+  --ant-component-background: #{$color-bg-dark};
+
+  --ant-text-color: #{$color-text-dark};
+  --ant-text-color-secondary: #{$color-text-dark};
+  --ant-heading-color: #{$color-text-dark};
+
+  --ant-primary-color-hover: #{$color-secondary};
+}

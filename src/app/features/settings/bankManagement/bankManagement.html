@@ -1,0 +1,164 @@
+<div class="bank-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header__info">
+      <h1 class="page-header__title">Bank Details</h1>
+      <p class="page-header__subtitle">Manage company bank accounts for customer payments</p>
+    </div>
+    <div class="page-header__actions">
+      <div class="search-box">
+        <lucide-icon name="search" [size]="18" class="search-box__icon"></lucide-icon>
+        <input
+          type="text"
+          placeholder="Search bank accounts..."
+          class="search-box__input"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+        />
+      </div>
+      <button class="btn-add" (click)="showAddModal()">
+        <lucide-icon name="plus" [size]="18"></lucide-icon>
+        <span>Add Account</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="table-card">
+    <nz-table
+      #bankTable
+      [nzData]="filteredBanks()"
+      [nzLoading]="loading()"
+      [nzPageSize]="10"
+      [nzShowPagination]="filteredBanks().length > 10"
+      [nzShowSizeChanger]="true"
+      nzSize="middle"
+      [nzNoResult]="emptyTpl"
+    >
+      <thead>
+        <tr>
+          <th class="table-th table-th--first" nzWidth="25%">Bank Name</th>
+          <th class="table-th" nzWidth="20%">Branch</th>
+          <th class="table-th" nzWidth="20%">Account Name</th>
+          <th class="table-th" nzWidth="20%">Account Number</th>
+          <th class="table-th" nzWidth="10%">Status</th>
+          <th class="table-th table-th--last" nzWidth="120px" nzRight>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (bank of bankTable.data; track bank.id) {
+          <tr class="table-row group">
+            <td class="table-td table-td--first">
+              <div class="bank-info">
+                <div class="bank-icon">
+                  <lucide-icon name="landmark" [size]="16"></lucide-icon>
+                </div>
+                <span class="bank-name">{{ bank.bankName }}</span>
+              </div>
+            </td>
+            <td class="table-td">{{ bank.branch }}</td>
+            <td class="table-td">{{ bank.accountName }}</td>
+            <td class="table-td">
+              <code class="account-number">{{ bank.accountNumber }}</code>
+            </td>
+            <td class="table-td">
+              <nz-switch
+                [ngModel]="bank.isActive"
+                (click)="toggleStatus(bank)"
+                nzSize="small"
+                [nzControl]="true"
+              ></nz-switch>
+            </td>
+            <td class="table-td table-td--last" nzRight>
+              <div class="action-btns">
+                <button
+                  class="action-btn"
+                  aria-label="Edit Account"
+                  nz-tooltip
+                  nzTooltipTitle="Edit Account"
+                  (click)="showEditModal(bank)"
+                >
+                  <lucide-icon name="edit" [size]="16"></lucide-icon>
+                </button>
+                <button
+                  class="action-btn action-btn--danger"
+                  aria-label="Delete Account"
+                  nz-tooltip
+                  nzTooltipTitle="Delete Account"
+                  (click)="confirmDelete(bank)"
+                >
+                  <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+
+    <ng-template #emptyTpl>
+      <div class="empty-state">
+        <lucide-icon name="landmark" [size]="40" class="empty-state__icon"></lucide-icon>
+        <p class="empty-state__text">No bank accounts found</p>
+        <p class="empty-state__sub">Try adjusting your search</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<nz-modal
+  [nzVisible]="isModalVisible()"
+  (nzVisibleChange)="isModalVisible.set($event)"
+  [nzTitle]="isEditing() ? 'Edit Bank Account' : 'Add Bank Account'"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleSave()"
+  [nzOkLoading]="loading()"
+  [nzWidth]="500"
+  nzCentered
+>
+  <div *nzModalContent [formGroup]="form" class="bank-form">
+    <div class="form-grid">
+      <div class="form-field full-width">
+        <app-float-label label="Bank Name">
+          <input nz-input formControlName="bankName" placeholder=" " />
+        </app-float-label>
+      </div>
+
+      <div class="form-field full-width">
+        <app-float-label label="Branch">
+          <input nz-input formControlName="branch" placeholder=" " />
+        </app-float-label>
+      </div>
+
+      <div class="form-field full-width">
+        <app-float-label label="Account Name">
+          <input nz-input formControlName="accountName" placeholder=" " />
+        </app-float-label>
+      </div>
+
+      <div class="form-field full-width">
+        <app-float-label label="Account Number">
+          <input nz-input formControlName="accountNumber" placeholder=" " />
+        </app-float-label>
+      </div>
+
+      <div class="form-field">
+        <app-float-label label="Display Order">
+          <nz-input-number
+            formControlName="displayOrder"
+            [nzMin]="0"
+            style="width: 100%"
+          ></nz-input-number>
+        </app-float-label>
+      </div>
+
+      <div class="form-field">
+        <div class="status-toggle">
+          <span>Active Status</span>
+          <nz-switch formControlName="isActive"></nz-switch>
+        </div>
+      </div>
+    </div>
+  </div>
+</nz-modal>

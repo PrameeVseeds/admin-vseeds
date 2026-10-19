@@ -1,0 +1,155 @@
+<div class="blog-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="file-text" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total Posts</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="check-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ publishedCount() }}</span>
+        <span class="stat-card__label">Published</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--neutral">
+        <lucide-icon name="pencil-line" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ draftCount() }}</span>
+        <span class="stat-card__label">Drafts</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--info">
+        <lucide-icon name="clock" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ avgReadTime() }} min</span>
+        <span class="stat-card__label">Avg. Read Time</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #articleCell let-item>
+    <div class="article-cell">
+      <div class="article-cell__thumb">
+        <lucide-icon name="file-text" [size]="22"></lucide-icon>
+      </div>
+      <div class="article-cell__info">
+        <span class="article-cell__title">{{ item.title }}</span>
+        <div class="article-cell__author">
+          <span class="article-cell__avatar">{{ item.author.charAt(0) }}</span>
+          <span class="article-cell__name">{{ item.author }}</span>
+          <span class="engagement-divider" style="height: 12px; margin: 0 4px"></span>
+          <span class="article-cell__read-time">
+            <lucide-icon name="clock" [size]="10" style="margin-right: 2px"></lucide-icon>
+            {{ item.readTime }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #publishedCell let-item>
+    <div class="date-cell">
+      @if (item.published !== '-') {
+        <lucide-icon name="calendar" [size]="13" class="date-cell__icon"></lucide-icon>
+        <span class="date-cell__text">{{ item.published }}</span>
+      } @else {
+        <span class="date-cell__empty">Not published</span>
+      }
+    </div>
+  </ng-template>
+
+  <ng-template #updatedCell let-item>
+    <div class="date-cell">
+      <lucide-icon name="refresh-cw" [size]="13" class="date-cell__icon"></lucide-icon>
+      <span class="date-cell__text">{{ item.updated }}</span>
+    </div>
+  </ng-template>
+
+  <ng-template #statusCell let-item>
+    <span class="status-badge" [class]="'status-badge--' + item.statusType">
+      {{ item.status }}
+    </span>
+  </ng-template>
+
+  <ng-template #actionsCell let-item>
+    <div class="action-btns">
+      @if (item.status === 'Draft' || item.status === 'Archived') {
+        <button
+          class="action-btn action-btn--publish"
+          aria-label="Publish"
+          nz-tooltip
+          nzTooltipTitle="Publish"
+          (click)="togglePublish(item)"
+        >
+          <lucide-icon name="check-circle" [size]="16"></lucide-icon>
+        </button>
+      }
+      @if (item.status === 'Published') {
+        <button
+          class="action-btn action-btn--unpublish"
+          aria-label="Unpublish"
+          nz-tooltip
+          nzTooltipTitle="Unpublish"
+          (click)="togglePublish(item)"
+        >
+          <lucide-icon name="eye-off" [size]="16"></lucide-icon>
+        </button>
+      }
+      <button
+        class="action-btn"
+        aria-label="Edit Post"
+        nz-tooltip
+        nzTooltipTitle="Edit Post"
+        (click)="onEdit(item)"
+      >
+        <lucide-icon name="edit" [size]="16"></lucide-icon>
+      </button>
+      <button
+        class="action-btn action-btn--danger"
+        aria-label="Delete Post"
+        nz-tooltip
+        nzTooltipTitle="Delete Post"
+        (click)="onDelete(item)"
+      >
+        <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="Blog Posts"
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="pagedBlogs()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    [pageSize]="pageSize"
+    searchPlaceholder="Search articles..."
+    [cellTemplates]="{ article: articleCell, published: publishedCell, updated: updatedCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  >
+    <div actions>
+      
+      <button class="btn-primary" (click)="createPost()">
+        <lucide-icon name="plus" [size]="18"></lucide-icon>
+        <span>New Post</span>
+      </button>
+    </div>
+  </app-base-list>
+</div>

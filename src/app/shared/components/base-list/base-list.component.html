@@ -1,0 +1,85 @@
+<div class="base-list">
+  <div class="base-list__header">
+    <div class="base-list__title">{{ title() }}</div>
+    <div class="base-list__actions">
+      <ng-content select="[actions]"></ng-content>
+    </div>
+  </div>
+
+  <input
+    class="base-list__search"
+    nz-input
+    type="text"
+    [placeholder]="searchPlaceholder()"
+    [ngModel]="searchValue()"
+    (ngModelChange)="onSearchChange($event)"
+  />
+
+  @if (tabs().length > 0) {
+    <nz-tabs (nzSelectedIndexChange)="onTabIndexChange($event)">
+      @for (tab of tabs(); track tab.value) {
+        <nz-tab [nzTitle]="tabTitleTemplate">
+          <ng-template #tabTitleTemplate>
+            {{ tab.label }}
+            @if (tab.count !== undefined) {
+              ({{ tab.count }})
+            }
+          </ng-template>
+        </nz-tab>
+      }
+    </nz-tabs>
+  }
+
+  <div class="base-list__table-card">
+    <nz-table
+      #table
+      [nzData]="items()"
+      [nzLoading]="loading()"
+      [nzShowPagination]="false"
+      [nzShowSizeChanger]="true"
+      nzSize="middle"
+    >
+      <thead>
+        <tr>
+          @for (col of columns(); track col.key) {
+            <th [style.width]="col.width">{{ col.label }}</th>
+          }
+          @if (rowActionsTemplate()) {
+            <th class="base-list__actions-col">Actions</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of table.data; track $index) {
+          <tr>
+            @for (col of columns(); track col.key) {
+              <td>
+                @if (cellTemplates()[col.key]) {
+                  <ng-container *ngTemplateOutlet="cellTemplates()[col.key]; context: { $implicit: item, item: item }"></ng-container>
+                } @else {
+                  {{ item[col.key] }}
+                }
+              </td>
+            }
+            @if (rowActionsTemplate()) {
+              <td class="base-list__actions-col">
+                <ng-container *ngTemplateOutlet="rowActionsTemplate(); context: { $implicit: item, item: item }"></ng-container>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+
+    <div class="base-list__pagination" *ngIf="paginationMeta().total > 0">
+      <nz-pagination
+        [nzTotal]="paginationMeta().total"
+        [nzPageIndex]="paginationMeta().page"
+        [nzPageSize]="pageSize()"
+        [nzShowSizeChanger]="true"
+        (nzPageIndexChange)="onPageChange($event)"
+        (nzPageSizeChange)="onPageSizeChange($event)"
+      ></nz-pagination>
+    </div>
+  </div>
+</div>

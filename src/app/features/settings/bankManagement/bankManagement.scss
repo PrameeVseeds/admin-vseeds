@@ -1,0 +1,352 @@
+:host {
+  display: block;
+  background: var(--bg-body);
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════════
+   PAGE LAYOUT
+   ═══════════════════════════════════════════════ */
+.bank-page {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ═══════════════════════════════════════════════
+   PAGE HEADER
+   ═══════════════════════════════════════════════ */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.page-header__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.page-header__title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.page-header__subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 2px 0 0;
+}
+
+.page-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ═══════════════════════════════════════════════
+   SEARCH BOX
+   ═══════════════════════════════════════════════ */
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-box__icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-disabled);
+  pointer-events: none;
+  transition: color 0.2s;
+
+  .search-box:focus-within & {
+    color: var(--color-primary);
+  }
+}
+
+.search-box__input {
+  padding: 10px 16px 10px 40px;
+  background: var(--bg-component);
+  border: 1px solid var(--border-base);
+  border-radius: 12px;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  outline: none;
+  width: 260px;
+  transition: all 0.2s;
+
+  &::placeholder {
+    color: var(--text-disabled);
+  }
+
+  &:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary), transparent 90%);
+  }
+
+  @media (max-width: 640px) {
+    width: 100%;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   ADD BUTTON
+   ═══════════════════════════════════════════════ */
+.btn-add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary), transparent 70%);
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   TABLE CARD
+   ═══════════════════════════════════════════════ */
+.table-card {
+  background: var(--bg-component);
+  border: 1px solid var(--border-base);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.table-th {
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  color: var(--text-disabled) !important;
+  text-transform: capitalize !important;
+  letter-spacing: 0.05em !important;
+  padding: 14px 16px !important;
+  background: transparent !important;
+  border-bottom: 1px solid var(--border-base) !important;
+
+  &--first {
+    padding-left: 24px !important;
+  }
+
+  &--last {
+    text-align: right !important;
+    padding-right: 24px !important;
+  }
+}
+
+.table-row {
+  transition: background 0.15s !important;
+
+  &:hover {
+    background: var(--bg-hover) !important;
+  }
+}
+
+.table-td {
+  padding: 16px !important;
+  border-bottom: 1px solid var(--border-base) !important;
+
+  &--first {
+    padding-left: 24px !important;
+  }
+
+  &--last {
+    text-align: right !important;
+    padding-right: 24px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   BANK CELL (icon + name)
+   ═══════════════════════════════════════════════ */
+.bank-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bank-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-primary), transparent 88%);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--border-base);
+}
+
+.bank-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  transition: color 0.15s;
+
+  .group:hover & {
+    color: var(--color-primary);
+  }
+}
+
+.account-number {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background: color-mix(in srgb, var(--color-primary), transparent 94%);
+  padding: 4px 10px;
+  border-radius: 8px;
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid color-mix(in srgb, var(--color-primary), transparent 85%);
+}
+
+/* ═══════════════════════════════════════════════
+   ACTION BUTTONS
+   ═══════════════════════════════════════════════ */
+.action-btns {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: transparent;
+  color: var(--text-disabled);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    background: var(--bg-hover);
+    color: var(--color-primary);
+  }
+
+  &--danger:hover {
+    background: color-mix(in srgb, #ef4444, transparent 92%);
+    color: #ef4444;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   EMPTY STATE
+   ═══════════════════════════════════════════════ */
+.empty-state {
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-state__icon {
+  color: var(--text-disabled);
+  margin: 0 auto 12px;
+}
+
+.empty-state__text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.empty-state__sub {
+  font-size: 0.8rem;
+  color: var(--text-disabled);
+  margin: 4px 0 0;
+}
+
+/* ═══════════════════════════════════════════════
+   MODAL FORM
+   ═══════════════════════════════════════════════ */
+.bank-form {
+  padding: 8px 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+.status-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 52px;
+  padding: 0 16px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-base);
+  border-radius: 8px;
+
+  span {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   NG-ZORRO TABLE OVERRIDES
+   ═══════════════════════════════════════════════ */
+::ng-deep {
+  .ant-table {
+    background: transparent !important;
+  }
+
+  .ant-table-thead > tr > th {
+    background: transparent !important;
+  }
+
+  .ant-table-wrapper .ant-table-pagination {
+    margin-bottom: 16px !important;
+    padding-right: 24px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page-header__actions {
+    flex-direction: column;
+  }
+
+  .btn-add {
+    justify-content: center;
+  }
+}

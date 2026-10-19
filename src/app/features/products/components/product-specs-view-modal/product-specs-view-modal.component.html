@@ -1,0 +1,34 @@
+<div class="specs-modal">
+  <!-- Header -->
+  <div class="specs-modal__header">
+    <div class="specs-modal__icon-box">
+      <lucide-icon name="settings-2" [size]="20"></lucide-icon>
+    </div>
+    <div class="specs-modal__title-group">
+      <h2 class="specs-modal__title">Technical Specifications</h2>
+      <p class="specs-modal__subtitle">{{ data.product.name }}</p>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="specs-modal__body">
+    @if (specsHtml) {
+      <div class="specs-modal__content ql-editor" [innerHTML]="specsHtml"></div>
+    } @else {
+      <div class="specs-modal__empty">
+        <div class="specs-modal__empty-icon">
+          <lucide-icon name="file-question" [size]="40"></lucide-icon>
+        </div>
+        <h3 class="specs-modal__empty-title">No Specifications Found</h3>
+        <p class="specs-modal__empty-text">
+          Technical details haven't been added for this product yet.
+        </p>
+      </div>
+    }
+  </div>
+
+  <!-- Footer -->
+  <div class="specs-modal__footer">
+    <button nz-button nzType="default" class="specs-modal__btn" (click)="close()">Close</button>
+  </div>
+</div>

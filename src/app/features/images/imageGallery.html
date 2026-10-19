@@ -1,0 +1,336 @@
+<div class="gallery-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header__info">
+      <h1 class="page-header__title">Image Gallery</h1>
+      <p class="page-header__subtitle">Manage your media assets and image library</p>
+    </div>
+    <div class="page-header__actions">
+      <div class="search-box">
+        <lucide-icon name="search" [size]="18" class="search-box__icon"></lucide-icon>
+        <input
+          type="text"
+          placeholder="Search images..."
+          class="search-box__input"
+          [value]="searchTerm()"
+          (input)="searchTerm.set($any($event.target).value)"
+        />
+      </div>
+      <button class="btn-primary" (click)="fileUpload.click()">
+        <lucide-icon name="upload" [size]="18"></lucide-icon>
+        <span>Upload</span>
+      </button>
+      <input
+        #fileUpload
+        type="file"
+        multiple
+        accept="image/*"
+        hidden
+        (change)="onFilesSelected($event)"
+      />
+    </div>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="image" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total Images</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--purple">
+        <lucide-icon name="file-text" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ pngCount() }}</span>
+        <span class="stat-card__label">PNG Files</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--amber">
+        <lucide-icon name="file-text" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ jpgCount() }}</span>
+        <span class="stat-card__label">JPG Files</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--info">
+        <lucide-icon name="file-text" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ webpCount() }}</span>
+        <span class="stat-card__label">WEBP Files</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Folder Bar -->
+  <div class="folder-bar">
+    <div class="folder-bar__list">
+      <button
+        class="folder-chip"
+        [class.folder-chip--active]="activeFolder() === 'all'"
+        (click)="activeFolder.set('all')"
+      >
+        <lucide-icon name="image" [size]="14"></lucide-icon>
+        All Files
+        <span class="folder-chip__count">{{ totalCount() }}</span>
+      </button>
+      @for (folder of folders(); track folder) {
+        <button
+          class="folder-chip"
+          [class.folder-chip--active]="activeFolder() === folder"
+          (click)="activeFolder.set(folder)"
+        >
+          <lucide-icon
+            [name]="activeFolder() === folder ? 'folder-open' : 'folder'"
+            [size]="14"
+          ></lucide-icon>
+          {{ folder }}
+          <span class="folder-chip__count">{{ getFolderCount(folder) }}</span>
+        </button>
+      }
+    </div>
+    <button class="folder-add-btn" (click)="onCreateFolder()">
+      <lucide-icon name="folder-plus" [size]="16"></lucide-icon>
+      <span>New Folder</span>
+    </button>
+  </div>
+
+  <!-- Filter Tabs (by type) -->
+  <div class="filter-tabs">
+    @for (tab of typeTabs; track tab.value) {
+      <button
+        class="filter-tab"
+        [class.filter-tab--active]="activeTab() === tab.value"
+        (click)="activeTab.set(tab.value)"
+      >
+        {{ tab.label }}
+        <span class="filter-tab__count">{{ getTabCount(tab.value) }}</span>
+      </button>
+    }
+  </div>
+
+  <!-- Upload Drop Zone -->
+  <div
+    class="upload-zone"
+    [class.upload-zone--dragover]="isDragOver()"
+    (click)="fileUpload.click()"
+    (dragover)="onDragOver($event)"
+    (dragleave)="isDragOver.set(false)"
+    (drop)="onDrop($event)"
+  >
+    <div class="upload-zone__icon">
+      <lucide-icon name="upload-cloud" [size]="32"></lucide-icon>
+    </div>
+    <p class="upload-zone__title">Drag & drop images here, or click to browse</p>
+    <p class="upload-zone__hint">Supports PNG, JPG, WEBP up to 10MB each</p>
+  </div>
+
+  <!-- Gallery Grid -->
+  @if (filteredImages().length > 0) {
+    <div class="gallery-grid">
+      @for (image of filteredImages(); track image.id) {
+        <div class="gallery-card group">
+          <div class="gallery-card__preview">
+            <img [src]="image.url" [alt]="image.name" class="gallery-card__img" />
+            <lucide-icon name="image" [size]="32" class="gallery-card__placeholder"></lucide-icon>
+
+            <div class="gallery-card__overlay">
+              <button
+                class="overlay-btn"
+                aria-label="Preview"
+                nz-tooltip
+                nzTooltipTitle="Preview"
+                (click)="onPreview(image); $event.stopPropagation()"
+              >
+                <lucide-icon name="eye" [size]="16"></lucide-icon>
+              </button>
+              @if (image.type !== 'WEBP') {
+                <button
+                  class="overlay-btn overlay-btn--convert"
+                  aria-label="Convert to WebP"
+                  nz-tooltip
+                  nzTooltipTitle="Convert to WebP"
+                  (click)="onConvertToWebp(image); $event.stopPropagation()"
+                >
+                  <lucide-icon name="refresh-cw" [size]="16"></lucide-icon>
+                </button>
+              }
+              <button
+                class="overlay-btn overlay-btn--move"
+                aria-label="Move to Folder"
+                nz-tooltip
+                nzTooltipTitle="Move to Folder"
+                (click)="onMoveToFolder(image); $event.stopPropagation()"
+              >
+                <lucide-icon name="folder" [size]="16"></lucide-icon>
+              </button>
+              <button
+                class="overlay-btn"
+                aria-label="Copy URL"
+                nz-tooltip
+                nzTooltipTitle="Copy URL"
+                (click)="onCopyUrl(image); $event.stopPropagation()"
+              >
+                <lucide-icon name="copy" [size]="16"></lucide-icon>
+              </button>
+              <button
+                class="overlay-btn overlay-btn--danger"
+                aria-label="Delete"
+                nz-tooltip
+                nzTooltipTitle="Delete"
+                (click)="onDelete(image); $event.stopPropagation()"
+              >
+                <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="gallery-card__info">
+            <p class="gallery-card__name">{{ image.name }}</p>
+            <div class="gallery-card__meta">
+              <span class="gallery-card__type">{{ image.type }}</span>
+              <span class="gallery-card__folder">
+                <lucide-icon name="folder" [size]="10"></lucide-icon>
+                {{ image.folder }}
+              </span>
+              <span class="gallery-card__size">{{ image.size }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+    
+    <!-- Load More Button -->
+    @if (currentPage() < totalPages()) {
+      <div class="load-more-container">
+        <button class="btn-secondary" (click)="loadMoreImages()">
+          <lucide-icon name="refresh-cw" [size]="16"></lucide-icon>
+          <span>Load More ({{ images().length }} / {{ totalCount() }})</span>
+        </button>
+      </div>
+    }
+  } @else {
+    <div class="empty-state">
+      <lucide-icon name="image" [size]="40" class="empty-state__icon"></lucide-icon>
+      <p class="empty-state__text">No images found</p>
+      <p class="empty-state__sub">Try adjusting your search or filter</p>
+    </div>
+  }
+</div>
+
+<!-- Preview Modal -->
+<nz-modal
+  [(nzVisible)]="isPreviewVisible"
+  nzTitle="Image Preview"
+  nzWidth="800px"
+  nzCentered
+  (nzOnCancel)="closePreview()"
+  [nzFooter]="null"
+>
+  <ng-container *nzModalContent>
+    @if (previewImage) {
+      <div class="preview-modal">
+        <img [src]="previewImage.url" [alt]="previewImage.name" class="preview-modal__img" />
+        <div class="preview-modal__info">
+          <p class="preview-modal__name">{{ previewImage.name }}</p>
+          <div class="preview-modal__meta">
+            <span class="preview-modal__type">{{ previewImage.type }}</span>
+            <span class="preview-modal__size">{{ previewImage.size }}</span>
+            <span class="preview-modal__folder">
+              <lucide-icon name="folder" [size]="12"></lucide-icon>
+              {{ previewImage.folder }}
+            </span>
+          </div>
+        </div>
+      </div>
+    }
+  </ng-container>
+</nz-modal>
+
+<!-- Move to Folder Modal -->
+<nz-modal
+  [(nzVisible)]="isMoveModalVisible"
+  nzTitle="Move to Folder"
+  nzWidth="400px"
+  nzCentered
+  (nzOnCancel)="isMoveModalVisible = false"
+  (nzOnOk)="confirmMove()"
+  nzOkText="Move"
+>
+  <ng-container *nzModalContent>
+    <div class="move-modal">
+      <p class="move-modal__file">
+        <lucide-icon name="image" [size]="16"></lucide-icon>
+        {{ moveTarget?.name }}
+      </p>
+      <nz-select
+        class="move-modal__select"
+        [(ngModel)]="selectedFolder"
+        nzPlaceHolder="Select folder"
+        [nzDropdownRender]="addFolderInMoveTpl"
+      >
+        @for (folder of folders(); track folder) {
+          <nz-option [nzValue]="folder" [nzLabel]="folder"></nz-option>
+        }
+      </nz-select>
+      <ng-template #addFolderInMoveTpl>
+        <nz-divider></nz-divider>
+        <div class="add-folder-row">
+          <input
+            nz-input
+            nzSize="small"
+            placeholder="New folder..."
+            #newFolderInMoveInput
+            (keydown.enter)="addFolderInline(newFolderInMoveInput)"
+          />
+          <button
+            nz-button
+            nzSize="small"
+            nzType="text"
+            class="add-folder-btn"
+            (click)="addFolderInline(newFolderInMoveInput)"
+          >
+            <lucide-icon name="plus" [size]="14"></lucide-icon>
+            Add
+          </button>
+        </div>
+      </ng-template>
+    </div>
+  </ng-container>
+</nz-modal>
+
+<!-- Create Folder Modal -->
+<nz-modal
+  [(nzVisible)]="isCreateFolderVisible"
+  nzTitle="Create New Folder"
+  nzWidth="400px"
+  nzCentered
+  (nzOnCancel)="isCreateFolderVisible = false"
+  (nzOnOk)="confirmCreateFolder()"
+  nzOkText="Create"
+  [nzOkDisabled]="!newFolderName.trim()"
+>
+  <ng-container *nzModalContent>
+    <div class="create-folder-modal">
+      <div class="create-folder-modal__icon">
+        <lucide-icon name="folder-plus" [size]="28"></lucide-icon>
+      </div>
+      <p class="create-folder-modal__hint">Enter a name for your new folder</p>
+      <input
+        nz-input
+        [(ngModel)]="newFolderName"
+        placeholder="e.g. Products, Banners..."
+        (keydown.enter)="confirmCreateFolder()"
+      />
+    </div>
+  </ng-container>
+</nz-modal>

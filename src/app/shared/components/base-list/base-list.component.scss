@@ -1,0 +1,206 @@
+.base-list {
+  /* ═══════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════ */
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-heading);
+    letter-spacing: -0.01em;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  ::ng-deep .base-list__actions > div[actions] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  /* ═══════════════════════════════════════════════
+     SEARCH
+     ═══════════════════════════════════════════════ */
+  &__search {
+    width: 100%;
+    max-width: 380px;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+    &:hover {
+      border-color: var(--color-primary-light);
+    }
+
+    &:focus,
+    &.ant-input:focus,
+    &.ant-input-focused {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary), transparent 88%);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════
+     TABS — styled pill-like nav with dark mode fix
+     ═══════════════════════════════════════════════ */
+  nz-tabs {
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  ::ng-deep .ant-tabs {
+    overflow: visible;
+  }
+
+  ::ng-deep .ant-tabs-nav {
+    margin-bottom: 16px;
+
+    &::before {
+      border-bottom: 1px solid var(--border-base) !important;
+    }
+  }
+
+  ::ng-deep .ant-tabs-tab {
+    padding: 8px 16px !important;
+    margin-right: 4px !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: var(--text-secondary) !important;
+    transition: color var(--transition-fast), background var(--transition-fast) !important;
+
+    &:hover {
+      color: var(--text-primary) !important;
+    }
+  }
+
+  ::ng-deep .ant-tabs-tab-active {
+    .ant-tabs-tab-btn {
+      color: var(--color-primary) !important;
+      font-weight: 600 !important;
+    }
+  }
+
+  ::ng-deep .ant-tabs-ink-bar {
+    background: var(--color-primary) !important;
+    height: 2px !important;
+  }
+
+  /* ═══════════════════════════════════════════════
+     TABLE — card wrapper with themed styling
+     ═══════════════════════════════════════════════ */
+  &__table-card {
+    background: var(--bg-component);
+    border: 1px solid var(--border-base);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  nz-table {
+    margin-bottom: 0;
+    display: block;
+  }
+
+  ::ng-deep .ant-table {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  ::ng-deep .ant-table-container {
+    border: none !important;
+  }
+
+  ::ng-deep .ant-table-thead > tr > th {
+    background: var(--bg-hover) !important;
+    color: var(--text-disabled) !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    padding: 14px 16px !important;
+    border-bottom: 1px solid var(--border-base) !important;
+
+    &::before {
+      display: none !important;
+    }
+  }
+
+  ::ng-deep .ant-table-tbody > tr > td {
+    padding: 14px 16px !important;
+    border-bottom: 1px solid var(--border-split) !important;
+    color: var(--text-primary) !important;
+    transition: background var(--transition-fast);
+  }
+
+  ::ng-deep .ant-table-tbody > tr {
+    transition: background var(--transition-fast);
+
+    &:hover > td {
+      background: var(--bg-hover) !important;
+    }
+
+    &:last-child > td {
+      border-bottom: none !important;
+    }
+  }
+
+  &__actions-col {
+    text-align: right !important;
+    white-space: nowrap;
+  }
+
+  /* ═══════════════════════════════════════════════
+     PAGINATION — inside the table card
+     ═══════════════════════════════════════════════ */
+  &__pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border-split);
+    background: var(--bg-component);
+  }
+
+  ::ng-deep .ant-pagination-item,
+  ::ng-deep .ant-pagination-prev,
+  ::ng-deep .ant-pagination-next,
+  ::ng-deep .ant-select {
+    margin-bottom: 0 !important;
+  }
+
+  ::ng-deep .ant-pagination-options {
+    margin-left: 12px;
+  }
+
+  /* ═══════════════════════════════════════════════
+     LOADING STATE — match spinner to brand
+     ═══════════════════════════════════════════════ */
+  ::ng-deep .ant-spin-dot-item {
+    background-color: var(--color-primary);
+  }
+
+  /* ═══════════════════════════════════════════════
+     EMPTY STATE
+     ═══════════════════════════════════════════════ */
+  ::ng-deep .ant-empty-description {
+    color: var(--text-disabled);
+  }
+}

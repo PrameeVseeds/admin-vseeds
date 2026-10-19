@@ -1,0 +1,225 @@
+<div class="p-6 max-w-[1600px] mx-auto animate-fade-in space-y-8">
+  <!-- Page Header -->
+  <div class="flex flex-col gap-1 mb-8">
+    <h1 class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Dashboard</h1>
+    <p class="text-[var(--text-secondary)] text-sm">
+      Overview of your business metrics and recent activity
+    </p>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    @for (stat of stats(); track stat.title) {
+      <div
+        class="bg-[var(--bg-component)] rounded-2xl p-6 shadow-sm border border-[var(--border-base)] hover:shadow-md transition-shadow duration-200"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-sm font-medium text-[var(--text-secondary)]">{{ stat.title }}</span>
+          <div
+            class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors"
+            [style.background]="stat.color + '15'"
+            [style.color]="stat.color"
+          >
+            <lucide-icon [name]="stat.icon" [size]="20"></lucide-icon>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <span class="text-3xl font-bold text-[var(--text-primary)] tracking-tight">{{
+            stat.value
+          }}</span>
+          <div
+            class="flex items-center gap-1.5 text-xs font-semibold"
+            [class]="stat.trendUp ? 'text-emerald-500' : 'text-red-500'"
+          >
+            <div
+              class="flex items-center justify-center w-4 h-4 rounded-full"
+              [class]="stat.trendUp ? 'bg-emerald-500/10' : 'bg-red-500/10'"
+            >
+              <lucide-icon
+                [name]="stat.trendUp ? 'trending-up' : 'trending-down'"
+                [size]="10"
+              ></lucide-icon>
+            </div>
+            <span>{{ stat.trend }} from last month</span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Recent Orders -->
+    <div class="lg:col-span-2 flex flex-col gap-4">
+      <div class="flex items-center justify-between px-1">
+        <h2 class="text-lg font-semibold text-[var(--text-primary)]">Recent Orders</h2>
+        <a
+          routerLink="/orders"
+          class="text-sm font-medium text-[var(--color-primary)] hover:underline flex items-center gap-1"
+        >
+          View All <lucide-icon name="arrow-right" [size]="14"></lucide-icon>
+        </a>
+      </div>
+
+      <div
+        class="bg-[var(--bg-component)] rounded-2xl shadow-sm border border-[var(--border-base)] overflow-hidden"
+      >
+        <nz-table
+          #orderTable
+          [nzData]="recentOrders()"
+          [nzShowPagination]="false"
+          [nzFrontPagination]="false"
+          nzSize="middle"
+        >
+          <thead>
+            <tr class="bg-[var(--bg-hover)]/50">
+              <th
+                class="!font-medium !text-[var(--text-secondary)] !text-xs uppercase tracking-wider !pl-6 !py-4"
+              >
+                Order ID
+              </th>
+              <th
+                class="!font-medium !text-[var(--text-secondary)] !text-xs uppercase tracking-wider !py-4"
+              >
+                Customer
+              </th>
+              <th
+                class="!font-medium !text-[var(--text-secondary)] !text-xs uppercase tracking-wider !py-4"
+              >
+                Amount
+              </th>
+              <th
+                class="!font-medium !text-[var(--text-secondary)] !text-xs uppercase tracking-wider !pr-6 !py-4 text-right"
+              >
+                Status
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of orderTable.data; track order.id) {
+              <tr class="hover:bg-[var(--bg-hover)] transition-colors group cursor-pointer">
+                <td
+                  class="!pl-6 !py-4 font-mono text-xs font-medium text-[var(--text-primary)] group-hover:text-[var(--color-primary)] transition-colors"
+                >
+                  {{ order.id }}
+                </td>
+                <td class="!py-4 text-sm font-medium text-[var(--text-primary)]">
+                  {{ order.customer }}
+                </td>
+                <td class="!py-4 font-mono text-sm text-[var(--text-secondary)]">
+                  {{ order.amount }}
+                </td>
+                <td class="!pr-6 !py-4 text-right">
+                  <span class="status-badge" [class]="'status-badge--' + order.statusType">{{
+                    order.status
+                  }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="flex flex-col gap-4">
+      <h2 class="text-lg font-semibold text-[var(--text-primary)] px-1">Quick Actions</h2>
+      <div
+        class="bg-[var(--bg-component)] rounded-2xl shadow-sm border border-[var(--border-base)] p-4"
+      >
+        <div class="grid grid-cols-2 gap-3">
+          <a
+            routerLink="/products/create"
+            class="group flex flex-col items-center gap-3 p-4 rounded-xl text-center transition-all bg-[var(--bg-body)] hover:bg-[var(--bg-hover)] hover:-translate-y-0.5 border border-transparent hover:border-[var(--border-base)]"
+          >
+            <div
+              class="w-12 h-12 rounded-xl flex items-center justify-center bg-emerald-500/10 text-emerald-500 group-hover:scale-110 transition-transform"
+            >
+              <lucide-icon name="plus" [size]="20"></lucide-icon>
+            </div>
+            <span
+              class="text-xs font-semibold text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
+              >Add Product</span
+            >
+          </a>
+
+          <a
+            routerLink="/orders"
+            class="group flex flex-col items-center gap-3 p-4 rounded-xl text-center transition-all bg-[var(--bg-body)] hover:bg-[var(--bg-hover)] hover:-translate-y-0.5 border border-transparent hover:border-[var(--border-base)]"
+          >
+            <div
+              class="w-12 h-12 rounded-xl flex items-center justify-center bg-blue-500/10 text-blue-500 group-hover:scale-110 transition-transform"
+            >
+              <lucide-icon name="shopping-cart" [size]="20"></lucide-icon>
+            </div>
+            <span
+              class="text-xs font-semibold text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
+              >View Orders</span
+            >
+          </a>
+
+          <a
+            routerLink="/quotes"
+            class="group flex flex-col items-center gap-3 p-4 rounded-xl text-center transition-all bg-[var(--bg-body)] hover:bg-[var(--bg-hover)] hover:-translate-y-0.5 border border-transparent hover:border-[var(--border-base)]"
+          >
+            <div
+              class="w-12 h-12 rounded-xl flex items-center justify-center bg-amber-500/10 text-amber-500 group-hover:scale-110 transition-transform"
+            >
+              <lucide-icon name="file-text" [size]="20"></lucide-icon>
+            </div>
+            <span
+              class="text-xs font-semibold text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
+              >Manage Quotes</span
+            >
+          </a>
+
+          <a
+            routerLink="/users"
+            class="group flex flex-col items-center gap-3 p-4 rounded-xl text-center transition-all bg-[var(--bg-body)] hover:bg-[var(--bg-hover)] hover:-translate-y-0.5 border border-transparent hover:border-[var(--border-base)]"
+          >
+            <div
+              class="w-12 h-12 rounded-xl flex items-center justify-center bg-violet-500/10 text-violet-500 group-hover:scale-110 transition-transform"
+            >
+              <lucide-icon name="users" [size]="20"></lucide-icon>
+            </div>
+            <span
+              class="text-xs font-semibold text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
+              >Customers</span
+            >
+          </a>
+
+          <a
+            routerLink="/blogs/create"
+            class="group flex flex-col items-center gap-3 p-4 rounded-xl text-center transition-all bg-[var(--bg-body)] hover:bg-[var(--bg-hover)] hover:-translate-y-0.5 border border-transparent hover:border-[var(--border-base)]"
+          >
+            <div
+              class="w-12 h-12 rounded-xl flex items-center justify-center bg-pink-500/10 text-pink-500 group-hover:scale-110 transition-transform"
+            >
+              <lucide-icon name="file-text" [size]="20"></lucide-icon>
+            </div>
+            <span
+              class="text-xs font-semibold text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
+              >New Blog Post</span
+            >
+          </a>
+
+          <a
+            routerLink="/statistics"
+            class="group flex flex-col items-center gap-3 p-4 rounded-xl text-center transition-all bg-[var(--bg-body)] hover:bg-[var(--bg-hover)] hover:-translate-y-0.5 border border-transparent hover:border-[var(--border-base)]"
+          >
+            <div
+              class="w-12 h-12 rounded-xl flex items-center justify-center bg-cyan-500/10 text-cyan-500 group-hover:scale-110 transition-transform"
+            >
+              <lucide-icon name="bar-chart-3" [size]="20"></lucide-icon>
+            </div>
+            <span
+              class="text-xs font-semibold text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
+              >Analytics</span
+            >
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

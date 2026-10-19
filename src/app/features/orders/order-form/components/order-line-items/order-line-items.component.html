@@ -1,0 +1,125 @@
+<div class="form-card">
+  <div class="card-header">
+    <lucide-icon name="package" [size]="20"></lucide-icon>
+    <div>
+      <h3>Order Items</h3>
+      <p>Edit product quantities and unit prices</p>
+    </div>
+    <button type="button" class="btn-add-item" (click)="toggleAddRow()" [disabled]="locked">
+      <lucide-icon name="plus" [size]="16"></lucide-icon>
+      <span>Add Item</span>
+    </button>
+  </div>
+  <div class="card-body card-body--no-pad">
+    <div class="items-editor" formArrayName="lineItems">
+      <!-- Table Header -->
+      <div class="items-editor__head">
+        <div class="items-editor__col items-editor__col--product">Product</div>
+        <div class="items-editor__col items-editor__col--store">Store ID</div>
+        <div class="items-editor__col items-editor__col--qty">Qty</div>
+        <div class="items-editor__col items-editor__col--price">Unit Price</div>
+        <div class="items-editor__col items-editor__col--total">Line Total</div>
+        <div class="items-editor__col items-editor__col--action"></div>
+      </div>
+
+      <!-- Item Rows -->
+      @for (item of lineItems.controls; track $index; let i = $index) {
+        <div class="items-editor__row" [formGroupName]="i">
+          <div class="items-editor__col items-editor__col--product">
+            <span class="product-name">{{ item.get('product')?.value || '—' }}</span>
+          </div>
+          <div class="items-editor__col items-editor__col--store">
+            <span class="store-id-badge">{{ item.get('storeId')?.value || '—' }}</span>
+          </div>
+          <div class="items-editor__col items-editor__col--qty">
+            <nz-input-number
+              formControlName="qty"
+              [nzMin]="1"
+              [nzStep]="1"
+              [nzDisabled]="locked"
+              (ngModelChange)="onQtyChange(i)"
+            ></nz-input-number>
+          </div>
+          <div class="items-editor__col items-editor__col--price">
+            <nz-input-number
+              formControlName="unitPrice"
+              [nzMin]="0"
+              [nzStep]="100"
+              [nzDisabled]="locked"
+              (ngModelChange)="recalc.emit()"
+            ></nz-input-number>
+          </div>
+          <div class="items-editor__col items-editor__col--total">
+            <span class="line-total">{{ formatCurrency(getLineTotal(i)) }}</span>
+          </div>
+          <div class="items-editor__col items-editor__col--action">
+            <button
+              type="button"
+              class="btn-remove-item"
+              aria-label="Remove item"
+              nz-tooltip
+              nzTooltipTitle="Remove item"
+              (click)="removeItem(i)"
+              [disabled]="lineItems.length <= 1 || locked"
+            >
+              <lucide-icon name="trash-2" [size]="14"></lucide-icon>
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Add Product Row -->
+      @if (showAddRow()) {
+        <div class="items-editor__add-row">
+          <nz-select
+            nzShowSearch
+            nzPlaceHolder="Search and select a product..."
+            [ngModel]="selectedProductId()"
+            (ngModelChange)="selectedProductId.set($event)"
+            [ngModelOptions]="{ standalone: true }"
+            class="add-row__select"
+          >
+            @for (p of products; track p.id) {
+              <nz-option [nzValue]="p.id" [nzLabel]="p.name" nzCustomContent>
+                <div class="product-option">
+                  <span class="product-option__name">{{ p.name }}</span>
+                  <span class="product-option__meta">{{ p.sku }} · {{ formatCurrency(p.price1) }}</span>
+                </div>
+              </nz-option>
+            }
+          </nz-select>
+          <button
+            type="button"
+            class="add-row__btn add-row__btn--confirm"
+            aria-label="Add product"
+            (click)="confirmAddItem()"
+            [disabled]="!selectedProductId()"
+            nz-tooltip
+            nzTooltipTitle="Add product"
+          >
+            <lucide-icon name="check" [size]="16"></lucide-icon>
+          </button>
+          <button
+            type="button"
+            class="add-row__btn add-row__btn--cancel"
+            aria-label="Cancel"
+            (click)="cancelAddItem()"
+            nz-tooltip
+            nzTooltipTitle="Cancel"
+          >
+            <lucide-icon name="x" [size]="16"></lucide-icon>
+          </button>
+        </div>
+      }
+
+      @if (lineItems.length === 0 && !showAddRow()) {
+        <div class="items-editor__empty">
+          <lucide-icon name="package" [size]="24"></lucide-icon>
+          <span>No items yet. Click "Add Item" to begin.</span>
+        </div>
+      }
+    </div>
+
+    <ng-content select=".items-editor__footer"></ng-content>
+  </div>
+</div>

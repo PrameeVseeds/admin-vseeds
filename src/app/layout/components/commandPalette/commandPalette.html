@@ -1,0 +1,66 @@
+@if (open()) {
+  <div class="cmd-palette__overlay" (click)="onBackdropClick($event)">
+    <div class="cmd-palette">
+      <!-- Search Header -->
+      <div class="cmd-palette__header">
+        <lucide-icon name="search" [size]="18" class="cmd-palette__search-icon"></lucide-icon>
+        <input
+          #searchInput
+          type="text"
+          class="cmd-palette__input"
+          placeholder="Search pages..."
+          [ngModel]="query()"
+          (ngModelChange)="onSearch($event)"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <kbd class="cmd-palette__esc">Esc</kbd>
+      </div>
+
+      <!-- Results -->
+      <div class="cmd-palette__body">
+        @if (groupedResults().length) {
+          @for (group of groupedResults(); track group.group; let gi = $index) {
+            <div class="cmd-palette__group">
+              <span class="cmd-palette__group-label">{{ group.group }}</span>
+              @for (item of group.items; track item.route; let ii = $index) {
+                <button
+                  class="cmd-palette__item"
+                  [class.cmd-palette__item--active]="activeIndex() === flatIndex(gi, ii)"
+                  (click)="navigate(item)"
+                  (mouseenter)="activeIndex.set(flatIndex(gi, ii))"
+                >
+                  <lucide-icon [name]="item.icon" [size]="18" class="cmd-palette__item-icon"></lucide-icon>
+                  <span class="cmd-palette__item-label">{{ item.label }}</span>
+                  <lucide-icon name="arrow-right" [size]="14" class="cmd-palette__item-arrow"></lucide-icon>
+                </button>
+              }
+            </div>
+          }
+        } @else {
+          <div class="cmd-palette__empty">
+            <lucide-icon name="search" [size]="32" class="cmd-palette__empty-icon"></lucide-icon>
+            <p class="cmd-palette__empty-text">No results found</p>
+            <p class="cmd-palette__empty-hint">Try a different search term</p>
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="cmd-palette__footer">
+        <div class="cmd-palette__hint">
+          <kbd>&uarr;</kbd><kbd>&darr;</kbd>
+          <span>Navigate</span>
+        </div>
+        <div class="cmd-palette__hint">
+          <kbd>&crarr;</kbd>
+          <span>Open</span>
+        </div>
+        <div class="cmd-palette__hint">
+          <kbd>Esc</kbd>
+          <span>Close</span>
+        </div>
+      </div>
+    </div>
+  </div>
+}

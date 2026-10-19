@@ -1,0 +1,281 @@
+<div class="invoice-page">
+  <div class="page-toolbar no-print">
+    <button class="btn-back" (click)="goBack()">
+      <lucide-icon name="arrow-left" [size]="16"></lucide-icon>
+      Back to Invoices
+    </button>
+    <div class="toolbar-actions">
+      @if (editMode()) {
+        <button class="btn-reset" (click)="resetTemplate()">
+          <lucide-icon name="rotate-ccw" [size]="16"></lucide-icon>
+          Reset Format
+        </button>
+        <button class="btn-save" (click)="saveTemplate()">
+          <lucide-icon name="save" [size]="16"></lucide-icon>
+          Save Format
+        </button>
+      } @else {
+        <button class="btn-customize" (click)="toggleEditMode()">
+          <lucide-icon name="pen-line" [size]="16"></lucide-icon>
+          Customize Format
+        </button>
+      }
+      <button class="btn-print" (click)="printInvoice()">
+        <lucide-icon name="printer" [size]="16"></lucide-icon>
+        Print
+      </button>
+      @if (invoice().status !== 'Sent' && invoice().status !== 'Paid') {
+        <button class="btn-send" (click)="sendInvoice()">
+          <lucide-icon name="send" [size]="16"></lucide-icon>
+          Mark as Sent
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state no-print">Loading invoice…</div>
+  }
+
+  <div class="printable">
+    <div class="invoice-paper" [style.--accent]="template().accentColor">
+      <div class="top-gradient"></div>
+
+      <div class="invoice-header">
+        <div class="brand">
+          @if (template().companyLogo) {
+            <img class="logo-img" [src]="template().companyLogo" alt="Company logo" />
+          } @else {
+            <div class="logo-box">{{ (template().companyName || 'V').charAt(0) }}</div>
+          }
+          <div class="brand-text">
+            @if (editMode()) {
+              <input
+                class="edit-input brand-logo-input"
+                [ngModel]="template().companyName"
+                (ngModelChange)="updateTemplateField('companyName', $event)"
+                placeholder="Company name"
+              />
+              <textarea
+                class="edit-input brand-address-input"
+                rows="2"
+                [ngModel]="template().companyAddress"
+                (ngModelChange)="updateTemplateField('companyAddress', $event)"
+                placeholder="Company address"
+              ></textarea>
+              <input
+                class="edit-input"
+                [ngModel]="template().companyPhone"
+                (ngModelChange)="updateTemplateField('companyPhone', $event)"
+                placeholder="Phone"
+              />
+              <input
+                class="edit-input"
+                [ngModel]="template().companyEmail"
+                (ngModelChange)="updateTemplateField('companyEmail', $event)"
+                placeholder="Email"
+              />
+              <div class="logo-controls">
+                <label class="logo-upload-btn">
+                  <lucide-icon name="upload-cloud" [size]="14"></lucide-icon>
+                  Upload Logo
+                  <input type="file" accept="image/*" (change)="onLogoSelected($event)" hidden />
+                </label>
+                @if (template().companyLogo) {
+                  <button class="logo-remove-btn" (click)="removeLogo()">Remove</button>
+                }
+                <input
+                  type="color"
+                  class="accent-color-input"
+                  [ngModel]="template().accentColor"
+                  (ngModelChange)="updateTemplateField('accentColor', $event)"
+                  title="Accent color"
+                />
+              </div>
+            } @else {
+              <div class="brand-logo">{{ template().companyName }}</div>
+              <div class="brand-sub">{{ template().companyAddress }}</div>
+              <div class="brand-sub">{{ template().companyPhone }} · {{ template().companyEmail }}</div>
+            }
+          </div>
+        </div>
+        <div class="invoice-meta">
+          <h1>TAX INVOICE</h1>
+          <div class="inv-number">{{ invoice().invoiceNumber }}</div>
+          <div class="inv-date">Date: {{ invoice().date | dateTime }}</div>
+          @if (invoice().dueDate) {
+            <div class="inv-date">Due: {{ invoice().dueDate | dateTime }}</div>
+          }
+        </div>
+      </div>
+
+      <div class="address-grid">
+        <div class="address-card">
+          <div class="card-title">Billed To</div>
+          @if (invoice().billingAddress) {
+            <div class="card-name">{{ invoice().billingAddress.fullName }}</div>
+            <div class="card-body">
+              {{ invoice().billingAddress.address }}<br />
+              {{ invoice().billingAddress.city }}, {{ invoice().billingAddress.province }} {{ invoice().billingAddress.postalCode }}<br />
+              {{ invoice().billingAddress.country }}<br />
+              {{ invoice().billingAddress.phone }}
+            </div>
+          } @else {
+            <div class="card-name">{{ invoice().customer || 'Customer' }}</div>
+            <div class="card-body">
+              {{ invoice().email || '—' }}<br />
+              {{ invoice().phone || '—' }}
+            </div>
+          }
+        </div>
+        <div class="address-card">
+          <div class="card-title">Shipped To</div>
+          @if (invoice().shippingAddress) {
+            <div class="card-name">{{ invoice().shippingAddress.fullName }}</div>
+            <div class="card-body">
+              {{ invoice().shippingAddress.address }}<br />
+              {{ invoice().shippingAddress.city }}, {{ invoice().shippingAddress.province }} {{ invoice().shippingAddress.postalCode }}<br />
+              {{ invoice().shippingAddress.country }}<br />
+              {{ invoice().shippingAddress.phone }}
+            </div>
+          } @else {
+            <div class="card-name">{{ invoice().customer || 'Customer' }}</div>
+            <div class="card-body">
+              {{ invoice().email || '—' }}<br />
+              {{ invoice().phone || '—' }}
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="meta-bar">
+        <div class="meta-item">
+          <span class="meta-label">Order #</span>
+          <span class="meta-val">{{ invoice().orderNumber || '—' }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Payment Method</span>
+          <span class="meta-val">{{ invoice().paymentMethod }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Payment Status</span>
+          <span class="meta-val">{{ invoice().paymentStatus }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Status</span>
+          <span class="meta-val">{{ invoice().status }}</span>
+        </div>
+      </div>
+
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th class="center">#</th>
+            <th>Item</th>
+            <th class="right">Qty</th>
+            <th class="right">Unit Price</th>
+            <th class="right">Line Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of invoice().items; track item.no) {
+            <tr>
+              <td class="center">{{ item.no }}</td>
+              <td>{{ item.product }}</td>
+              <td class="right">{{ item.qty }}</td>
+              <td class="right">Rs. {{ item.unitPrice | number: '1.2-2' }}</td>
+              <td class="right">Rs. {{ item.total | number: '1.2-2' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <div class="totals-grid">
+        <div class="notes">
+          <strong>Notes</strong>
+          @if (editMode()) {
+            <textarea
+              class="edit-input notes-input"
+              rows="3"
+              [ngModel]="template().notes"
+              (ngModelChange)="updateTemplateField('notes', $event)"
+              placeholder="Notes shown on every invoice"
+            ></textarea>
+          } @else {
+            <p>{{ template().notes }}</p>
+          }
+        </div>
+        <div class="totals-card">
+          <div class="row">
+            <span>Subtotal</span>
+            <span>Rs. {{ totals().subtotal | number: '1.2-2' }}</span>
+          </div>
+          <div class="row">
+            @if (editMode()) {
+              <input
+                class="edit-input tax-label-input"
+                [ngModel]="template().taxLabel"
+                (ngModelChange)="updateTemplateField('taxLabel', $event)"
+                placeholder="Tax label"
+              />
+            } @else {
+              <span>{{ totals().taxLabel }}</span>
+            }
+            <span>Rs. {{ totals().tax | number: '1.2-2' }}</span>
+          </div>
+          <div class="row">
+            <span>Shipping</span>
+            <span>Rs. {{ totals().shipping | number: '1.2-2' }}</span>
+          </div>
+          @if (totals().discount > 0) {
+            <div class="row discount">
+              <span>Discount</span>
+              <span>- Rs. {{ totals().discount | number: '1.2-2' }}</span>
+            </div>
+          }
+          <div class="row total">
+            <span>Total</span>
+            <span>Rs. {{ totals().total | number: '1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="terms-signature-grid">
+        <div class="terms">
+          <strong>Terms &amp; Conditions</strong>
+          @if (editMode()) {
+            <textarea
+              class="edit-input terms-input"
+              rows="2"
+              [ngModel]="template().terms"
+              (ngModelChange)="updateTemplateField('terms', $event)"
+              placeholder="Terms shown on every invoice"
+            ></textarea>
+          } @else {
+            <p>{{ template().terms }}</p>
+          }
+        </div>
+        <div class="signature">
+          <div class="signature-line"></div>
+          @if (editMode()) {
+            <input
+              class="edit-input"
+              [ngModel]="template().signatureName"
+              (ngModelChange)="updateTemplateField('signatureName', $event)"
+              placeholder="Signatory name"
+            />
+            <input
+              class="edit-input"
+              [ngModel]="template().signatureTitle"
+              (ngModelChange)="updateTemplateField('signatureTitle', $event)"
+              placeholder="Signatory title"
+            />
+          } @else {
+            <div class="signature-name">{{ template().signatureName }}</div>
+            <div class="signature-title">{{ template().signatureTitle }}</div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

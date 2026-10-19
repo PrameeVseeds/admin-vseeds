@@ -1,0 +1,123 @@
+<div class="user-modal">
+  <!-- Modal Header -->
+  <header class="modal-header">
+    <div class="modal-header__left">
+      <div class="modal-header__avatar">{{ data().name.charAt(0) }}</div>
+      <div class="modal-header__text">
+        <h3 class="modal-header__title">{{ data().name }}</h3>
+        <p class="modal-header__sub">Customer since {{ data().joined }}</p>
+      </div>
+    </div>
+    <button class="modal-header__close" aria-label="Close" (click)="close()">
+      <lucide-icon name="x" [size]="20"></lucide-icon>
+    </button>
+  </header>
+
+  <!-- Status Banner -->
+  <div class="status-banner" [class]="'status-banner--' + (data().statusType || 'info')">
+    <div class="status-banner__left">
+      <lucide-icon [name]="data().status === 'Active' ? 'shield-check' : 'shield-x'" [size]="16"></lucide-icon>
+      <span class="status-banner__label">{{ data().status }}</span>
+    </div>
+    <span class="status-banner__right">
+      {{ data().status === 'Active' ? 'Full platform access' : 'Account suspended' }}
+    </span>
+  </div>
+
+  <!-- Scrollable Body -->
+  <div class="modal-body">
+    <!-- Contact Details -->
+    <section class="section">
+      <div class="section__label">
+        <lucide-icon name="user" [size]="14"></lucide-icon>
+        <span>Contact Details</span>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-grid__item">
+          <div class="contact-grid__icon">
+            <lucide-icon name="mail" [size]="16"></lucide-icon>
+          </div>
+          <div class="contact-grid__content">
+            <span class="contact-grid__label">Email Address</span>
+            <a class="contact-grid__value contact-grid__value--link" [href]="'mailto:' + data().email">
+              {{ data().email }}
+            </a>
+          </div>
+        </div>
+        <div class="contact-grid__item">
+          <div class="contact-grid__icon">
+            <lucide-icon name="phone" [size]="16"></lucide-icon>
+          </div>
+          <div class="contact-grid__content">
+            <span class="contact-grid__label">Phone Number</span>
+            <a class="contact-grid__value contact-grid__value--link" [href]="'tel:' + data().phone">
+              {{ data().phone }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activity & Revenue -->
+    <section class="section">
+      <div class="section__label">
+        <lucide-icon name="bar-chart-3" [size]="14"></lucide-icon>
+        <span>Activity & Revenue</span>
+      </div>
+      <div class="stats-row">
+        <div class="stats-row__card">
+          <div class="stats-row__icon stats-row__icon--primary">
+            <lucide-icon name="shopping-cart" [size]="18"></lucide-icon>
+          </div>
+          <div class="stats-row__info">
+            <span class="stats-row__value">{{ data().orders }}</span>
+            <span class="stats-row__label">Total Orders</span>
+          </div>
+        </div>
+        <div class="stats-row__card">
+          <div class="stats-row__icon stats-row__icon--success">
+            <lucide-icon name="wallet" [size]="18"></lucide-icon>
+          </div>
+          <div class="stats-row__info">
+            <span class="stats-row__value">{{ data().totalSpent }}</span>
+            <span class="stats-row__label">Total Spent</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Account Status -->
+    <section class="section">
+      <div class="section__label">
+        <lucide-icon name="shield-check" [size]="14"></lucide-icon>
+        <span>Account Status</span>
+      </div>
+      <div class="account-card" [class]="'account-card--' + (data().statusType || 'info')">
+        <div class="account-card__icon">
+          <lucide-icon [name]="data().status === 'Active' ? 'check-circle' : 'x-circle'" [size]="20"></lucide-icon>
+        </div>
+        <div class="account-card__text">
+          <span class="account-card__title">{{ data().status }} Account</span>
+          <span class="account-card__desc">
+            This customer currently has {{ data().status.toLowerCase() }} access to the platform.
+          </span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal Footer -->
+  <footer class="modal-footer">
+    <button class="modal-footer__btn modal-footer__btn--close" (click)="close()">
+      Close
+    </button>
+    <button
+      class="modal-footer__btn"
+      [class]="data().status === 'Active' ? 'modal-footer__btn--deactivate' : 'modal-footer__btn--activate'"
+      (click)="toggleStatus()"
+    >
+      <lucide-icon [name]="data().status === 'Active' ? 'user-x' : 'user-check'" [size]="16"></lucide-icon>
+      <span>{{ data().status === 'Active' ? 'Deactivate Account' : 'Activate Account' }}</span>
+    </button>
+  </footer>
+</div>

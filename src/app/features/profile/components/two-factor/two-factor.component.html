@@ -1,0 +1,247 @@
+<div
+  class="bg-[var(--bg-component)] rounded-2xl border border-[var(--border-base)] shadow-sm overflow-hidden"
+>
+  <div class="px-6 py-4 border-b border-[var(--border-base)]">
+    <div class="flex items-center gap-2">
+      <lucide-icon name="shield-check" [size]="18" class="text-emerald-500"></lucide-icon>
+      <h3 class="text-base font-bold text-[var(--text-primary)]">
+        Two-Factor Authentication
+      </h3>
+    </div>
+    <p class="text-xs text-[var(--text-disabled)] mt-0.5 ml-6">
+      Add an extra layer of security to your account
+    </p>
+  </div>
+  <div class="p-6 space-y-5">
+    <!-- 2FA Status Bar -->
+    <div
+      class="flex items-center justify-between p-4 rounded-xl border"
+      [class]="
+        is2faEnabled()
+          ? 'bg-emerald-500/5 border-emerald-500/20'
+          : 'bg-[var(--bg-hover)]/50 border-[var(--border-base)]'
+      "
+    >
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-xl flex items-center justify-center"
+          [class]="
+            is2faEnabled()
+              ? 'bg-emerald-500/10 text-emerald-500'
+              : 'bg-[var(--bg-hover)] text-[var(--text-disabled)]'
+          "
+        >
+          <lucide-icon name="smartphone" [size]="20"></lucide-icon>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-[var(--text-primary)]">Authenticator App</p>
+          <p
+            class="text-xs"
+            [class]="is2faEnabled() ? 'text-emerald-600' : 'text-[var(--text-disabled)]'"
+          >
+            {{ is2faEnabled() ? 'Active — your account is protected' : 'Not configured' }}
+          </p>
+        </div>
+      </div>
+      <button
+        class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all"
+        [class]="
+          is2faEnabled()
+            ? 'bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20'
+            : 'bg-emerald-500 text-white hover:opacity-90 shadow-lg shadow-emerald-500/20'
+        "
+        [disabled]="tfaLoading()"
+        (click)="toggle2fa()"
+      >
+        @if (tfaLoading() && !show2faSetup && !showDisable2fa) {
+          <lucide-icon name="refresh-cw" [size]="16" class="animate-spin"></lucide-icon>
+        } @else {
+          <lucide-icon
+            [name]="is2faEnabled() ? 'shield-off' : 'shield-check'"
+            [size]="16"
+          ></lucide-icon>
+        }
+        {{ is2faEnabled() ? 'Disable' : 'Enable 2FA' }}
+      </button>
+    </div>
+
+    <!-- 2FA Setup Flow -->
+    @if (show2faSetup && !is2faEnabled()) {
+      <div class="pt-2">
+        <div class="flex gap-6">
+          <div class="flex flex-col items-center gap-0">
+            <span
+              class="w-8 h-8 rounded-full bg-[var(--color-primary)] text-white text-xs font-bold flex items-center justify-center shrink-0 shadow-md shadow-[var(--color-primary)]/20"
+              >1</span
+            >
+            <div class="w-0.5 flex-1 my-2 bg-[var(--border-base)]"></div>
+            <span
+              class="w-8 h-8 rounded-full border-2 border-[var(--border-base)] text-[var(--text-disabled)] text-xs font-bold flex items-center justify-center shrink-0"
+              >2</span
+            >
+          </div>
+
+          <div class="flex-1 space-y-6 pb-1">
+            <!-- Step 1: QR Code -->
+            <div class="space-y-4">
+              <div>
+                <p class="text-sm font-semibold text-[var(--text-primary)]">
+                  Scan the QR code
+                </p>
+                <p class="text-xs text-[var(--text-disabled)] mt-0.5">
+                  Use an authenticator app like Google Authenticator or Authy
+                </p>
+              </div>
+
+              <div
+                class="flex flex-col items-center gap-4 p-6 rounded-xl bg-white border border-[var(--border-base)]"
+              >
+                @if (tfaQrCode()) {
+                  <img
+                    [src]="tfaQrCode()"
+                    alt="2FA QR Code"
+                    class="w-44 h-44 rounded-xl"
+                  />
+                } @else {
+                  <div
+                    class="w-44 h-44 rounded-xl bg-[var(--bg-hover)] flex items-center justify-center border-2 border-dashed border-[var(--border-base)]"
+                  >
+                    <lucide-icon
+                      name="refresh-cw"
+                      [size]="32"
+                      class="text-[var(--text-disabled)] animate-spin"
+                    ></lucide-icon>
+                  </div>
+                }
+
+                @if (tfaSecret()) {
+                  <div
+                    class="w-full max-w-xs flex items-center gap-2 px-3 py-2 bg-[var(--bg-hover)] rounded-lg border border-[var(--border-base)]"
+                  >
+                    <lucide-icon
+                      name="key-round"
+                      [size]="14"
+                      class="text-[var(--text-disabled)] shrink-0"
+                    ></lucide-icon>
+                    <code
+                      class="flex-1 text-sm font-mono font-bold text-[var(--text-primary)] tracking-widest truncate"
+                    >
+                      {{ tfaSecret() }}
+                    </code>
+                    <button
+                      type="button"
+                      aria-label="Copy key"
+                      class="p-1 rounded-md text-[var(--text-disabled)] hover:text-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-colors"
+                      nz-tooltip
+                      nzTooltipTitle="Copy key"
+                    >
+                      <lucide-icon name="copy" [size]="14"></lucide-icon>
+                    </button>
+                  </div>
+                }
+                <p class="text-[11px] text-[var(--text-disabled)]">
+                  Can't scan? Enter the key manually in your authenticator app.
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 2: Verify -->
+            <div class="space-y-4">
+              <div>
+                <p class="text-sm font-semibold text-[var(--text-primary)]">
+                  Verify your setup
+                </p>
+                <p class="text-xs text-[var(--text-disabled)] mt-0.5">
+                  Enter the 6-digit code from your authenticator app
+                </p>
+              </div>
+
+              <form
+                [formGroup]="otpForm"
+                (ngSubmit)="onVerify2fa()"
+              >
+                <div class="mb-4">
+                  <input
+                    nz-input
+                    formControlName="otp"
+                    placeholder="000 000"
+                    maxlength="6"
+                    class="!text-center !text-2xl !font-mono !font-bold !tracking-[0.5em] !py-3 !rounded-xl"
+                    style="max-width: 260px"
+                  />
+                </div>
+                <div class="flex items-center justify-between pt-1">
+                  <p class="text-[11px] text-[var(--text-disabled)]">
+                    Code refreshes every 30 seconds
+                  </p>
+                  <button
+                    type="submit"
+                    [disabled]="otpForm.invalid || tfaLoading()"
+                    class="flex items-center gap-2 px-5 py-2.5 bg-emerald-500 text-white rounded-xl text-sm font-medium hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    @if (tfaLoading()) {
+                      <lucide-icon name="refresh-cw" [size]="16" class="animate-spin"></lucide-icon>
+                    } @else {
+                      <lucide-icon name="shield-check" [size]="16"></lucide-icon>
+                    }
+                    <span>{{ tfaLoading() ? 'Verifying...' : 'Verify & Enable' }}</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Disable 2FA Flow -->
+    @if (showDisable2fa && is2faEnabled()) {
+      <div class="pt-2 space-y-4">
+        <div
+          class="p-4 rounded-xl bg-red-500/5 border border-red-500/20"
+        >
+          <p class="text-sm font-medium text-red-600 mb-1">Confirm Disable</p>
+          <p class="text-xs text-[var(--text-secondary)]">
+            Enter the 6-digit code from your authenticator app to disable two-factor authentication.
+          </p>
+        </div>
+        <form
+          [formGroup]="otpForm"
+          (ngSubmit)="onDisable2fa()"
+        >
+          <div class="mb-4">
+            <input
+              nz-input
+              formControlName="otp"
+              placeholder="000 000"
+              maxlength="6"
+              class="!text-center !text-2xl !font-mono !font-bold !tracking-[0.5em] !py-3 !rounded-xl"
+              style="max-width: 260px"
+            />
+          </div>
+          <div class="flex items-center gap-3 pt-1">
+            <button
+              type="submit"
+              [disabled]="otpForm.invalid || tfaLoading()"
+              class="flex items-center gap-2 px-5 py-2.5 bg-red-500 text-white rounded-xl text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              @if (tfaLoading()) {
+                <lucide-icon name="refresh-cw" [size]="16" class="animate-spin"></lucide-icon>
+              } @else {
+                <lucide-icon name="shield-off" [size]="16"></lucide-icon>
+              }
+              <span>{{ tfaLoading() ? 'Disabling...' : 'Disable 2FA' }}</span>
+            </button>
+            <button
+              type="button"
+              class="px-4 py-2.5 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              (click)="showDisable2fa = false; otpForm.reset()"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+  </div>
+</div>

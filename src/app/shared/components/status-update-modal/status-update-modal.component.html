@@ -1,0 +1,50 @@
+<div class="status-modal">
+  <!-- Header -->
+  <div class="status-modal__header">
+    <div class="status-modal__title-group">
+      <h3>{{ modalTitle }}</h3>
+      <p>{{ data.entityId }} · {{ data.subtitle }}</p>
+    </div>
+    <button class="status-modal__close" aria-label="Close" (click)="close()">
+      <lucide-icon name="x" [size]="18"></lucide-icon>
+    </button>
+  </div>
+
+  <!-- Options -->
+  <div class="status-modal__body">
+    <div class="status-options">
+      @for (opt of options; track opt.value) {
+        <button
+          class="status-opt"
+          [class]="opt.bgClass"
+          [class.status-opt--active]="selected() === opt.value"
+          (click)="select(opt.value)"
+        >
+          <div class="status-opt__icon" [style.color]="opt.color">
+            <lucide-icon [name]="opt.icon" [size]="20"></lucide-icon>
+          </div>
+          <span class="status-opt__label">{{ opt.label }}</span>
+          @if (selected() === opt.value) {
+            <lucide-icon name="check" [size]="16" class="status-opt__check"></lucide-icon>
+          }
+          @if (opt.value === data.currentStatus) {
+            <span class="status-opt__current">Current</span>
+          }
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="status-modal__footer">
+    <button nz-button (click)="close()">Cancel</button>
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="!hasChanged"
+      (click)="confirm()"
+    >
+      Update Status
+    </button>
+  </div>
+</div>

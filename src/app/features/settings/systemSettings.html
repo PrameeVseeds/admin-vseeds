@@ -1,0 +1,457 @@
+<div class="settings-container">
+  <!-- Header -->
+  <header class="settings-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <lucide-icon name="cog" [size]="28"></lucide-icon>
+      </div>
+      <div>
+        <h1>System Settings</h1>
+        <p>Configure and manage your platform's core behavior</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-save" (click)="saveSettings()">
+        <lucide-icon name="save" [size]="18"></lucide-icon>
+        <span>Save Changes</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="settings-layout" [formGroup]="form">
+    <!-- Main Content -->
+    <main class="settings-content">
+      <!-- Maintenance Section -->
+      <section class="settings-card site-status">
+        <div class="card-header">
+          <div class="card-icon card-icon--warning">
+            <lucide-icon name="shield-alert" [size]="20"></lucide-icon>
+          </div>
+          <div class="card-info">
+            <h2>Site Status & Access</h2>
+            <p>Administer maintenance mode and primary contact info</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="setting-item">
+            <div class="setting-info">
+              <label>Maintenance Mode</label>
+              <span>Enable to prevent customer access while performing updates</span>
+            </div>
+            <nz-switch
+              formControlName="maintenanceMode"
+              nzCheckedChildren="Active"
+              nzUnCheckedChildren="Inactive"
+            ></nz-switch>
+          </div>
+
+          @if (form.value.maintenanceMode) {
+            <div class="maintenance-details animate-in">
+              <div class="alert alert-warning">
+                <lucide-icon name="info" [size]="16"></lucide-icon>
+                <span
+                  >Maintenance mode is active. Only administrators can access the storefront.</span
+                >
+              </div>
+              <div class="input-group">
+                <app-float-label label="Maintenance Message">
+                  <textarea
+                    nz-input
+                    formControlName="maintenanceMessage"
+                    [nzAutosize]="{ minRows: 2, maxRows: 4 }"
+                  ></textarea>
+                </app-float-label>
+              </div>
+            </div>
+          }
+
+          <div class="divider"></div>
+
+          <div class="input-group">
+            <app-float-label label="Primary Notification Email">
+              <input
+                nz-input
+                formControlName="notificationEmail"
+                placeholder="e.g. admin@vseeds.com"
+              />
+            </app-float-label>
+            <span class="input-hint">Receives all automated administrative alerts</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Shop Configuration -->
+      <section class="settings-card shop-config">
+        <div class="card-header">
+          <div class="card-icon card-icon--primary">
+            <lucide-icon name="shopping-bag" [size]="20"></lucide-icon>
+          </div>
+          <div class="card-info">
+            <h2>Storefront Configuration</h2>
+            <p>Configure shopping features and customer interactions</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="settings-grid">
+            <div class="setting-item">
+              <div class="setting-info">
+                <label>Allow New Orders</label>
+                <span>Enable checkout process on the storefront</span>
+              </div>
+              <nz-switch formControlName="acceptOrders"></nz-switch>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label>User Registration</label>
+                <span>Allow visitors to create new accounts</span>
+              </div>
+              <nz-switch formControlName="allowRegistration"></nz-switch>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label>Product Reviews</label>
+                <span>Allow verified customers to post product reviews</span>
+              </div>
+              <nz-switch formControlName="allowReviews"></nz-switch>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <label>Wishlist Support</label>
+                <span>Allow users to save products for later</span>
+              </div>
+              <nz-switch formControlName="enableWishlist"></nz-switch>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Pricing & Tax -->
+      <section class="settings-card pricing-tax">
+        <div class="card-header">
+          <div class="card-icon card-icon--primary">
+            <lucide-icon name="percent" [size]="20"></lucide-icon>
+          </div>
+          <div class="card-info">
+            <h2>Pricing &amp; Tax</h2>
+            <p>Configure shipping fee and tax applied to orders</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="controls-row">
+            <div class="input-group compact">
+              <app-float-label label="Shipping Fee">
+                <nz-input-number
+                  formControlName="shippingFee"
+                  [nzMin]="0"
+                  [nzStep]="1"
+                  [nzPrecision]="2"
+                  style="width: 100%"
+                ></nz-input-number>
+              </app-float-label>
+              <span class="input-hint">Flat shipping fee applied to every order</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <label>Enable Tax</label>
+              <span>Apply a tax percentage to order totals</span>
+            </div>
+            <nz-switch
+              formControlName="taxEnabled"
+              nzCheckedChildren="On"
+              nzUnCheckedChildren="Off"
+            ></nz-switch>
+          </div>
+
+          @if (form.value.taxEnabled) {
+            <div class="controls-row animate-in">
+              <div class="input-group compact">
+                <app-float-label label="Tax Percentage (%)">
+                  <nz-input-number
+                    formControlName="taxPercentage"
+                    [nzMin]="0"
+                    [nzMax]="100"
+                    [nzStep]="0.5"
+                    [nzPrecision]="2"
+                    style="width: 100%"
+                  ></nz-input-number>
+                </app-float-label>
+                <span class="input-hint">Applied to the order subtotal</span>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- Automation Section -->
+      <section class="settings-card automation">
+        <div class="card-header">
+          <div class="card-icon card-icon--success">
+            <lucide-icon name="zap" [size]="20"></lucide-icon>
+          </div>
+          <div class="card-info">
+            <h2>Automated Notifications</h2>
+            <p>Control which events trigger administrative emails</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="notification-list">
+            <div class="notif-item">
+              <div class="notif-icon">
+                <lucide-icon name="shopping-cart" [size]="16"></lucide-icon>
+              </div>
+              <div class="notif-label">New Order Placement</div>
+              <nz-switch formControlName="notifyOrders" nzSize="small"></nz-switch>
+            </div>
+
+            <div class="notif-item">
+              <div class="notif-icon">
+                <lucide-icon name="mail" [size]="16"></lucide-icon>
+              </div>
+              <div class="notif-label">Contact Form Submissions</div>
+              <nz-switch formControlName="notifyContacts" nzSize="small"></nz-switch>
+            </div>
+
+            <div class="notif-item">
+              <div class="notif-icon">
+                <lucide-icon name="package" [size]="16"></lucide-icon>
+              </div>
+              <div class="notif-label">Low Stock Alerts</div>
+              <nz-switch formControlName="notifyLowStock" nzSize="small"></nz-switch>
+            </div>
+
+            <div class="notif-item">
+              <div class="notif-icon">
+                <lucide-icon name="message-square" [size]="16"></lucide-icon>
+              </div>
+              <div class="notif-label">New Product Reviews</div>
+              <nz-switch formControlName="notifyReviews" nzSize="small"></nz-switch>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Database Management -->
+      <section class="settings-card database-card">
+        <div class="card-header">
+          <div class="card-icon card-icon--danger">
+            <lucide-icon name="database" [size]="20"></lucide-icon>
+          </div>
+          <div class="card-info">
+            <h2>Database Management</h2>
+            <p>Upload SQL dumps to restore or migrate data when deploying to a new server</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="db-backup-row">
+            <div class="db-backup-info">
+              <label>Backup Current Database</label>
+              <span>Generate and download a full .sql dump of the live database</span>
+            </div>
+            <button
+              class="btn btn-db-backup"
+              [disabled]="dbBackingUp()"
+              (click)="downloadBackup()"
+            >
+              <lucide-icon name="download" [size]="14"></lucide-icon>
+              <span>{{ dbBackingUp() ? 'Generating…' : 'Download Backup' }}</span>
+            </button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="db-grid">
+            <!-- Latest DB -->
+            <div class="db-item">
+              <div class="db-item__head">
+                <lucide-icon name="database-backup" [size]="18"></lucide-icon>
+                <div>
+                  <label>Latest DB SQL</label>
+                  <span>Full dump of the current system — restores data directly into the live database</span>
+                </div>
+              </div>
+
+              <div class="db-item__meta">
+                @if (dbDumps().latest) {
+                  <span class="db-file">
+                    <lucide-icon name="file-check" [size]="14"></lucide-icon>
+                    {{ dbDumps().latest.fileName }}
+                    ({{ dbDumps().latest.size / 1048576 | number: '1.1-1' }} MB)
+                  </span>
+                  <span class="db-date">Uploaded {{ dbDumps().latest.uploadedAt | date: 'MMM d, y, h:mm a' }}</span>
+                } @else {
+                  <span class="db-empty">No dump uploaded yet</span>
+                }
+              </div>
+
+              <div class="db-item__actions">
+                <label class="btn btn-db-upload" [class.disabled]="dbUploading().latest">
+                  <lucide-icon name="upload" [size]="14"></lucide-icon>
+                  <span>{{ dbUploading().latest ? 'Uploading…' : 'Upload .sql' }}</span>
+                  <input
+                    type="file"
+                    accept=".sql"
+                    hidden
+                    [disabled]="dbUploading().latest"
+                    (change)="onDbFileSelected('latest', $event)"
+                  />
+                </label>
+                <button
+                  class="btn btn-db-import"
+                  [disabled]="!dbDumps().latest || dbImporting().latest"
+                  (click)="runDbImport('latest')"
+                >
+                  <lucide-icon name="play" [size]="14"></lucide-icon>
+                  <span>{{ dbImporting().latest ? 'Importing…' : 'Run Import' }}</span>
+                </button>
+              </div>
+
+              @if (dbImportStatus().latest) {
+                <div class="db-status" [class]="'db-status--' + dbImportStatus().latest.status">
+                  <lucide-icon
+                    [name]="dbImportStatus().latest.status === 'success' ? 'check-circle' : dbImportStatus().latest.status === 'failed' ? 'x-circle' : 'loader'"
+                    [size]="14"
+                  ></lucide-icon>
+                  <span>
+                    {{ dbImportStatus().latest.status === 'running' ? 'Import running…' : dbImportStatus().latest.status === 'success' ? 'Import completed' : 'Import failed' }}
+                    @if (dbImportStatus().latest.error) { — {{ dbImportStatus().latest.error }} }
+                  </span>
+                </div>
+                @if (dbImportStatus().latest.logTail?.length) {
+                  <pre class="db-log">{{ tailLog(dbImportStatus().latest.logTail) }}</pre>
+                }
+              }
+            </div>
+
+            <!-- Old DB -->
+            <div class="db-item">
+              <div class="db-item__head">
+                <lucide-icon name="history" [size]="18"></lucide-icon>
+                <div>
+                  <label>Old DB SQL</label>
+                  <span>Legacy system dump — migrated into the new schema via the migration script</span>
+                </div>
+              </div>
+
+              <div class="db-item__meta">
+                @if (dbDumps().old) {
+                  <span class="db-file">
+                    <lucide-icon name="file-check" [size]="14"></lucide-icon>
+                    {{ dbDumps().old.fileName }}
+                    ({{ dbDumps().old.size / 1048576 | number: '1.1-1' }} MB)
+                  </span>
+                  <span class="db-date">Uploaded {{ dbDumps().old.uploadedAt | date: 'MMM d, y, h:mm a' }}</span>
+                } @else {
+                  <span class="db-empty">No dump uploaded yet</span>
+                }
+              </div>
+
+              <div class="db-item__actions">
+                <label class="btn btn-db-upload" [class.disabled]="dbUploading().old">
+                  <lucide-icon name="upload" [size]="14"></lucide-icon>
+                  <span>{{ dbUploading().old ? 'Uploading…' : 'Upload .sql' }}</span>
+                  <input
+                    type="file"
+                    accept=".sql"
+                    hidden
+                    [disabled]="dbUploading().old"
+                    (change)="onDbFileSelected('old', $event)"
+                  />
+                </label>
+                <button
+                  class="btn btn-db-import"
+                  [disabled]="!dbDumps().old || dbImporting().old"
+                  (click)="runDbImport('old')"
+                >
+                  <lucide-icon name="play" [size]="14"></lucide-icon>
+                  <span>{{ dbImporting().old ? 'Migrating…' : 'Run Migration' }}</span>
+                </button>
+              </div>
+
+              <label class="db-clear">
+                <input
+                  type="checkbox"
+                  [checked]="dbClearFirst()"
+                  [disabled]="dbImporting().old"
+                  (change)="dbClearFirst.set($any($event.target).checked)"
+                />
+                <span>Clear all existing data before migration (keeps admin accounts &amp; settings)</span>
+              </label>
+
+              @if (dbImportStatus().old) {
+                <div class="db-status" [class]="'db-status--' + dbImportStatus().old.status">
+                  <lucide-icon
+                    [name]="dbImportStatus().old.status === 'success' ? 'check-circle' : dbImportStatus().old.status === 'failed' ? 'x-circle' : 'loader'"
+                    [size]="14"
+                  ></lucide-icon>
+                  <span>
+                    {{ dbImportStatus().old.status === 'running' ? 'Migration running…' : dbImportStatus().old.status === 'success' ? 'Migration completed' : 'Migration failed' }}
+                    @if (dbImportStatus().old.error) { — {{ dbImportStatus().old.error }} }
+                  </span>
+                </div>
+                @if (dbImportStatus().old.logTail?.length) {
+                  <pre class="db-log">{{ tailLog(dbImportStatus().old.logTail) }}</pre>
+                }
+              }
+            </div>
+          </div>
+
+          <div class="alert alert-warning db-warning">
+            <lucide-icon name="alert-triangle" [size]="16"></lucide-icon>
+            <span>Imports modify the live database. Always take a backup before running an import.</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="settings-sidebar">
+      <section class="sidebar-card live-status">
+        <h3>Current Status</h3>
+        <div class="dashboard-stats">
+          <div class="stat-row">
+            <span class="dot" [class.active]="!form.value.maintenanceMode"></span>
+            <span class="lbl">Platform</span>
+            <span class="val">{{ form.value.maintenanceMode ? 'Maintenance' : 'Live' }}</span>
+          </div>
+          <div class="stat-row">
+            <span class="dot" [class.active]="form.value.acceptOrders"></span>
+            <span class="lbl">Orders</span>
+            <span class="val">{{ form.value.acceptOrders ? 'Enabled' : 'Disabled' }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="sidebar-card danger-zone">
+        <div class="danger-header">
+          <lucide-icon name="alert-triangle" [size]="16"></lucide-icon>
+          <h3>Danger Zone</h3>
+        </div>
+        <div class="danger-actions">
+          <button class="btn btn-outline-danger" (click)="clearCache()">
+            <lucide-icon name="trash-2" [size]="14"></lucide-icon>
+            <span>Clear System Cache</span>
+          </button>
+          <button class="btn btn-outline-danger" (click)="resetSettings()">
+            <lucide-icon name="rotate-ccw" [size]="14"></lucide-icon>
+            <span>Reset to Defaults</span>
+          </button>
+        </div>
+      </section>
+
+      <div class="help-box">
+        <div class="help-icon">
+          <lucide-icon name="help-circle" [size]="20"></lucide-icon>
+        </div>
+        <h4>Need Assistance?</h4>
+        <p>Changes apply globally across the electronics and embedded shop fronts.</p>
+      </div>
+    </aside>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<div class="payment-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="credit-card" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total Payments</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="check-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ completedCount() }}</span>
+        <span class="stat-card__label">Completed</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--warning">
+        <lucide-icon name="clock" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ pendingCount() }}</span>
+        <span class="stat-card__label">Pending</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--error">
+        <lucide-icon name="x-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ cancelledCount() }}</span>
+        <span class="stat-card__label">Cancelled</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #transactionCell let-payment>
+    <span class="txn-id">{{ payment.paymentNumber || payment.id }}</span>
+  </ng-template>
+
+  <ng-template #customerCell let-payment>
+    <div class="flow-cell">
+      <span class="flow-cell__name">{{ payment.customer }}</span>
+      <div class="flow-cell__meta">
+        <span class="flow-cell__order">{{ payment.order }}</span>
+        <span class="flow-cell__sep">Â·</span>
+        <span>{{ payment.date }}</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #methodCell let-payment>
+    <div class="method-cell">
+      <div class="method-cell__icon">
+        @switch (payment.method.toLowerCase().includes('card') ? 'card' : payment.method.toLowerCase().includes('cash') ? 'cash' : 'other') {
+          @case ('card') {
+            <lucide-icon name="credit-card" [size]="16"></lucide-icon>
+          }
+          @case ('cash') {
+            <lucide-icon name="banknote" [size]="16"></lucide-icon>
+          }
+          @default {
+            <lucide-icon name="wallet" [size]="16"></lucide-icon>
+          }
+        }
+      </div>
+      <span class="method-cell__label">{{ payment.method }}</span>
+    </div>
+  </ng-template>
+
+  <ng-template #amountCell let-payment>
+    <span class="amount-text">Rs. {{ payment.amount | number: '1.2-2' }}</span>
+  </ng-template>
+
+  <ng-template #statusCell let-payment>
+    @if (payment.status === 'failed' || payment.status === 'refunded') {
+      <span class="status-badge status-badge--{{ payment.statusType }} status-badge--locked">
+        <lucide-icon [name]="payment.status === 'refunded' ? 'refresh-cw' : 'x-circle'" [size]="12"></lucide-icon>
+        {{ payment.status }}
+      </span>
+    } @else {
+      <button
+        class="status-badge status-badge--{{ payment.statusType }}"
+        (click)="openStatusModal(payment)"
+      >
+        {{ payment.status }}
+        <lucide-icon name="chevron-down" [size]="12"></lucide-icon>
+      </button>
+    }
+  </ng-template>
+
+  <ng-template #actionsCell let-payment>
+    <div class="action-btns">
+      <button class="action-btn" aria-label="View Receipt" nz-tooltip nzTooltipTitle="View Receipt" (click)="viewPayment(payment)">
+        <lucide-icon name="eye" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="Payments"
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="payments()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    searchPlaceholder="Search payments..."
+    [pageSize]="pageSize"
+    [cellTemplates]="{ transaction: transactionCell, customer: customerCell, method: methodCell, amount: amountCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  >
+    <div actions>
+      
+    </div>
+  </app-base-list>
+</div>

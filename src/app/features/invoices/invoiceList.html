@@ -1,0 +1,79 @@
+<div class="invoice-page">
+  <ng-template #invoiceNumberCell let-invoice>
+    <span class="invoice-id">{{ invoice.invoiceNumber || invoice.id }}</span>
+  </ng-template>
+
+  <ng-template #orderNumberCell let-invoice>
+    <span class="order-id">{{ invoice.orderNumber || invoice.orderId || '—' }}</span>
+  </ng-template>
+
+  <ng-template #customerCell let-invoice>
+    <div class="customer-cell">
+      <div class="customer-cell__avatar">
+        {{ (invoice.customer || '?').charAt(0) }}
+      </div>
+      <div class="customer-cell__info">
+        <span class="customer-cell__name">{{ invoice.customer || '—' }}</span>
+        <span class="customer-cell__date">
+          <lucide-icon name="calendar" [size]="11"></lucide-icon>
+          {{ invoice.date | dateTime }}
+        </span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #totalAmountCell let-invoice>
+    <span class="amount-text">Rs. {{ invoice.totalAmount | number: '1.2-2' }}</span>
+  </ng-template>
+
+  <ng-template #paymentStatusCell let-invoice>
+    <span class="status-badge status-badge--{{ invoice.paymentStatusType }}">
+      <lucide-icon [name]="invoice.paymentStatus === 'Paid' ? 'check-circle' : invoice.paymentStatus === 'Pending' ? 'clock' : 'x-circle'" [size]="12"></lucide-icon>
+      {{ invoice.paymentStatus }}
+    </span>
+  </ng-template>
+
+  <ng-template #statusCell let-invoice>
+    <span class="status-badge status-badge--{{ invoice.statusType }}">
+      <lucide-icon [name]="invoice.status === 'Paid' ? 'check-circle' : invoice.status === 'Sent' ? 'send' : invoice.status === 'Generated' ? 'file-text' : 'file'" [size]="12"></lucide-icon>
+      {{ invoice.status }}
+    </span>
+  </ng-template>
+
+  <ng-template #actionsCell let-invoice>
+    <div class="action-btns">
+      <button class="action-btn" aria-label="View Invoice" nz-tooltip nzTooltipTitle="View Invoice" (click)="viewInvoice(invoice)">
+        <lucide-icon name="eye" [size]="16"></lucide-icon>
+      </button>
+      @if (invoice.status !== 'Sent' && invoice.status !== 'Paid') {
+        <button class="action-btn" aria-label="Send Invoice" nz-tooltip nzTooltipTitle="Send Invoice" (click)="sendInvoice(invoice, $event)">
+          <lucide-icon name="send" [size]="16"></lucide-icon>
+        </button>
+      }
+    </div>
+  </ng-template>
+
+  <div class="invoice-list-header">
+    <h1>Invoices</h1>
+    <button class="generate-all-btn" (click)="generateAll()">
+      <lucide-icon name="file-plus" [size]="16"></lucide-icon>
+      Generate All Invoices
+    </button>
+  </div>
+
+  <app-base-list
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="invoices()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    searchPlaceholder="Search invoice or order number, customer..."
+    [pageSize]="pageSize"
+    [cellTemplates]="{ invoiceNumber: invoiceNumberCell, orderNumber: orderNumberCell, customer: customerCell, totalAmount: totalAmountCell, paymentStatus: paymentStatusCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  ></app-base-list>
+</div>

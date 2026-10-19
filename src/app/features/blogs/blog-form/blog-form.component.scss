@@ -1,0 +1,488 @@
+:host {
+  display: block;
+  background: var(--bg-body);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   WORKSPACE
+   ═══════════════════════════════════════════════ */
+.blog-workspace {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════════ */
+.page-header {
+  margin-bottom: 1.25rem;
+  flex-shrink: 0;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-back {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-base);
+  background: var(--bg-component);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--bg-hover);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
+.title-group {
+  h1 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.025em;
+  }
+}
+
+.breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-disabled);
+  margin-bottom: 2px;
+
+  .nav-item.active {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-cancel {
+  height: 2.5rem !important;
+  padding: 0 1.25rem !important;
+  border-radius: 0.75rem !important;
+  font-weight: 600 !important;
+}
+
+.btn-primary {
+  height: 2.5rem !important;
+  padding: 0 1.25rem !important;
+  border-radius: 0.75rem !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+/* ═══════════════════════════════════════════════
+   FORM GRID — fills remaining height
+   ═══════════════════════════════════════════════ */
+.workspace-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  height: 100%;
+  align-items: stretch;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
+
+.form-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.form-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+/* ═══════════════════════════════════════════════
+   CARDS
+   ═══════════════════════════════════════════════ */
+.form-card,
+.sidebar-card {
+  background: var(--bg-component);
+  border: 1px solid var(--border-base);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.form-card--fill {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+
+  .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .editor-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+
+    ::ng-deep {
+      nz-form-control,
+      .ant-form-item-control,
+      .ant-form-item-control-input,
+      .ant-form-item-control-input-content,
+      app-float-label,
+      .float-label-container,
+      .editor-container,
+      quill-editor {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        width: 100%;
+      }
+    }
+  }
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-base);
+
+  lucide-icon {
+    color: var(--color-primary);
+    margin-top: 2px;
+  }
+
+  h3 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  p {
+    font-size: 0.75rem;
+    color: var(--text-disabled);
+    margin: 2px 0 0;
+  }
+
+  .sidebar-card & {
+    padding: 12px 16px;
+
+    h3 {
+      font-size: 0.85rem;
+    }
+  }
+}
+
+.card-body {
+  padding: 16px 20px;
+
+  .sidebar-card & {
+    padding: 14px 16px;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   EDITOR — fills remaining card height
+   ═══════════════════════════════════════════════ */
+.editor-container {
+  ::ng-deep {
+    .ql-toolbar {
+      border-radius: 10px 10px 0 0;
+      border: 1px solid var(--border-base) !important;
+      background: var(--bg-hover);
+      flex-shrink: 0;
+
+      .ql-stroke {
+        stroke: var(--text-secondary);
+      }
+      .ql-fill {
+        fill: var(--text-secondary);
+      }
+      .ql-picker {
+        color: var(--text-secondary);
+      }
+      button:hover,
+      .ql-active,
+      .ql-picker-label:hover {
+        .ql-stroke {
+          stroke: var(--color-primary) !important;
+        }
+        .ql-fill {
+          fill: var(--color-primary) !important;
+        }
+        color: var(--color-primary) !important;
+      }
+    }
+    .ql-container {
+      border-radius: 0 0 10px 10px;
+      border: 1px solid var(--border-base) !important;
+      flex: 1;
+      min-height: 120px;
+      font-family: inherit;
+      background: var(--bg-component);
+    }
+    .ql-editor {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      padding: 1rem;
+      color: var(--text-primary);
+
+      &.ql-blank::before {
+        color: var(--text-disabled);
+        font-style: normal;
+      }
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   IMAGE UPLOAD — compact for sidebar
+   ═══════════════════════════════════════════════ */
+.image-upload-wrapper {
+  .drag-drop-zone {
+    width: 100%;
+    height: 120px;
+    background: var(--bg-hover);
+    border: 2px dashed var(--border-base);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: var(--color-primary);
+      background: color-mix(in srgb, var(--color-primary), transparent 96%);
+    }
+
+    &.has-image {
+      border-style: solid;
+    }
+
+    .preview-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.2s;
+
+      span {
+        font-weight: 600;
+        font-size: 0.75rem;
+      }
+    }
+
+    &:hover .overlay {
+      opacity: 1;
+    }
+
+    .placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-disabled);
+      gap: 4px;
+      text-align: center;
+
+      p {
+        font-weight: 600;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin: 0;
+      }
+      span {
+        font-size: 0.65rem;
+      }
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   AI PROMPT CARD — compact
+   ═══════════════════════════════════════════════ */
+.ai-prompt-card {
+  position: relative;
+  margin-top: 12px;
+  background: var(--bg-hover);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 10px 12px;
+
+  &__glow {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
+    opacity: 0.1;
+    pointer-events: none;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+    margin-bottom: 6px;
+  }
+
+  &__copy-btn {
+    margin-left: auto;
+    background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+    color: var(--color-primary);
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 9px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+  }
+
+  &__text {
+    margin: 0;
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    font-style: italic;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   GLOBAL NG-ZORRO OVERRIDES
+   ═══════════════════════════════════════════════ */
+::ng-deep {
+  .ant-form-item-label label {
+    font-weight: 600;
+  }
+
+  .ant-input,
+  .ant-select-selector,
+  .ant-picker {
+    border-radius: 10px !important;
+    background: var(--bg-hover) !important;
+    border: 1px solid var(--border-base) !important;
+    height: 2.5rem !important;
+
+    &:focus,
+    &:hover {
+      border-color: var(--color-primary) !important;
+    }
+  }
+
+  .ant-divider {
+    margin: 4px 0 !important;
+  }
+
+  .ant-form-item {
+    margin-bottom: 12px;
+
+    &:last-child,
+    &.mb-0 {
+      margin-bottom: 0;
+    }
+  }
+
+  nz-date-picker {
+    display: block;
+    width: 100%;
+  }
+
+  .ant-picker.w-full {
+    width: 100% !important;
+  }
+
+  .ant-picker-input > input {
+    height: 100% !important;
+  }
+}

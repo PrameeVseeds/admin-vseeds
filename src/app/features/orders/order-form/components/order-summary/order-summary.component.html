@@ -1,0 +1,52 @@
+<div class="sidebar-card">
+  <div class="card-header">
+    <lucide-icon name="file-text" [size]="18"></lucide-icon>
+    <h3>Order Summary</h3>
+  </div>
+  <div class="card-body">
+    <div class="summary-item">
+      <span class="summary-item__label">Order ID</span>
+      <span class="summary-item__value summary-item__value--mono">{{ orderNumber || orderId }}</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-item__label">Order Date</span>
+      <span class="summary-item__value">{{ formatDate(orderDate) }}</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-item__label">Items</span>
+      <span class="summary-item__value">{{ lineItemsCount }} items</span>
+    </div>
+    <nz-divider></nz-divider>
+    <div class="summary-item">
+      <span class="summary-item__label">Subtotal</span>
+      <span class="summary-item__value">{{ formatCurrency(subtotal) }}</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-item__label">Shipping</span>
+      <span class="summary-item__value">{{ formatCurrency(shipping) }}</span>
+    </div>
+    <nz-divider></nz-divider>
+    <div class="summary-item summary-item--highlight">
+      <span class="summary-item__label">Total</span>
+      <span class="summary-item__value summary-item__value--primary">{{ formatCurrency(total) }}</span>
+    </div>
+    <nz-divider></nz-divider>
+    @if (!isLocked) {
+      <button type="button" class="btn-payment-sidebar" (click)="sendPayment.emit()" [disabled]="sendingPayment">
+        <lucide-icon name="credit-card" [size]="16"></lucide-icon>
+        <span>{{ sendingPayment ? 'Sending...' : 'Send Payment Request' }}</span>
+      </button>
+    }
+  </div>
+</div>
+
+<div class="info-card">
+  <div class="info-card__icon">
+    <lucide-icon name="sparkles" [size]="28"></lucide-icon>
+  </div>
+  <h4>Order Management</h4>
+  <p>
+    Edit quantities and unit prices. Line totals update automatically. Adjust shipping fee
+    as needed.
+  </p>
+</div>

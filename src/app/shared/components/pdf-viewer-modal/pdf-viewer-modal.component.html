@@ -1,0 +1,34 @@
+<div class="pdf-modal">
+  <!-- Header -->
+  <div class="pdf-modal__header">
+    <div class="pdf-modal__title">
+      <div class="pdf-modal__icon">
+        <lucide-icon name="file-text" [size]="20"></lucide-icon>
+      </div>
+      <div class="pdf-modal__info">
+        <h3>{{ data.title }}</h3>
+        <span>PDF Document</span>
+      </div>
+    </div>
+    <div class="pdf-modal__actions">
+      <button class="pdf-modal__btn" aria-label="Download" (click)="download()" title="Download">
+        <lucide-icon name="download" [size]="16"></lucide-icon>
+      </button>
+      <button class="pdf-modal__btn" aria-label="Open in new tab" (click)="openExternal()" title="Open in new tab">
+        <lucide-icon name="external-link" [size]="16"></lucide-icon>
+      </button>
+      <button class="pdf-modal__btn pdf-modal__btn--close" aria-label="Close" (click)="close()" title="Close">
+        <lucide-icon name="x" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- PDF Embed -->
+  <div class="pdf-modal__body">
+    <iframe
+      [src]="safeUrl"
+      class="pdf-modal__iframe"
+      title="PDF Viewer"
+    ></iframe>
+  </div>
+</div>

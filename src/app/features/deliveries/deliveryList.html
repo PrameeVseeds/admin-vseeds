@@ -1,0 +1,124 @@
+<div class="delivery-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="truck" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total Shipments</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--info">
+        <lucide-icon name="navigation" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ inTransitCount() }}</span>
+        <span class="stat-card__label">In Transit</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="check-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ deliveredCount() }}</span>
+        <span class="stat-card__label">Delivered</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--warning">
+        <lucide-icon name="clock" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ pendingCount() }}</span>
+        <span class="stat-card__label">Pending Pickup</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #trackingCell let-delivery>
+    <div class="tracking-cell">
+      <span class="tracking-cell__code">{{ delivery.tracking }}</span>
+      <span class="tracking-cell__order">{{ delivery.order }}</span>
+    </div>
+  </ng-template>
+
+  <ng-template #customerCell let-delivery>
+    <div class="customer-cell">
+      <div class="customer-cell__avatar">{{ delivery.customer.charAt(0) }}</div>
+      <span class="customer-cell__name">{{ delivery.customer }}</span>
+    </div>
+  </ng-template>
+
+  <ng-template #carrierCell let-delivery>
+    <div class="carrier-cell">
+      <div class="carrier-cell__icon">
+        <lucide-icon name="truck" [size]="16"></lucide-icon>
+      </div>
+      <span class="carrier-cell__label">{{ delivery.carrier }}</span>
+    </div>
+  </ng-template>
+
+  <ng-template #timelineCell let-delivery>
+    <div class="timeline-cell">
+      <div class="timeline-cell__row">
+        <lucide-icon name="calendar" [size]="12"></lucide-icon>
+        <span>Est: {{ delivery.estimated }}</span>
+      </div>
+      <span class="timeline-cell__shipped">Shipped: {{ delivery.shipped }}</span>
+    </div>
+  </ng-template>
+
+  <ng-template #statusCell let-delivery>
+    @if (delivery.status === 'Delivered') {
+      <span class="status-badge status-badge--{{ delivery.statusType }} status-badge--locked">
+        <lucide-icon name="check-circle" [size]="12"></lucide-icon>
+        {{ delivery.status }}
+      </span>
+    } @else {
+      <button
+        class="status-badge status-badge--{{ delivery.statusType }}"
+        (click)="openStatusModal(delivery)"
+      >
+        {{ delivery.status }}
+        <lucide-icon name="chevron-down" [size]="12"></lucide-icon>
+      </button>
+    }
+  </ng-template>
+
+  <ng-template #actionsCell let-delivery>
+    <div class="action-btns">
+      <button class="action-btn" aria-label="View Details" nz-tooltip nzTooltipTitle="View Details" (click)="viewDelivery(delivery)">
+        <lucide-icon name="eye" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="Deliveries"
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="deliveries()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    searchPlaceholder="Search shipments..."
+    [pageSize]="pageSize"
+    [cellTemplates]="{ tracking: trackingCell, customer: customerCell, carrier: carrierCell, timeline: timelineCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  >
+    <div actions>
+      
+      <button class="btn-add" (click)="addDelivery()">
+        <lucide-icon name="plus" [size]="18"></lucide-icon>
+        <span>Add Delivery</span>
+      </button>
+    </div>
+  </app-base-list>
+</div>

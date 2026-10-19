@@ -1,0 +1,118 @@
+<div class="review-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="message-square" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total Reviews</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="check-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ approvedCount() }}</span>
+        <span class="stat-card__label">Approved</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--warning">
+        <lucide-icon name="clock" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ pendingCount() }}</span>
+        <span class="stat-card__label">Pending</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--info">
+        <lucide-icon name="star" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ avgRating() }}</span>
+        <span class="stat-card__label">Avg Rating</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #reviewerCell let-review>
+    <div class="reviewer-cell">
+      <div class="reviewer-cell__avatar">{{ review.customer.charAt(0) }}</div>
+      <div class="reviewer-cell__info">
+        <span class="reviewer-cell__name">{{ review.customer }}</span>
+        <span class="reviewer-cell__date">{{ review.date }}</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #productCell let-review>
+    <div class="product-cell">
+      <div class="product-cell__icon">
+        <lucide-icon name="package" [size]="14"></lucide-icon>
+      </div>
+      <span class="product-cell__name">{{ review.product }}</span>
+    </div>
+  </ng-template>
+
+  <ng-template #ratingCell let-review>
+    <div class="rating-cell">
+      <div class="rating-cell__stars">
+        @for (star of [1, 2, 3, 4, 5]; track star) {
+          <lucide-icon
+            name="star"
+            [size]="13"
+            class="star"
+            [class.star--active]="star <= review.rating"
+          ></lucide-icon>
+        }
+      </div>
+      <span class="rating-cell__value">{{ review.rating }}.0</span>
+    </div>
+  </ng-template>
+
+  <ng-template #commentCell let-review>
+    <p class="comment-cell">"{{ review.comment }}"</p>
+  </ng-template>
+
+  <ng-template #statusCell let-review>
+    <span class="status-badge status-badge--{{ review.statusType }}">
+      {{ review.status }}
+    </span>
+  </ng-template>
+
+  <ng-template #actionsCell let-review>
+    <div class="action-btns">
+      <button class="action-btn" aria-label="View Details" nz-tooltip nzTooltipTitle="View Details" (click)="onView(review)">
+        <lucide-icon name="eye" [size]="16"></lucide-icon>
+      </button>
+      <button class="action-btn action-btn--danger" aria-label="Delete Review" nz-tooltip nzTooltipTitle="Delete Review" (click)="onDelete(review)">
+        <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="Reviews"
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="reviews()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    searchPlaceholder="Search reviews..."
+    [pageSize]="pageSize"
+    [cellTemplates]="{ reviewer: reviewerCell, product: productCell, rating: ratingCell, comment: commentCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  >
+    <div actions>
+      
+    </div>
+  </app-base-list>
+</div>

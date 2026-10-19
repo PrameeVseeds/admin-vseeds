@@ -1,0 +1,176 @@
+<div class="template-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header__info">
+      <h1 class="page-header__title">Email Templates</h1>
+      <p class="page-header__subtitle">Manage and customize transactional email templates</p>
+    </div>
+    <div class="page-header__actions">
+      <div class="search-box">
+        <lucide-icon name="search" [size]="18" class="search-box__icon"></lucide-icon>
+        <input
+          type="text"
+          placeholder="Search templates..."
+          class="search-box__input"
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="mail" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ templates().length }}</span>
+        <span class="stat-card__label">Total Templates</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="check-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ activeCount() }}</span>
+        <span class="stat-card__label">Active</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--neutral">
+        <lucide-icon name="x-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ inactiveCount() }}</span>
+        <span class="stat-card__label">Inactive</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--info">
+        <lucide-icon name="layers" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ categoryCount() }}</span>
+        <span class="stat-card__label">Categories</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    @for (tab of categoryTabs; track tab.value) {
+      <button
+        class="filter-tab"
+        [class.filter-tab--active]="activeTab() === tab.value"
+        (click)="activeTab.set(tab.value)"
+      >
+        {{ tab.label }}
+        <span class="filter-tab__count">{{ getTabCount(tab.value) }}</span>
+      </button>
+    }
+  </div>
+
+  <!-- Template Grid -->
+  <div class="template-grid">
+    @for (tpl of filteredTemplates(); track tpl.id) {
+      <div class="template-card">
+        <div class="template-card__header">
+          <div
+            class="template-card__icon"
+            [ngClass]="'template-card__icon--' + getCategoryClass(tpl.category)"
+          >
+            <lucide-icon [name]="getCategoryIcon(tpl.category)" [size]="20"></lucide-icon>
+          </div>
+          <span
+            class="status-badge"
+            [ngClass]="tpl.status === 'Active' ? 'status-badge--success' : 'status-badge--neutral'"
+          >
+            {{ tpl.status }}
+          </span>
+        </div>
+
+        <h3 class="template-card__name">{{ tpl.name }}</h3>
+        <p class="template-card__desc">{{ tpl.description }}</p>
+
+        <div class="template-card__meta">
+          <div class="meta-item">
+            <lucide-icon name="tag" [size]="13"></lucide-icon>
+            <span>{{ tpl.category }}</span>
+          </div>
+          <div class="meta-item">
+            <lucide-icon name="calendar" [size]="13"></lucide-icon>
+            <span>{{ tpl.lastModified }}</span>
+          </div>
+        </div>
+
+        <div class="template-card__subject">
+          <span class="subject-label">Subject</span>
+          <span class="subject-text">{{ tpl.subject }}</span>
+        </div>
+
+        <div class="template-card__variables">
+          <span class="variables-label">Variables</span>
+          <div class="variable-tags">
+            @for (v of tpl.variables.slice(0, 4); track v) {
+              <span class="variable-tag">{{ '{{' + v + '}}' }}</span>
+            }
+            @if (tpl.variables.length > 4) {
+              <span class="variable-tag variable-tag--more">+{{ tpl.variables.length - 4 }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="template-card__footer">
+          <button class="card-btn card-btn--preview" (click)="previewTemplate(tpl)">
+            <lucide-icon name="eye" [size]="15"></lucide-icon>
+            <span>Preview</span>
+          </button>
+          <button class="card-btn card-btn--edit" (click)="editTemplate(tpl)">
+            <lucide-icon name="edit" [size]="15"></lucide-icon>
+            <span>Edit</span>
+          </button>
+          <button
+            class="card-btn card-btn--toggle"
+            [attr.aria-label]="tpl.status === 'Active' ? 'Deactivate' : 'Activate'"
+            nz-tooltip
+            [nzTooltipTitle]="tpl.status === 'Active' ? 'Deactivate' : 'Activate'"
+            (click)="toggleStatus(tpl)"
+          >
+            <lucide-icon
+              [name]="tpl.status === 'Active' ? 'toggle-left' : 'check-circle'"
+              [size]="15"
+            ></lucide-icon>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (filteredTemplates().length === 0) {
+    <div class="empty-state">
+      <lucide-icon name="mail" [size]="40" class="empty-state__icon"></lucide-icon>
+      <p class="empty-state__text">No templates found</p>
+      <p class="empty-state__sub">Try adjusting your search or filter</p>
+    </div>
+  }
+</div>
+
+<!-- Preview Modal -->
+<nz-modal
+  [(nzVisible)]="previewVisible"
+  [nzTitle]="previewTitle"
+  [nzWidth]="720"
+  [nzFooter]="previewFooter"
+  (nzOnCancel)="previewVisible = false"
+  [nzCentered]="true"
+>
+  <ng-container *nzModalContent>
+    <div class="preview-frame" [innerHTML]="previewHtml"></div>
+  </ng-container>
+  <ng-template #previewFooter>
+    <button class="btn-close" (click)="previewVisible = false">Close</button>
+  </ng-template>
+</nz-modal>

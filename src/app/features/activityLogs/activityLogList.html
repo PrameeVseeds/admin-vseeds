@@ -1,0 +1,119 @@
+<div class="log-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="activity" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total Events</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="plus-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ createdCount() }}</span>
+        <span class="stat-card__label">Created</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--info">
+        <lucide-icon name="refresh-cw" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ updatedCount() }}</span>
+        <span class="stat-card__label">Updated</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--danger">
+        <lucide-icon name="trash-2" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ deletedCount() }}</span>
+        <span class="stat-card__label">Deleted</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #actorCell let-item>
+    <div class="actor-cell">
+      <div class="actor-cell__avatar">
+        {{ (item?.userName ?? '?')[0] }}
+      </div>
+      <div class="actor-cell__info">
+        <span class="actor-cell__name">{{ item?.userName ?? '-' }}</span>
+        @if (item?.userEmail) {
+          <span class="actor-cell__email">{{ item.userEmail }}</span>
+        }
+        <span class="actor-cell__role">{{ item?.userRole ?? '-' }}</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #eventCell let-item>
+    <span class="status-badge" [class]="'status-badge--' + (item?.actionType ?? 'info')">
+      {{ item?.action ?? '-' }}
+    </span>
+  </ng-template>
+
+  <ng-template #resourceCell let-item>
+    <div class="resource-cell">
+      <span class="resource-cell__type">{{ item?.resourceType ?? '-' }}</span>
+      @if (item?.entityId) {
+        <span class="resource-cell__id" [attr.title]="'Entity ID: ' + item.entityId">
+          {{ item?.entityDisplayName || 'â€”' }}
+        </span>
+      }
+    </div>
+  </ng-template>
+
+  <ng-template #descriptionCell let-item>
+    <span class="desc-text" [title]="item?.description ?? ''">{{ item?.description ?? '-' }}</span>
+  </ng-template>
+
+  <ng-template #timestampCell let-item>
+    <div class="date-cell">
+      <lucide-icon name="clock" [size]="12"></lucide-icon>
+      {{ (item?.date | dateTime) || '-' }}
+    </div>
+  </ng-template>
+
+  <ng-template #actionsCell let-item>
+    <div class="action-btns">
+      <button
+        class="action-btn"
+        aria-label="View Details"
+        nz-tooltip
+        nzTooltipTitle="View Details"
+        (click)="onView(item)"
+      >
+        <lucide-icon name="eye" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="Activity Logs"
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="pagedLogs()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="activityLogService.loading()"
+    [pageSize]="pageSize"
+    searchPlaceholder="Search logs..."
+    [cellTemplates]="{ actor: actorCell, event: eventCell, resource: resourceCell, description: descriptionCell, timestamp: timestampCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  >
+    <div actions>
+      
+    </div>
+  </app-base-list>
+</div>

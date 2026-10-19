@@ -1,0 +1,623 @@
+// Custom Theming for NG-ZORRO — VSEEDS Admin Portal
+// Supports Light + Dark mode via CSS variables
+// Reference: https://ng.ant.design/docs/customize-theme/en
+
+// Define root entry name (required by some components)
+@root-entry-name: default;
+
+// Import Ant Design styles MANUALLY to exclude 'global.less'
+@import '../node_modules/ng-zorro-antd/style/themes/index';
+@import '../node_modules/ng-zorro-antd/style/mixins/index';
+
+// Import core styles individually (Skipping 'core/global.less' which causes conflicts)
+@import '../node_modules/ng-zorro-antd/style/core/base';
+@import '../node_modules/ng-zorro-antd/style/core/iconfont';
+@import '../node_modules/ng-zorro-antd/style/core/motion';
+
+// Import patch and components
+@import '../node_modules/ng-zorro-antd/style/patch';
+@import '../node_modules/ng-zorro-antd/components';
+
+// Override NG-ZORRO Less variables
+// View all: https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/components/style/themes/default.less
+
+/* ═══════════════════════════════════════════════
+   BRAND COLORS (VSEEDS Teal Palette)
+   ═══════════════════════════════════════════════ */
+@primary-color: #183d3d;
+@info-color: #065456;
+@success-color: #10b981;
+@warning-color: #f59e0b;
+@error-color: #ef4444;
+@processing-color: #3b82f6;
+
+/* ═══════════════════════════════════════════════
+   BASE COLORS
+   ═══════════════════════════════════════════════ */
+@white: #ffffff;
+@black: #000000;
+
+/* ═══════════════════════════════════════════════
+   TEXT COLORS (Light Mode Defaults)
+   ═══════════════════════════════════════════════ */
+@text-color: #0f2f2f;
+@heading-color: #0a2424;
+@text-color-secondary: #4b6f6f;
+@text-color-disabled: #a7bcbc;
+
+/* ═══════════════════════════════════════════════
+   BACKGROUND COLORS (Light Mode Defaults)
+   ═══════════════════════════════════════════════ */
+@body-background: #f4f7f7;
+@component-background: #ffffff;
+@layout-body-background: #f4f7f7;
+@layout-header-background: #ffffff;
+@layout-footer-background: #ffffff;
+@layout-sider-background: #001529;
+
+/* ═══════════════════════════════════════════════
+   BORDER & DIVIDER
+   ═══════════════════════════════════════════════ */
+@border-color-base: #d9e2e2;
+@border-color-split: #e6eeee;
+
+/* ═══════════════════════════════════════════════
+   LINKS
+   ═══════════════════════════════════════════════ */
+@link-color: #065456;
+@link-hover-color: #183d3d;
+@link-active-color: #00312f;
+
+/* ═══════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════ */
+@btn-primary-bg: #183d3d;
+@btn-primary-border: #183d3d;
+@btn-primary-hover-bg: #065456;
+@btn-primary-hover-border: #065456;
+@btn-primary-active-bg: #00312f;
+@btn-primary-active-border: #00312f;
+
+/* ═══════════════════════════════════════════════
+   INPUTS
+   ═══════════════════════════════════════════════ */
+@input-bg: #ffffff;
+@input-border-color: #d9e2e2;
+@input-hover-border-color: #065456;
+@input-focus-border-color: #183d3d;
+@input-placeholder-color: #8aa5a5;
+
+/* ═══════════════════════════════════════════════
+   SELECT, DROPDOWN
+   ═══════════════════════════════════════════════ */
+@select-item-selected-bg: #e6f1f1;
+@select-item-active-bg: #f0f7f7;
+
+/* ═══════════════════════════════════════════════
+   TABLE
+   ═══════════════════════════════════════════════ */
+@table-header-bg: #f0f5f5;
+@table-row-hover-bg: #f7fafa;
+@table-header-color: #0f2f2f;
+@table-header-sort-bg: #e8f0f0;
+
+/* ═══════════════════════════════════════════════
+   MENU / SIDEBAR
+   ═══════════════════════════════════════════════ */
+@menu-bg: transparent;
+@menu-item-color: rgba(255, 255, 255, 0.75);
+@menu-item-active-bg: rgba(255, 255, 255, 0.08);
+@menu-item-active-color: #ffffff;
+@menu-highlight-color: #ffffff;
+@menu-dark-bg: #001529;
+@menu-dark-item-active-bg: #183d3d;
+@menu-dark-submenu-bg: #000c17;
+
+/* ═══════════════════════════════════════════════
+   MODAL, CARD, DRAWER
+   ═══════════════════════════════════════════════ */
+@card-background: #ffffff;
+@card-shadow:
+  0 1px 3px rgba(0, 0, 0, 0.06),
+  0 1px 2px rgba(0, 0, 0, 0.04);
+@modal-header-bg: #ffffff;
+@modal-footer-bg: #ffffff;
+
+/* ═══════════════════════════════════════════════
+   SHADOWS
+   ═══════════════════════════════════════════════ */
+@box-shadow-base: 0 2px 8px rgba(0, 49, 47, 0.08);
+
+/* ═══════════════════════════════════════════════
+   RADIUS
+   ═══════════════════════════════════════════════ */
+@border-radius-base: 8px;
+@border-radius-sm: 6px;
+
+/* ═══════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════ */
+@font-family:
+  'Inter',
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  Roboto,
+  'Helvetica Neue',
+  Arial,
+  sans-serif;
+@font-size-base: 14px;
+@heading-1-size: 2rem;
+@heading-2-size: 1.5rem;
+@heading-3-size: 1.25rem;
+@heading-4-size: 1.125rem;
+@line-height-base: 1.6;
+
+/* ═══════════════════════════════════════════════
+   DARK MODE LESS VARIABLES (for reference)
+   Used by CSS custom properties below
+   ═══════════════════════════════════════════════ */
+@dark-bg-body: #0e1726;
+@dark-bg-component: #1a2332;
+@dark-bg-elevated: #212d3b;
+@dark-bg-sidebar: #0b1120;
+@dark-border: #2a3a4a;
+@dark-text-primary: #e4e7eb;
+@dark-text-secondary: #9ca3af;
+@dark-text-disabled: #4b5563;
+@dark-table-header: #1a2332;
+@dark-table-hover: #212d3b;
+@dark-card-bg: #1a2332;
+@dark-input-bg: #1a2332;
+@dark-input-border: #2a3a4a;
+@dark-select-active: #212d3b;
+
+/* ═══════════════════════════════════════════════
+   CSS CUSTOM PROPERTIES — LIGHT MODE (default)
+   These are consumed by SCSS and component styles
+   ═══════════════════════════════════════════════ */
+:root {
+  /* Brand */
+  --color-primary: #183d3d;
+  --color-primary-dark: #00312f;
+  --color-primary-light: #065456;
+  --color-accent: #10b981;
+
+  /* Backgrounds */
+  --bg-body: #f4f7f7;
+  --bg-component: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-sidebar: #ffffff;
+  --bg-sidebar-hover: #f0f5f5;
+  --bg-sidebar-selected: color-mix(in srgb, #183d3d, transparent 90%);
+  --sidebar-border: #e6eeee;
+  --sidebar-text: #4b6f6f;
+  --sidebar-text-hover: #0f2f2f;
+  --sidebar-text-active: #183d3d;
+  --sidebar-group: #a7bcbc;
+  --sidebar-divider: #e6eeee;
+  --bg-header: #ffffff;
+  --bg-card: #ffffff;
+  --bg-hover: #f0f5f5;
+  --bg-selected: #e6f1f1;
+
+  /* Text */
+  --text-primary: #0f2f2f;
+  --text-secondary: #4b6f6f;
+  --text-disabled: #a7bcbc;
+  --text-inverse: #ffffff;
+  --text-heading: #0a2424;
+
+  /* Borders */
+  --border-base: #d9e2e2;
+  --border-split: #e6eeee;
+  --border-focus: #183d3d;
+
+  /* Status */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 8px rgba(0, 49, 47, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 49, 47, 0.12);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+
+  /* Sidebar width */
+  --sidebar-width: 256px;
+  --sidebar-collapsed-width: 80px;
+  --header-height: 64px;
+}
+
+/* ═══════════════════════════════════════════════
+   CSS CUSTOM PROPERTIES — DARK MODE
+   Applied via [data-theme="dark"] on <html>
+   ═══════════════════════════════════════════════ */
+[data-theme='dark'] {
+  /* Brand Overrides for Dark Mode */
+  --color-primary: #2dd4bf; // A vibrant teal that matches the brand #183d3d but is visible in dark mode
+  --color-primary-dark: #14b8a6;
+  --color-primary-light: #5eead4;
+  --color-accent: #10b981;
+
+  /* Backgrounds */
+  --bg-body: #0e1726;
+  --bg-component: #1a2332;
+  --bg-elevated: #212d3b;
+  --bg-sidebar: #0b1120;
+  --bg-sidebar-hover: rgba(255, 255, 255, 0.05);
+  --bg-sidebar-selected: rgba(45, 212, 191, 0.1);
+  --sidebar-border: rgba(255, 255, 255, 0.05);
+  --sidebar-text: rgba(255, 255, 255, 0.5);
+  --sidebar-text-hover: #ffffff;
+  --sidebar-text-active: #2dd4bf;
+  --sidebar-group: rgba(255, 255, 255, 0.25);
+  --sidebar-divider: rgba(255, 255, 255, 0.05);
+  --bg-header: #141e2e;
+  --bg-card: #1a2332;
+  --bg-hover: #212d3b;
+  --bg-selected: #253345;
+
+  /* Text */
+  --text-primary: #e4e7eb;
+  --text-secondary: #9ca3af;
+  --text-disabled: #4b5563;
+  --text-inverse: #0e1726;
+  --text-heading: #f3f4f6;
+
+  /* Borders */
+  --border-base: #2a3a4a;
+  --border-split: #1f2f3f;
+  --border-focus: #10b981;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.3);
+
+  /* NG-ZORRO Dark Overrides — Global Consistency */
+
+  // Layout & Global
+  .ant-layout {
+    background: var(--bg-body);
+    color: var(--text-primary);
+  }
+
+  .ant-layout-header {
+    background: var(--bg-header);
+    border-bottom: 1px solid var(--border-base);
+  }
+
+  .ant-layout-sider {
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border-base);
+
+    .ant-layout-sider-trigger {
+      background: var(--bg-sidebar);
+      border-top: 1px solid var(--border-base);
+    }
+  }
+
+  // Cards
+  .ant-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-base);
+    color: var(--text-primary);
+
+    .ant-card-head {
+      border-bottom: 1px solid var(--border-base);
+      color: var(--text-heading);
+    }
+
+    .ant-card-actions {
+      background: var(--bg-component);
+      border-top: 1px solid var(--border-base);
+      li > span:not(.ant-card-actions-item-action-icon) {
+        color: var(--text-secondary);
+      }
+    }
+  }
+
+  // Tables
+  .ant-table {
+    background: var(--bg-component);
+    color: var(--text-primary);
+  }
+
+  .ant-table-thead > tr > th {
+    background: var(--bg-elevated);
+    color: var(--text-heading);
+    border-bottom: 1px solid var(--border-base);
+  }
+
+  .ant-table-tbody > tr > td {
+    border-bottom: 1px solid var(--border-split);
+  }
+
+  .ant-table-tbody > tr:hover > td {
+    background: var(--bg-hover) !important;
+  }
+
+  .ant-table-cell-fix-left,
+  .ant-table-cell-fix-right {
+    background: var(--bg-component);
+  }
+
+  // Inputs & Selects
+  .ant-input,
+  .ant-select-selector,
+  .ant-input-number,
+  .ant-picker,
+  .ant-input-affix-wrapper {
+    background: var(--bg-elevated) !important;
+    border: 1px solid var(--border-base) !important;
+    color: var(--text-primary) !important;
+
+    &.ant-input-disabled,
+    &.ant-select-disabled {
+      background: var(--bg-body) !important;
+      color: var(--text-disabled) !important;
+      opacity: 0.7;
+    }
+  }
+
+  .ant-input::placeholder,
+  .ant-select-selection-placeholder {
+    color: var(--text-disabled) !important;
+  }
+
+  .ant-input-search-button {
+    background: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+  }
+
+  // Menus
+  .ant-menu {
+    background: transparent !important;
+    color: var(--text-secondary);
+  }
+
+  .ant-menu-item,
+  .ant-menu-submenu-title {
+    &:hover {
+      color: var(--text-heading) !important;
+    }
+  }
+
+  .ant-menu-item-selected {
+    background: var(--bg-selected) !important;
+    color: var(--color-primary) !important;
+  }
+
+  .ant-menu-dark {
+    background: var(--bg-sidebar);
+
+    &.ant-menu-inline,
+    &.ant-menu-vertical {
+      border-right: none;
+    }
+
+    .ant-menu-inline.ant-menu-sub {
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  // Modals & Drawers
+  .ant-modal-content,
+  .ant-drawer-content {
+    background: var(--bg-component);
+    color: var(--text-primary);
+  }
+
+  .ant-modal-header {
+    background: var(--bg-component);
+    border-bottom: 1px solid var(--border-base);
+  }
+
+  .ant-modal-footer {
+    background: var(--bg-component);
+    border-top: 1px solid var(--border-base);
+  }
+
+  .ant-modal-title {
+    color: var(--text-heading);
+  }
+
+  // Buttons
+  .ant-btn-default {
+    background: var(--bg-elevated);
+    border-color: var(--border-base);
+    color: var(--text-primary);
+
+    &:hover,
+    &:focus {
+      border-color: var(--color-primary-light);
+      color: var(--color-primary-light);
+    }
+  }
+
+  // Popovers, Tooltips & Backdrops
+  .ant-dropdown-menu,
+  .ant-select-dropdown,
+  .ant-picker-panel-container,
+  .ant-popover-inner,
+  .ant-tooltip-inner {
+    background: var(--bg-elevated) !important;
+    border: 1px solid var(--border-base);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .ant-notification-notice,
+  .ant-message-notice-content {
+    background: var(--bg-elevated) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-base);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .ant-dropdown-menu-item,
+  .ant-select-item {
+    color: var(--text-primary);
+
+    &:hover {
+      background: var(--bg-hover) !important;
+    }
+  }
+
+  .ant-select-item-option-selected {
+    background: var(--bg-selected) !important;
+    color: var(--color-primary) !important;
+    font-weight: 600;
+  }
+
+  // List & Descriptions
+  .ant-list {
+    color: var(--text-primary);
+  }
+
+  .ant-list-item-meta-title {
+    color: var(--text-heading);
+  }
+
+  .ant-descriptions-item-label {
+    background: var(--bg-elevated);
+    color: var(--text-heading);
+    border-right: 1px solid var(--border-base);
+  }
+
+  .ant-descriptions-item-content {
+    color: var(--text-primary);
+    border-right: 1px solid var(--border-base);
+  }
+
+  .ant-descriptions-bordered .ant-descriptions-view {
+    border: 1px solid var(--border-base);
+  }
+
+  // Others
+  .ant-pagination-item,
+  .ant-pagination-prev,
+  .ant-pagination-next,
+  .ant-pagination-jump-prev,
+  .ant-pagination-jump-next {
+    background: var(--bg-elevated);
+    border-color: var(--border-base);
+
+    a,
+    button,
+    .ant-pagination-item-link {
+      color: var(--text-secondary);
+    }
+
+    &:hover a,
+    &:hover button,
+    &:hover .ant-pagination-item-link {
+      color: var(--text-primary);
+    }
+  }
+
+  .ant-pagination-item-active {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+
+    a {
+      color: #ffffff;
+    }
+
+    &:hover a {
+      color: #ffffff;
+    }
+  }
+
+  .ant-pagination-disabled {
+    opacity: 0.5;
+  }
+
+  .ant-select-selection-item,
+  .ant-select-dropdown {
+    color: var(--text-primary);
+  }
+
+  .ant-breadcrumb-link,
+  .ant-breadcrumb-separator {
+    color: var(--text-secondary);
+  }
+
+  .ant-tag {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-base);
+    color: var(--text-primary);
+  }
+
+  .ant-divider {
+    border-top-color: var(--border-split);
+  }
+
+  .ant-tabs-nav::before {
+    border-bottom: 1px solid var(--border-base);
+  }
+
+  .ant-tabs-tab {
+    color: var(--text-secondary);
+
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+
+  .ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .ant-tabs-ink-bar {
+    background: var(--color-primary);
+  }
+
+  .ant-spin-text {
+    color: var(--color-primary);
+  }
+
+  .ant-empty-description {
+    color: var(--text-disabled);
+  }
+
+  .ant-form-item-label > label {
+    color: var(--text-primary);
+  }
+
+  .ant-statistic-title {
+    color: var(--text-secondary);
+  }
+
+  .ant-statistic-content {
+    color: var(--text-heading);
+  }
+
+  .ant-alert {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-base);
+
+    .ant-alert-message {
+      color: var(--text-heading);
+    }
+
+    .ant-alert-description {
+      color: var(--text-primary);
+    }
+  }
+}

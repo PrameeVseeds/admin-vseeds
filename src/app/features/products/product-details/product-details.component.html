@@ -1,0 +1,211 @@
+@if (product) {
+  <div class="pd">
+    <!-- Hero -->
+    <div class="pd-hero">
+      @if (product.thumbnailImage) {
+        <img
+          [src]="product.thumbnailImage"
+          [alt]="product.name"
+          class="pd-hero__img pd-hero__img--clickable"
+          (click)="previewImage(product.thumbnailImage, product.name)"
+        />
+      } @else {
+        <div class="pd-hero__placeholder">
+          <lucide-icon name="package" [size]="32"></lucide-icon>
+        </div>
+      }
+      <div class="pd-hero__info">
+        <h2 class="pd-hero__name">{{ product.name }}</h2>
+        <div class="pd-hero__meta">
+          <span class="pd-hero__category">{{ product.categoryName || product.category?.name || product.category }}</span>
+          @if (product.subCategory) {
+            <span class="pd-hero__sep">/</span>
+            <span class="pd-hero__sub">{{ product.subCategory }}</span>
+          }
+          <span
+            class="pd-hero__status"
+            [class.pd-hero__status--success]="(product.statusType || statusType) === 'success'"
+            [class.pd-hero__status--warning]="(product.statusType || statusType) === 'warning'"
+            [class.pd-hero__status--error]="(product.statusType || statusType) === 'error'"
+          >
+            {{ product.status | titlecase }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pricing -->
+    <div class="pd-pricing">
+      <div class="pd-pricing__card pd-pricing__card--primary">
+        <span class="pd-pricing__label">Qty 1</span>
+        <span class="pd-pricing__value">{{ product.price1 | currency: 'LKR':'Rs. ' }}</span>
+      </div>
+      <div class="pd-pricing__card">
+        <span class="pd-pricing__label">Qty 10</span>
+        <span class="pd-pricing__value">
+          @if (product.price10) {
+            {{ product.price10 | currency: 'LKR':'Rs. ' }}
+          } @else {
+            <span class="pd-pricing__empty">&mdash;</span>
+          }
+        </span>
+      </div>
+      <div class="pd-pricing__card">
+        <span class="pd-pricing__label">Qty 100</span>
+        <span class="pd-pricing__value">
+          @if (product.price100) {
+            {{ product.price100 | currency: 'LKR':'Rs. ' }}
+          } @else {
+            <span class="pd-pricing__empty">&mdash;</span>
+          }
+        </span>
+      </div>
+      <div class="pd-pricing__card">
+        <span class="pd-pricing__label">Purchased</span>
+        <span class="pd-pricing__value pd-pricing__value--muted">
+          @if (product.purchasedPrice) {
+            {{ product.purchasedPrice | currency: 'LKR':'Rs. ' }}
+          } @else {
+            <span class="pd-pricing__empty">&mdash;</span>
+          }
+        </span>
+      </div>
+    </div>
+
+    <!-- Info Grid -->
+    <div class="pd-grid">
+      <div class="pd-grid__cell">
+        <span class="pd-grid__label">SKU</span>
+        <span class="pd-grid__value pd-grid__value--mono">{{ product.sku || '—' }}</span>
+      </div>
+      <div class="pd-grid__cell">
+        <span class="pd-grid__label">Store ID</span>
+        <span class="pd-grid__value pd-grid__value--mono">{{ product.storeId || product.sku || '—' }}</span>
+      </div>
+      <div class="pd-grid__cell">
+        <span class="pd-grid__label">Manufacturer</span>
+        <span class="pd-grid__value">{{ product.manufacturer || '—' }}</span>
+      </div>
+      <div class="pd-grid__cell">
+        <span class="pd-grid__label">Manufacturer Product No.</span>
+        <span class="pd-grid__value pd-grid__value--mono">{{ product.manufacturerProductNumber || product.mpn || '—' }}</span>
+      </div>
+      <div class="pd-grid__cell">
+        <span class="pd-grid__label">Minimum Purchase Qty</span>
+        <span class="pd-grid__value">
+          @if (product.minPurchaseValue) {
+            {{ product.minPurchaseValue }} Units
+          } @else {
+            <span class="pd-grid__value--empty">—</span>
+          }
+        </span>
+      </div>
+      <div class="pd-grid__cell">
+        <span class="pd-grid__label">In Hand Qty</span>
+        <span class="pd-grid__value" [class.pd-grid__value--danger]="product.inHandQty === 0">
+          {{ product.inHandQty }}
+        </span>
+      </div>
+      <div class="pd-grid__cell">
+        <span class="pd-grid__label">Ordered Qty</span>
+        <span class="pd-grid__value">{{ product.orderedQty || '—' }}</span>
+      </div>
+      <div class="pd-grid__cell">
+        <span class="pd-grid__label">Expected Date</span>
+        <span class="pd-grid__value">{{ product.expectedDate ? (product.expectedDate | date: 'yyyy-MM-dd') : '—' }}</span>
+      </div>
+      <div class="pd-grid__cell">
+        <span class="pd-grid__label">Product Link</span>
+        @if (product.productLink) {
+          <a [href]="product.productLink" target="_blank" class="pd-grid__link">
+            <lucide-icon name="external-link" [size]="12"></lucide-icon>
+            Open Link
+          </a>
+        } @else {
+          <span class="pd-grid__value pd-grid__value--empty">—</span>
+        }
+      </div>
+      <div class="pd-grid__cell">
+        <span class="pd-grid__label">Data Sheet</span>
+        @if (product.dataSheet) {
+          <button class="pd-grid__link pd-grid__link--pdf" (click)="openDataSheet()">
+            <lucide-icon name="file-text" [size]="12"></lucide-icon>
+            View PDF
+          </button>
+        } @else {
+          <span class="pd-grid__value pd-grid__value--empty">—</span>
+        }
+      </div>
+      <div class="pd-grid__cell">
+        <span class="pd-grid__label">3D CAD Model</span>
+        @if (product.model3dUrl) {
+          <a [href]="product.model3dUrl" target="_blank" class="pd-grid__link">
+            <lucide-icon name="external-link" [size]="12"></lucide-icon>
+            Open 3D Model
+          </a>
+        } @else {
+          <span class="pd-grid__value pd-grid__value--empty">—</span>
+        }
+      </div>
+    </div>
+
+    <!-- Tags -->
+    @if (product.tags && product.tags.length) {
+      <div class="pd-section">
+        <h4 class="pd-section__title">Tags</h4>
+        <div class="pd-tags">
+          @for (tag of product.tags; track tag) {
+            <span class="pd-tags__item">{{ tag }}</span>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Gallery -->
+    @if (product.otherImages && product.otherImages.length > 0) {
+      <div class="pd-section">
+        <h4 class="pd-section__title">Gallery</h4>
+        <div class="pd-gallery">
+          @for (img of product.otherImages; track img; let i = $index) {
+            <div class="pd-gallery__item" (click)="previewImage(img, product.name + ' - Image ' + (i + 1))">
+              <img [src]="img" class="pd-gallery__img" />
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Product Attributes -->
+    <div class="pd-section">
+      <h4 class="pd-section__title">Product Attributes</h4>
+      @if (attributes.length) {
+        <div class="pd-attrs">
+          @for (attr of attributes; track attr.name) {
+            <div class="pd-attrs__row">
+              <span class="pd-attrs__name">{{ attr.name }}</span>
+              <span class="pd-attrs__value">{{ attr.value }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="pd-section__body pd-section__body--empty">No product attributes</p>
+      }
+    </div>
+
+    <!-- Description -->
+    @if (product.description) {
+      <div class="pd-section">
+        <h4 class="pd-section__title">Description</h4>
+        <p class="pd-section__body">{{ product.description }}</p>
+      </div>
+    }
+
+    <!-- Specifications -->
+    @if (specsHtml) {
+      <div class="pd-section">
+        <h4 class="pd-section__title">Specifications</h4>
+        <div class="pd-section__body pd-section__body--specs" [innerHTML]="specsHtml"></div>
+      </div>
+    }
+  </div>
+}

@@ -1,0 +1,114 @@
+:host {
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════
+   ADMIN LAYOUT ROOT
+   ═══════════════════════════════════════════════ */
+.admin-layout {
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════════
+   MOBILE SIDEBAR BACKDROP
+   ═══════════════════════════════════════════════ */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 150;
+  animation: fadeInOverlay 0.2s ease;
+  cursor: pointer;
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   MAIN CONTENT AREA (right of sidebar)
+   ═══════════════════════════════════════════════ */
+.main-area {
+  margin-left: 256px;
+  transition: margin-left 0.3s cubic-bezier(0.2, 0, 0, 1);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  &--expanded {
+    margin-left: 80px;
+  }
+
+  @media (max-width: 768px) {
+    margin-left: 0 !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   CONTENT AREA
+   ═══════════════════════════════════════════════ */
+.content-area {
+  margin-top: 64px;
+  padding: 24px;
+  min-height: calc(100vh - 64px - 48px);
+  background: var(--bg-body);
+  flex: 1;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+  }
+}
+
+.content-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════ */
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 14px 24px !important;
+  font-size: 0.8rem;
+  color: var(--text-disabled);
+  background: transparent !important;
+  border-top: 1px solid var(--border-base);
+}
+
+.footer-dot {
+  margin: 0 4px;
+  color: var(--text-disabled);
+}
+
+.developer-credit {
+  a {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--color-primary-light);
+      text-decoration: underline;
+    }
+  }
+}

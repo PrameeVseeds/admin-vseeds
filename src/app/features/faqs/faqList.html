@@ -1,0 +1,117 @@
+<div class="faq-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="help-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total FAQs</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="check-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ activeCount() }}</span>
+        <span class="stat-card__label">Active</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--error">
+        <lucide-icon name="x-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ inactiveCount() }}</span>
+        <span class="stat-card__label">Inactive</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--info">
+        <lucide-icon name="layers" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ categoryCount() }}</span>
+        <span class="stat-card__label">Categories</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #questionCell let-faq>
+    <div class="question-cell">
+      <div class="question-cell__icon">
+        <lucide-icon name="help-circle" [size]="18"></lucide-icon>
+      </div>
+      <div class="question-cell__info">
+        <span class="question-cell__text">{{ faq.question }}</span>
+        <span class="question-cell__preview">{{ faq.answer }}</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #categoryCell let-faq>
+    <span class="category-chip">{{ faq.category }}</span>
+  </ng-template>
+
+  <ng-template #siteCell let-faq>
+    <span
+      class="site-badge"
+      [class.site-badge--electronics]="faq.site === 'electronics'"
+      [class.site-badge--embedded]="faq.site === 'embedded'"
+      [class.site-badge--both]="faq.site === 'both'"
+    >
+      {{ getSiteLabel(faq.site) }}
+    </span>
+  </ng-template>
+
+  <ng-template #orderCell let-faq>
+    <div class="order-cell">
+      <span class="order-cell__badge">{{ faq.order }}</span>
+      <span class="order-cell__label">Priority</span>
+    </div>
+  </ng-template>
+
+  <ng-template #statusCell let-faq>
+    <span class="status-badge status-badge--{{ faq.statusType }}">
+      {{ faq.status }}
+    </span>
+  </ng-template>
+
+  <ng-template #actionsCell let-faq>
+    <div class="action-btns">
+      <button class="action-btn" aria-label="Edit FAQ" nz-tooltip nzTooltipTitle="Edit FAQ" (click)="onEdit(faq)">
+        <lucide-icon name="edit" [size]="16"></lucide-icon>
+      </button>
+      <button class="action-btn action-btn--danger" aria-label="Delete FAQ" nz-tooltip nzTooltipTitle="Delete FAQ" (click)="onDelete(faq)">
+        <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="FAQs"
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="paginatedFaqs()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    searchPlaceholder="Search questions..."
+    [pageSize]="pageSize"
+    [cellTemplates]="{ question: questionCell, category: categoryCell, site: siteCell, order: orderCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  >
+    <div actions>
+      
+      <button class="btn-primary" routerLink="create">
+        <lucide-icon name="plus" [size]="18"></lucide-icon>
+        <span>Add FAQ</span>
+      </button>
+    </div>
+  </app-base-list>
+</div>

@@ -1,0 +1,38 @@
+<div class="not-found">
+  <div class="not-found__bg"></div>
+
+  <div class="not-found__content">
+    <div class="not-found__card">
+      <div class="not-found__icon-ring">
+        <lucide-icon name="alert-circle" [size]="32"></lucide-icon>
+      </div>
+
+      <h1 class="not-found__code">404</h1>
+      <h2 class="not-found__title">Page Not Found</h2>
+      <p class="not-found__message">
+        The page you're looking for doesn't exist or has been moved.
+        Let's get you back on track.
+      </p>
+
+      <div class="not-found__actions">
+        <button nz-button nzType="primary" nzSize="large" routerLink="/dashboard">
+          <lucide-icon name="home" [size]="16"></lucide-icon>
+          <span>Back to Dashboard</span>
+        </button>
+        <button nz-button nzType="default" nzSize="large" routerLink="/auth/login">
+          <lucide-icon name="log-out" [size]="16"></lucide-icon>
+          <span>Go to Login</span>
+        </button>
+      </div>
+    </div>
+
+    <footer class="not-found__footer">
+      <span>&copy; {{ currentYear }} VSEEDS Admin Portal</span>
+      <span class="not-found__footer-dot">&middot;</span>
+      <!-- <span class="not-found__footer-credit">
+        Design and Developed by
+        <a href="https://kajamohan.vercel.app/" target="_blank">Kajamohan K</a>
+      </span> -->
+    </footer>
+  </div>
+</div>

@@ -1,0 +1,111 @@
+.float-label-container {
+  position: relative;
+  width: 100%;
+  margin-top: 12px; // Space for the floating label
+
+  .float-label-text {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    color: var(--text-disabled);
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .required-mark {
+      color: #ff4d4f;
+    }
+  }
+
+  // When floating
+  &.is-floating {
+    .float-label-text {
+      top: 0;
+      left: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-primary);
+      background: var(--bg-component);
+      padding: 0 6px;
+      transform: translateY(-50%);
+    }
+  }
+
+  // Handle Textarea
+  &:has(textarea) {
+    .float-label-text {
+      top: 20px;
+      transform: none;
+    }
+
+    &.is-floating {
+      .float-label-text {
+        top: 0;
+        transform: translateY(-50%);
+      }
+    }
+  }
+
+  // Adjust input focus style to match
+  ::ng-deep {
+    .ant-input,
+    .ant-input-number,
+    .ant-select-selector,
+    .ant-picker,
+    .ant-input-affix-wrapper {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border: 1px solid var(--border-base) !important;
+      border-radius: 10px !important;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      height: 44px !important;
+      display: flex !important;
+      align-items: center !important;
+      padding-left: 12px !important;
+
+      &:hover {
+        border-color: var(--color-primary-light) !important;
+      }
+
+      &:focus,
+      &.ant-input-focused,
+      &.ant-select-focused,
+      &.ant-picker-focused,
+      &.ant-input-affix-wrapper-focused {
+        border-color: var(--color-primary) !important;
+        background: transparent !important;
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary), transparent 90%) !important;
+      }
+    }
+
+    .ant-input-affix-wrapper {
+      .ant-input {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        height: 100% !important;
+      }
+    }
+
+    .ant-select-selection-search-input {
+      height: 42px !important;
+    }
+
+    .ant-input-number-input {
+      height: 42px !important;
+    }
+  }
+}
+
+// Dark mode tweaks
+[data-theme='dark'] .float-label-container {
+  &.is-floating .float-label-text {
+    background: var(--bg-component);
+    color: var(--color-primary-light);
+  }
+}

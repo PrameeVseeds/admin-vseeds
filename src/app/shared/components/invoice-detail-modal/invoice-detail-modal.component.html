@@ -1,0 +1,48 @@
+<div class="invoice-modal">
+  <header class="modal-header no-print">
+    <div class="header-left">
+      <div class="icon-box">
+        <lucide-icon name="file-text" [size]="20"></lucide-icon>
+      </div>
+      <div class="title-group">
+        <h3>{{ invoice().invoiceNumber }}</h3>
+        <p>Invoice Details</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="status-pill" [class]="'status-pill--' + invoice().statusType">
+        {{ invoice().status }}
+      </span>
+      <button class="btn-close" aria-label="Close" (click)="close()">
+        <lucide-icon name="x" [size]="20"></lucide-icon>
+      </button>
+    </div>
+  </header>
+
+  <div class="printable" id="printableInvoice">
+    <div class="invoice-paper">
+      <div class="doc-style" [innerHTML]="docStyle"></div>
+      <div class="inv-host" [innerHTML]="printHtml()"></div>
+    </div>
+  </div>
+
+  <footer class="modal-footer no-print">
+    <div class="footer-left">
+      <button nz-button nzType="default" class="btn-secondary" (click)="close()">Close</button>
+    </div>
+    <div class="footer-right">
+      <button nz-button nzType="default" class="btn-print" (click)="printInvoice()">
+        <lucide-icon name="printer" [size]="16"></lucide-icon>
+        <span>Print</span>
+      </button>
+      <button nz-button nzType="default" class="btn-download" (click)="downloadInvoice()">
+        <lucide-icon name="download" [size]="16"></lucide-icon>
+        <span>Download</span>
+      </button>
+      <button nz-button nzType="primary" class="btn-send" (click)="sendInvoice()">
+        <lucide-icon name="send" [size]="16"></lucide-icon>
+        <span>Send</span>
+      </button>
+    </div>
+  </footer>
+</div>

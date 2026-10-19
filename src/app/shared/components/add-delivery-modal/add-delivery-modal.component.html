@@ -1,0 +1,113 @@
+<div class="delivery-modal">
+  <!-- Header -->
+  <header class="modal-header">
+    <div class="header-left">
+      <div class="icon-box">
+        <lucide-icon name="truck" [size]="20"></lucide-icon>
+      </div>
+      <div class="title-group">
+        <h3>Add Delivery</h3>
+        <p>Create a new shipment entry</p>
+      </div>
+    </div>
+    <button class="btn-close" aria-label="Close" (click)="onCancel()">
+      <lucide-icon name="x" [size]="18"></lucide-icon>
+    </button>
+  </header>
+
+  <!-- Form -->
+  <form class="modal-body" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <!-- Order Number -->
+    <div class="form-field">
+      <app-float-label label="Order Number" [required]="true">
+        <nz-select
+          id="orderNumber"
+          class="form-field__select"
+          formControlName="order"
+          nzPlaceHolder=" "
+          nzShowSearch
+          (ngModelChange)="onOrderChange($event)"
+        >
+          @for (order of orderOptions; track order.id) {
+            <nz-option
+              [nzValue]="order.id"
+              [nzLabel]="(order.order || order.id) + ' — ' + order.customer"
+            ></nz-option>
+          }
+        </nz-select>
+      </app-float-label>
+    </div>
+
+    <!-- Customer (auto-filled) -->
+    @if (customerName()) {
+      <div class="autofill-card">
+        <lucide-icon name="user" [size]="14"></lucide-icon>
+        <span>Customer: <strong>{{ customerName() }}</strong></span>
+      </div>
+    }
+
+    <!-- Tracking Number -->
+    <div class="form-field">
+      <app-float-label label="Tracking Number" [required]="true">
+        <input
+          nz-input
+          id="tracking"
+          class="form-field__input"
+          formControlName="tracking"
+          placeholder=" "
+        />
+      </app-float-label>
+    </div>
+
+    <!-- Carrier -->
+    <div class="form-field">
+      <app-float-label label="Carrier" [required]="true">
+        <nz-select
+          id="carrier"
+          class="form-field__select"
+          formControlName="carrier"
+          nzPlaceHolder=" "
+          nzShowSearch
+        >
+          @for (c of carrierOptions; track c) {
+            <nz-option [nzValue]="c" [nzLabel]="c"></nz-option>
+          }
+        </nz-select>
+      </app-float-label>
+    </div>
+
+    <!-- Date row -->
+    <div class="form-row">
+      <div class="form-field">
+        <app-float-label label="Shipping Date" [required]="true">
+          <nz-date-picker
+            id="shipped"
+            class="form-field__datepicker"
+            formControlName="shipped"
+            nzPlaceHolder=" "
+          ></nz-date-picker>
+        </app-float-label>
+      </div>
+
+      <div class="form-field">
+        <app-float-label label="Estimated Delivery" [required]="true">
+          <nz-date-picker
+            id="estimated"
+            class="form-field__datepicker"
+            formControlName="estimated"
+            nzPlaceHolder=" "
+          ></nz-date-picker>
+        </app-float-label>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="modal-footer">
+      <button nz-button type="button" class="btn-cancel" (click)="onCancel()">Cancel</button>
+      <button nz-button type="submit" class="btn-submit" [disabled]="form.invalid">
+        <lucide-icon name="plus" [size]="16"></lucide-icon>
+        <span>Add Delivery</span>
+      </button>
+    </footer>
+  </form>
+</div>

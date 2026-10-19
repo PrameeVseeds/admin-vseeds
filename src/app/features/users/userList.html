@@ -1,0 +1,117 @@
+<div class="user-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="users" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total Customers</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="user-check" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ activeCount() }}</span>
+        <span class="stat-card__label">Active</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--warning">
+        <lucide-icon name="shopping-cart" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalOrders() }}</span>
+        <span class="stat-card__label">Total Orders</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--info">
+        <lucide-icon name="wallet" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalRevenue() }}</span>
+        <span class="stat-card__label">Total Revenue</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #customerCell let-user>
+    <div class="customer-cell">
+      <div class="customer-cell__avatar">
+        {{ (user.name || user.firstName || '?').charAt(0) }}
+      </div>
+      <div class="customer-cell__info">
+        <span class="customer-cell__name">{{ user.name || ((user.firstName || '') + ' ' + (user.lastName || '')).trim() || '-' }}</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #contactCell let-user>
+    <div class="contact-cell">
+      <span class="contact-cell__item">
+        <lucide-icon name="mail" [size]="12"></lucide-icon>
+        {{ user.email }}
+      </span>
+      <span class="contact-cell__item contact-cell__item--muted">
+        <lucide-icon name="phone" [size]="12"></lucide-icon>
+        {{ user.phone }}
+      </span>
+    </div>
+  </ng-template>
+
+  <ng-template #activityCell let-user>
+    <div class="activity-cell">
+      <span class="activity-cell__orders">
+        <lucide-icon name="shopping-cart" [size]="12"></lucide-icon>
+        {{ user.orders }} orders
+      </span>
+      <span class="activity-cell__joined">
+        <lucide-icon name="calendar" [size]="10"></lucide-icon>
+        Since {{ user.joined }}
+      </span>
+    </div>
+  </ng-template>
+
+  <ng-template #revenueCell let-user>
+    <span class="revenue-cell">{{ user.totalSpent }}</span>
+  </ng-template>
+
+  <ng-template #statusCell let-user>
+    <span class="status-badge" [class]="'status-badge--' + (user.statusType || 'info')">
+      {{ user.status }}
+    </span>
+  </ng-template>
+
+  <ng-template #actionsCell let-user>
+    <div class="action-btns">
+      <button class="action-btn" aria-label="View Profile" nz-tooltip nzTooltipTitle="View Profile" (click)="viewUser(user)">
+        <lucide-icon name="eye" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="Customers"
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="filteredUsers()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    searchPlaceholder="Search customers..."
+    [pageSize]="pageSize"
+    [cellTemplates]="{ customer: customerCell, contact: contactCell, activity: activityCell, revenue: revenueCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  >
+    <div actions>
+      
+    </div>
+  </app-base-list>
+</div>

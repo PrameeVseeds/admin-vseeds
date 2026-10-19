@@ -1,0 +1,170 @@
+<div class="p-6 max-w-[1600px] mx-auto animate-fade-in space-y-8">
+  <!-- Page Header -->
+  <div class="flex flex-col gap-1">
+    <h1 class="text-2xl font-bold tracking-tight text-[var(--text-primary)]">Profile Settings</h1>
+    <p class="text-[var(--text-secondary)] text-sm">Manage your account details and preferences</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left: Profile Card -->
+    <div class="lg:col-span-1 space-y-6">
+      <!-- Avatar Card -->
+      <div
+        class="bg-[var(--bg-component)] rounded-2xl border border-[var(--border-base)] p-6 shadow-sm text-center"
+      >
+        <div class="relative inline-block mb-4">
+          @if (userAvatar()) {
+            <img
+              [src]="userAvatar()"
+              class="w-24 h-24 rounded-full object-cover mx-auto"
+              alt="Avatar"
+            />
+          } @else {
+            <div
+              class="w-24 h-24 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center text-[var(--color-primary)] text-3xl font-bold mx-auto"
+            >
+              {{ (tokenStorage.user()?.username || 'A')[0] | uppercase }}
+            </div>
+          }
+          <button
+            class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity"
+            aria-label="Edit avatar"
+          >
+            <lucide-icon name="edit" [size]="14"></lucide-icon>
+          </button>
+        </div>
+        <h3 class="text-lg font-bold text-[var(--text-primary)]">
+          {{ tokenStorage.user()?.username || '—' }}
+        </h3>
+        <p class="text-sm text-[var(--text-disabled)] mt-0.5">{{ userRole() }}</p>
+
+        <div class="mt-5 pt-5 border-t border-[var(--border-base)] space-y-3 text-left">
+          <div class="flex items-center gap-3 text-sm">
+            <lucide-icon name="mail" [size]="16" class="text-[var(--text-disabled)]"></lucide-icon>
+            <span class="text-[var(--text-secondary)]">{{ tokenStorage.user()?.email || '—' }}</span>
+          </div>
+          <div class="flex items-center gap-3 text-sm">
+            <lucide-icon name="phone" [size]="16" class="text-[var(--text-disabled)]"></lucide-icon>
+            <span class="text-[var(--text-secondary)]">{{ tokenStorage.user()?.phone || '—' }}</span>
+          </div>
+          <div class="flex items-center gap-3 text-sm">
+            <lucide-icon
+              name="map-pin"
+              [size]="16"
+              class="text-[var(--text-disabled)]"
+            ></lucide-icon>
+            <span class="text-[var(--text-secondary)]">{{ tokenStorage.user()?.address || '—' }}</span>
+          </div>
+          <div class="flex items-center gap-3 text-sm">
+            <lucide-icon
+              name="calendar"
+              [size]="16"
+              class="text-[var(--text-disabled)]"
+            ></lucide-icon>
+            <span class="text-[var(--text-secondary)]">Joined {{ joinedDate() }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div
+        class="bg-[var(--bg-component)] rounded-2xl border border-[var(--border-base)] p-5 shadow-sm"
+      >
+        <h4 class="text-sm font-bold text-[var(--text-primary)] mb-4">Account Activity</h4>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-[var(--text-secondary)]">Last Login</span>
+            <span class="text-xs font-bold text-[var(--text-primary)]">{{ lastLogin() }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-[var(--text-secondary)]">Role</span>
+            <span
+              class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] uppercase font-bold bg-violet-500/10 text-violet-600 border border-violet-500/20"
+            >
+              <lucide-icon name="shield" [size]="10"></lucide-icon>
+              {{ userRole() }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <app-session-list
+        [sessions]="sessions()"
+        [lastLogin]="lastLogin()"
+        (remove)="removeSession($event)"
+      ></app-session-list>
+    </div>
+
+    <!-- Right: Settings Forms -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Personal Information -->
+      <div
+        class="bg-[var(--bg-component)] rounded-2xl border border-[var(--border-base)] shadow-sm overflow-hidden"
+      >
+        <div class="px-6 py-4 border-b border-[var(--border-base)]">
+          <div class="flex items-center gap-2">
+            <lucide-icon name="user" [size]="18" class="text-[var(--color-primary)]"></lucide-icon>
+            <h3 class="text-base font-bold text-[var(--text-primary)]">Personal Information</h3>
+          </div>
+          <p class="text-xs text-[var(--text-disabled)] mt-0.5 ml-6">
+            Update your personal details and contact information
+          </p>
+        </div>
+        <div class="p-6">
+          <form [formGroup]="form" class="space-y-4">
+            <app-float-label label="Username" [required]="true">
+              <input nz-input formControlName="username" placeholder=" " />
+            </app-float-label>
+
+            <app-float-label label="Email Address" [required]="true">
+              <nz-input-group [nzSuffix]="emailLockIcon">
+                <input
+                  nz-input
+                  formControlName="email"
+                  placeholder=" "
+                  [readOnly]="true"
+                  class="!cursor-not-allowed !bg-[var(--bg-hover)]"
+                />
+              </nz-input-group>
+              <ng-template #emailLockIcon>
+                <lucide-icon
+                  name="lock"
+                  [size]="14"
+                  class="text-[var(--text-disabled)]"
+                  nz-tooltip
+                  nzTooltipTitle="Email cannot be changed"
+                ></lucide-icon>
+              </ng-template>
+            </app-float-label>
+
+            <app-float-label label="Phone Number">
+              <input nz-input formControlName="phone" placeholder=" " />
+            </app-float-label>
+
+            <app-float-label label="Address">
+              <input nz-input formControlName="address" placeholder=" " />
+            </app-float-label>
+
+            <div class="flex justify-end pt-2">
+              <button
+                class="flex items-center gap-2 px-5 py-2.5 bg-[var(--color-primary)] text-white rounded-xl font-medium hover:opacity-90 transition-opacity shadow-lg shadow-[var(--color-primary)]/20 disabled:opacity-70 disabled:cursor-not-allowed"
+                [disabled]="loading()"
+                (click)="onSaveProfile()"
+              >
+                @if (loading()) {
+                  <lucide-icon name="refresh-cw" [size]="16" class="animate-spin"></lucide-icon>
+                } @else {
+                  <lucide-icon name="save" [size]="16"></lucide-icon>
+                }
+                <span>{{ loading() ? 'Saving...' : 'Save Changes' }}</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <app-password-form></app-password-form>
+      <app-two-factor [enabled]="is2faEnabled()"></app-two-factor>
+    </div>
+  </div>
+</div>

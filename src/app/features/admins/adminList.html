@@ -1,0 +1,111 @@
+<div class="admin-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="users" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total Admins</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="user-check" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ activeCount() }}</span>
+        <span class="stat-card__label">Active</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--error">
+        <lucide-icon name="user-x" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ inactiveCount() }}</span>
+        <span class="stat-card__label">Inactive</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--violet">
+        <lucide-icon name="shield" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ superAdminCount() }}</span>
+        <span class="stat-card__label">Super Admins</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #adminCell let-admin>
+    <div class="admin-cell">
+      <div class="admin-cell__avatar">
+        {{ (admin?.name ?? admin?.username ?? '?')[0] }}
+      </div>
+      <div class="admin-cell__info">
+        <span class="admin-cell__name">{{ admin?.name ?? admin?.username ?? '-' }}</span>
+        <span class="admin-cell__email">
+          <lucide-icon name="mail" [size]="11"></lucide-icon>
+          {{ admin?.email ?? '-' }}
+        </span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #roleCell let-admin>
+    <span class="role-badge" [class.role-badge--super]="admin?.role?.toLowerCase() === 'super admin'">
+      <lucide-icon name="shield" [size]="10"></lucide-icon>
+      {{ admin?.role ?? '-' }}
+    </span>
+  </ng-template>
+
+  <ng-template #lastActiveCell let-admin>
+    <div class="last-active">
+      <lucide-icon name="clock" [size]="12"></lucide-icon>
+      {{ admin?.lastLogin ?? 'Never' }}
+    </div>
+  </ng-template>
+
+  <ng-template #statusCell let-admin>
+    <span class="status-badge" [class]="'status-badge--' + (admin?.statusType ?? 'info')">
+      {{ admin?.status ?? '-' }}
+    </span>
+  </ng-template>
+
+  <ng-template #actionsCell let-admin>
+    <div class="action-btns">
+      <button class="action-btn" aria-label="Edit Admin" nz-tooltip nzTooltipTitle="Edit Admin" (click)="onEdit(admin)">
+        <lucide-icon name="edit" [size]="16"></lucide-icon>
+      </button>
+      <button class="action-btn action-btn--danger" aria-label="Delete Admin" nz-tooltip nzTooltipTitle="Delete Admin" (click)="onDelete(admin)">
+        <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="Admin Users"
+    [tabs]="roleTabs()"
+    [columns]="columns"
+    [items]="paginatedAdmins()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    searchPlaceholder="Search admins..."
+    [pageSize]="pageSize"
+    [cellTemplates]="{ admin: adminCell, role: roleCell, lastActive: lastActiveCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  >
+    <div actions>
+      <button class="btn-add" routerLink="create">
+        <lucide-icon name="user-plus" [size]="18"></lucide-icon>
+        <span>Add Admin</span>
+      </button>
+    </div>
+  </app-base-list>
+</div>

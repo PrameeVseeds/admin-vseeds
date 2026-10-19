@@ -1,0 +1,430 @@
+:host {
+  display: block;
+  background: var(--bg-body);
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════════
+   WORKSPACE
+   ═══════════════════════════════════════════════ */
+.banner-workspace {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2.5rem 3rem;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════════ */
+.page-header {
+  margin-bottom: 2.5rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.btn-back {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border-base);
+  background: var(--bg-component);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--bg-hover);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
+.title-group {
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.025em;
+  }
+}
+
+.breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-disabled);
+  margin-bottom: 4px;
+
+  .nav-item.active {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-cancel {
+  height: 2.75rem !important;
+  padding: 0 1.25rem !important;
+  border-radius: 0.75rem !important;
+  font-weight: 600 !important;
+}
+
+.btn-primary {
+  height: 2.75rem !important;
+  padding: 0 1.5rem !important;
+  border-radius: 0.75rem !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* ═══════════════════════════════════════════════
+   FORM GRID
+   ═══════════════════════════════════════════════ */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ═══════════════════════════════════════════════
+   CARDS
+   ═══════════════════════════════════════════════ */
+.form-card,
+.sidebar-card {
+  background: var(--bg-component);
+  border: 1px solid var(--border-base);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-base);
+
+  lucide-icon {
+    color: var(--color-primary);
+    margin-top: 2px;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  p {
+    font-size: 0.8rem;
+    color: var(--text-disabled);
+    margin: 2px 0 0;
+  }
+
+  .sidebar-card & {
+    padding: 16px 20px;
+
+    h3 {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.card-body {
+  padding: 24px;
+
+  .sidebar-card & {
+    padding: 20px;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   IMAGE UPLOAD
+   ═══════════════════════════════════════════════ */
+.image-upload-wrapper {
+  margin-bottom: 20px;
+
+  .drag-drop-zone {
+    width: 100%;
+    aspect-ratio: 16 / 5;
+    background: var(--bg-hover);
+    border: 2px dashed var(--border-base);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: var(--color-primary);
+      background: color-mix(in srgb, var(--color-primary), transparent 96%);
+    }
+
+    &.has-image {
+      border-style: solid;
+    }
+
+    .preview-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.2s;
+
+      span {
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+    }
+
+    &:hover .overlay {
+      opacity: 1;
+    }
+
+    .placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-disabled);
+      gap: 0.75rem;
+      text-align: center;
+
+      p {
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin: 0;
+      }
+      span {
+        font-size: 0.75rem;
+      }
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   AI PROMPT CARD
+   ═══════════════════════════════════════════════ */
+.ai-prompt-card {
+  position: relative;
+  margin-bottom: 20px;
+  background: var(--bg-hover);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 14px 16px;
+
+  &__glow {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
+    opacity: 0.1;
+    pointer-events: none;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+    margin-bottom: 8px;
+  }
+
+  &__copy-btn {
+    margin-left: auto;
+    background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+    color: var(--color-primary);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+  }
+
+  &__text {
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   FIELD ROW (2 columns)
+   ═══════════════════════════════════════════════ */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   INFO CARD (sidebar tip)
+   ═══════════════════════════════════════════════ */
+.info-card {
+  background: color-mix(in srgb, var(--color-primary), transparent 94%);
+  border: 1px solid color-mix(in srgb, var(--color-primary), transparent 85%);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+}
+
+.info-card__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--color-primary), transparent 85%);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.info-card h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.info-card p {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════
+   GLOBAL NG-ZORRO OVERRIDES
+   ═══════════════════════════════════════════════ */
+::ng-deep {
+  .ant-form-item-label label {
+    font-weight: 600;
+  }
+
+  .ant-input,
+  .ant-select-selector,
+  .ant-picker {
+    border-radius: 10px !important;
+    background: var(--bg-hover) !important;
+    border: 1px solid var(--border-base) !important;
+    height: 2.75rem !important;
+
+    &:focus,
+    &:hover {
+      border-color: var(--color-primary) !important;
+    }
+  }
+
+  .ant-divider {
+    margin: 4px 0 !important;
+  }
+
+  .ant-form-item {
+    margin-bottom: 16px;
+
+    &:last-child,
+    &.mb-0 {
+      margin-bottom: 0;
+    }
+  }
+
+  nz-date-picker {
+    display: block;
+    width: 100%;
+  }
+
+  .ant-picker.w-full {
+    width: 100% !important;
+  }
+
+  .ant-picker-input > input {
+    height: 100% !important;
+  }
+}

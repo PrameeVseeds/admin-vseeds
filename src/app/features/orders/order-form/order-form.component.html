@@ -1,0 +1,90 @@
+<div class="order-form-workspace">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <button (click)="goBack()" class="btn-back" aria-label="Go back">
+          <lucide-icon name="arrow-left" [size]="18"></lucide-icon>
+        </button>
+        <div class="title-group">
+          <nav class="breadcrumb-nav">
+            <span class="nav-item">Orders</span>
+            <lucide-icon name="chevron-right" [size]="14"></lucide-icon>
+            <span class="nav-item active">Edit Order</span>
+          </nav>
+          <h1>{{ orderNumber || orderId }}</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        @if (isLocked) {
+          <span class="status-badge status-badge--locked">
+            <lucide-icon name="lock" [size]="14"></lucide-icon>
+            Order {{ orderStatus() | titlecase }} — No changes allowed
+          </span>
+        } @else {
+          <button nz-button class="btn-payment" (click)="sendPaymentRequest()" [disabled]="sendingPayment()">
+            <lucide-icon name="credit-card" [size]="18"></lucide-icon>
+            <span>{{ sendingPayment() ? 'Sending...' : 'Send Payment Request' }}</span>
+          </button>
+          <button nz-button class="btn-cancel" (click)="goBack()">Discard</button>
+          <button nz-button nzType="primary" class="btn-primary" (click)="submit()">
+            <lucide-icon name="check" [size]="18"></lucide-icon>
+            <span>Save Changes</span>
+          </button>
+        }
+      </div>
+    </div>
+  </header>
+
+  <form [formGroup]="form" nz-form nzLayout="vertical" class="workspace-body">
+    <div class="form-grid">
+      <!-- Main Column -->
+      <div class="form-main">
+        <app-order-line-items
+          [lineItems]="lineItems"
+          [products]="products"
+          [locked]="isLocked"
+          (recalc)="triggerRecalc()"
+        >
+          <div class="items-editor__footer">
+            <div class="footer-row">
+              <span class="footer-label">Subtotal</span>
+              <span class="footer-value">{{ formatCurrency(subtotal) }}</span>
+            </div>
+            <div class="footer-row footer-row--shipping">
+              <span class="footer-label">Shipping Fee</span>
+              <nz-input-number
+                formControlName="shippingFee"
+                [nzMin]="0"
+                [nzStep]="500"
+                class="shipping-input"
+                (ngModelChange)="triggerRecalc()"
+              ></nz-input-number>
+            </div>
+            <nz-divider class="footer-divider"></nz-divider>
+            <div class="footer-row footer-row--total">
+              <span class="footer-label">Order Total</span>
+              <span class="footer-value footer-value--primary">{{ formatCurrency(orderTotal) }}</span>
+            </div>
+          </div>
+        </app-order-line-items>
+      </div>
+
+      <!-- Sidebar Column -->
+      <aside class="form-sidebar">
+        <app-order-summary
+          [orderNumber]="orderNumber"
+          [orderId]="orderId"
+          [orderDate]="order?.['createdAt'] || order?.['date'] || ''"
+          [lineItemsCount]="lineItems.length"
+          [subtotal]="subtotal"
+          [shipping]="shippingFeeValue"
+          [total]="orderTotal"
+          [isLocked]="isLocked"
+          [sendingPayment]="sendingPayment()"
+          (sendPayment)="sendPaymentRequest()"
+        ></app-order-summary>
+      </aside>
+    </div>
+  </form>
+</div>

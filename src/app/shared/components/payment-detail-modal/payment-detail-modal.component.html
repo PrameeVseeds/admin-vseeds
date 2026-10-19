@@ -1,0 +1,157 @@
+<div class="payment-modal">
+  <!-- Modal Header -->
+  <header class="modal-header">
+    <div class="header-left">
+      <div class="icon-box">
+        <lucide-icon name="credit-card" [size]="20"></lucide-icon>
+      </div>
+      <div class="title-group">
+        <h3>{{ data.paymentNumber || data.id }}</h3>
+        <p>Payment Receipt</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="status-pill" [class]="'status-pill--' + data.statusType">
+        {{ data.status }}
+      </span>
+      <button class="btn-close" aria-label="Close" (click)="close()">
+        <lucide-icon name="x" [size]="20"></lucide-icon>
+      </button>
+    </div>
+  </header>
+
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <!-- Customer & Order -->
+    <div class="info-section">
+      <div class="section-label">Customer Details</div>
+      <div class="customer-card">
+        <div class="customer-card__avatar">{{ (data.customer || '?').charAt(0) }}</div>
+        <div class="customer-card__details">
+          <div class="customer-card__name">{{ data.customer || '—' }}</div>
+          @if (data.email) {
+            <div class="customer-card__email">{{ data.email }}</div>
+          }
+          <div class="customer-card__meta">
+            <span>
+              <lucide-icon name="shopping-cart" [size]="12"></lucide-icon>
+              {{ data.order || '—' }}
+            </span>
+            <span>
+              <lucide-icon name="calendar" [size]="12"></lucide-icon>
+              {{ data.date || '—' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Details -->
+    <div class="info-section">
+      <div class="section-label">Payment Information</div>
+      <div class="detail-grid">
+        <div class="detail-card">
+          <div class="detail-card__icon detail-card__icon--blue">
+            <lucide-icon name="wallet" [size]="16"></lucide-icon>
+          </div>
+          <div class="detail-card__content">
+            <span class="detail-card__label">Payment Method</span>
+            <span class="detail-card__value">{{ data.method }}</span>
+          </div>
+        </div>
+        <div class="detail-card">
+          <div class="detail-card__icon detail-card__icon--emerald">
+            <lucide-icon name="calendar" [size]="16"></lucide-icon>
+          </div>
+          <div class="detail-card__content">
+            <span class="detail-card__label">Payment Date</span>
+            <span class="detail-card__value">{{ data.date }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Amount -->
+    <div class="info-section">
+      <div class="section-label">Amount</div>
+      <div class="amount-card">
+        <div class="amount-card__left">
+          <div class="amount-card__icon">
+            <lucide-icon name="banknote" [size]="20"></lucide-icon>
+          </div>
+          <span>Total Paid</span>
+        </div>
+        <span class="amount-card__value">Rs. {{ data.amount | number: '1.2-2' }}</span>
+      </div>
+    </div>
+
+    <!-- Payment Progress -->
+    <div class="info-section">
+      <div class="section-label">Payment Progress</div>
+      @if (data.status === 'failed' || data.status === 'cancelled') {
+        <div class="timeline-card">
+          <div class="timeline-cancelled">
+            <lucide-icon name="x-circle" [size]="20"></lucide-icon>
+            <span>This payment has been {{ data.status }}</span>
+          </div>
+        </div>
+      } @else if (data.status === 'refunded') {
+        <div class="timeline-card">
+          <div class="timeline-refunded">
+            <lucide-icon name="refresh-cw" [size]="20"></lucide-icon>
+            <span>This payment has been refunded</span>
+          </div>
+        </div>
+      } @else {
+        <div class="timeline-card">
+          <div class="timeline">
+            @for (step of timeline(); track step.label; let last = $last) {
+              <div
+                class="timeline-step"
+                [class.timeline-step--completed]="step.completed"
+                [class.timeline-step--active]="step.active"
+              >
+                <div class="timeline-step__dot">
+                  @if (step.completed) {
+                    <lucide-icon name="check" [size]="12"></lucide-icon>
+                  } @else {
+                    <lucide-icon [name]="step.icon" [size]="12"></lucide-icon>
+                  }
+                </div>
+                @if (!last) {
+                  <div class="timeline-step__line" [class.timeline-step__line--filled]="step.completed"></div>
+                }
+                <span class="timeline-step__label">{{ step.label }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Modal Footer -->
+  <footer class="modal-footer">
+    <div class="footer-left">
+      <button nz-button nzType="default" (click)="close()" class="btn-secondary">Close</button>
+    </div>
+    <div class="footer-right">
+      <button nz-button nzType="default" class="btn-print" (click)="viewReceipt()">
+        <lucide-icon name="eye" [size]="18"></lucide-icon>
+        <span>View</span>
+      </button>
+      <button nz-button nzType="default" class="btn-print" (click)="downloadReceipt()">
+        <lucide-icon name="file-down" [size]="18"></lucide-icon>
+        <span>Receipt</span>
+      </button>
+    </div>
+  </footer>
+</div>
+
+<ng-template #receiptPreview>
+  <iframe
+    id="receipt-iframe"
+    [src]="receiptUrl"
+    style="width: 100%; height: 620px; border: none;"
+  ></iframe>
+</ng-template>

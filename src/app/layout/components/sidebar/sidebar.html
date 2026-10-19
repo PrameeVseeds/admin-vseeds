@@ -1,0 +1,63 @@
+<nz-sider
+  class="sidebar"
+  [class.sidebar--collapsed]="collapsed()"
+  [nzCollapsible]="true"
+  [nzCollapsed]="collapsed()"
+  (nzCollapsedChange)="collapsedChange.emit($event)"
+  [nzWidth]="256"
+  [nzCollapsedWidth]="80"
+  nzBreakpoint="lg"
+  [nzTrigger]="null"
+>
+  <!-- Logo -->
+  <div class="sidebar__logo">
+    <a routerLink="/dashboard" class="sidebar__logo-link">
+      <img
+        src="/assets/images/logo/logo.png"
+        alt="VSEEDS"
+        class="sidebar__logo-img"
+        [class.sidebar__logo-img--dark]="isDark()"
+        [class.sidebar__logo-img--light]="!isDark()"
+      />
+      @if (!collapsed()) {
+        <div class="sidebar__logo-text-wrapper">
+          <span class="sidebar__logo-text">VSEEDS</span>
+          <span class="sidebar__logo-badge">Admin Portal</span>
+        </div>
+      }
+    </a>
+  </div>
+
+  <!-- Navigation Menu -->
+  <div class="sidebar__nav">
+    <ul nz-menu nzMode="inline" [nzTheme]="menuTheme()">
+      @for (group of menuGroups; track group.title) {
+        <!-- Group title (expanded) or divider (collapsed) -->
+        @if (group.title && !collapsed()) {
+          <li class="sidebar__group-title">{{ group.title }}</li>
+        }
+        @if (group.title && collapsed()) {
+          <li class="sidebar__group-divider"></li>
+        }
+
+        @for (item of group.items; track item.label) {
+          @if (item.route) {
+            <li
+              nz-menu-item
+              [nzPaddingLeft]="collapsed() ? 28 : 24"
+              [routerLink]="item.route"
+              routerLinkActive="ant-menu-item-selected"
+              [nz-tooltip]="collapsed() ? item.label : ''"
+              nzTooltipPlacement="right"
+            >
+              <lucide-icon [name]="item.icon" [size]="18"></lucide-icon>
+              @if (!collapsed()) {
+                <span>{{ item.label }}</span>
+              }
+            </li>
+          }
+        }
+      }
+    </ul>
+  </div>
+</nz-sider>

@@ -1,0 +1,286 @@
+<div class="order-modal">
+  <!-- Modal Header -->
+  <header class="modal-header">
+    <div class="header-left">
+      <div class="icon-box">
+        <lucide-icon name="shopping-cart" [size]="20"></lucide-icon>
+      </div>
+      <div class="title-group">
+        <h3>{{ data.orderNumber }}</h3>
+        <p>Order Details</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="status-pill" [class]="'status-pill--' + data.statusType">
+        {{ data.status }}
+      </span>
+      <button class="btn-close" aria-label="Close" (click)="close()">
+        <lucide-icon name="x" [size]="20"></lucide-icon>
+      </button>
+    </div>
+  </header>
+
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <!-- Customer Details -->
+    <div class="info-section">
+      <div class="section-label">Customer Details</div>
+      <div class="customer-card">
+        <div class="customer-card__avatar">{{ (data.customer || '?').charAt(0) }}</div>
+        <div class="customer-card__details">
+          <div class="customer-card__name">{{ data.customer }}</div>
+          <div class="customer-card__meta">
+            <span><lucide-icon name="mail" [size]="12"></lucide-icon> {{ data.email }}</span>
+            <span><lucide-icon name="phone" [size]="12"></lucide-icon> {{ data.phone }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delivery Address -->
+    <div class="info-section">
+      <div class="section-label">Delivery Address</div>
+      @if (data.shippingAddress) {
+        <div class="address-card" style="flex-direction: column; align-items: flex-start; gap: 4px">
+          <div style="display: flex; align-items: center; gap: 8px">
+            <lucide-icon name="map-pin" [size]="16"></lucide-icon>
+            <strong>{{ data.shippingAddress.fullName }}</strong>
+          </div>
+          <div style="padding-left: 24px; font-size: 12px; color: #666; line-height: 1.6">
+            {{ data.shippingAddress.address }}<br />
+            {{ data.shippingAddress.district }}, {{ data.shippingAddress.province }}
+            {{ data.shippingAddress.postalCode }}<br />
+            {{ data.shippingAddress.country }}
+            @if (data.shippingAddress.phone) {
+              <br /><span style="color: #0d9488">{{ data.shippingAddress.phone }}</span>
+            }
+          </div>
+        </div>
+      } @else {
+        <div class="address-card">
+          <lucide-icon name="map-pin" [size]="16"></lucide-icon>
+          <span>No address on record</span>
+        </div>
+      }
+    </div>
+
+    <!-- Order Items Table -->
+    <div class="info-section">
+      <div class="section-label">Items ({{ data.lineItems?.length || 0 }})</div>
+      <div class="items-table-wrap">
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th class="items-table__th items-table__th--product">Product Details</th>
+              <th class="items-table__th">Store</th>
+              <th class="items-table__th items-table__th--right">Qty</th>
+              <th class="items-table__th items-table__th--right">Line Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of data.lineItems || []; track item.product) {
+              <tr class="items-table__row">
+                <td class="items-table__td">
+                  <div class="product-cell">
+                    <div class="product-cell__icon">
+                      <lucide-icon name="package" [size]="14"></lucide-icon>
+                    </div>
+                    <span class="product-cell__name">{{ item.product }}</span>
+                  </div>
+                </td>
+                <td class="items-table__td">
+                  <span class="store-badge">{{ item.store }}</span>
+                </td>
+                <td class="items-table__td items-table__td--right">
+                  <span class="qty-text">{{ item.qty }}</span>
+                </td>
+                <td class="items-table__td items-table__td--right">
+                  <span class="total-text">{{ item.total }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr class="items-table__total-row">
+              <td colspan="3" class="items-table__td items-table__td--total-label">Order Total</td>
+              <td class="items-table__td items-table__td--right items-table__td--total-value">
+                {{ data.amount }}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Shipment Details -->
+    <div class="info-section">
+      <div class="section-label">Shipment Details</div>
+      <div class="shipment-grid">
+        <div class="shipment-card">
+          <div class="shipment-card__icon shipment-card__icon--blue">
+            <lucide-icon name="truck" [size]="16"></lucide-icon>
+          </div>
+          <div class="shipment-card__content">
+            <span class="shipment-card__label">Method</span>
+            <span class="shipment-card__value">{{
+              data.shipment?.method || 'Standard Delivery'
+            }}</span>
+          </div>
+        </div>
+        <div class="shipment-card">
+          <div class="shipment-card__icon shipment-card__icon--emerald">
+            <lucide-icon name="calendar" [size]="16"></lucide-icon>
+          </div>
+          <div class="shipment-card__content">
+            <span class="shipment-card__label">Est. Delivery</span>
+            <span class="shipment-card__value">{{ data.shipment?.estimatedDate || 'TBD' }}</span>
+          </div>
+        </div>
+      </div>
+      @if (data.shipment?.tracking) {
+        <div class="tracking-card">
+          <div class="tracking-card__left">
+            <lucide-icon name="hash" [size]="14"></lucide-icon>
+            <span class="tracking-card__label">Tracking</span>
+            <span class="tracking-card__code">{{ data.shipment?.tracking }}</span>
+          </div>
+          <button
+            class="tracking-card__copy"
+            aria-label="Copy tracking number"
+            (click)="copyTracking()"
+            nz-tooltip
+            nzTooltipTitle="Copy tracking number"
+          >
+            <lucide-icon name="copy" [size]="14"></lucide-icon>
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Invoice Details -->
+    <div class="info-section">
+      <div class="section-label">Invoice</div>
+      @if (loadingInvoice()) {
+        <div class="invoice-loading">
+          <lucide-icon name="loader" [size]="18"></lucide-icon>
+          <span>Loading invoice...</span>
+        </div>
+      } @else if (!hasInvoice()) {
+        <div class="invoice-empty">
+          <lucide-icon name="file-x" [size]="24"></lucide-icon>
+          <span>No invoice has been generated for this order.</span>
+          <button nz-button nzType="primary" (click)="generateInvoice()">
+            <lucide-icon name="file-plus" [size]="16"></lucide-icon>
+            Generate Invoice
+          </button>
+        </div>
+      } @else {
+        <div class="invoice-card">
+          <div class="invoice-card__left">
+            <div class="invoice-card__icon">
+              <lucide-icon name="file-text" [size]="20"></lucide-icon>
+            </div>
+            <div class="invoice-card__info">
+              <div class="invoice-card__number">{{ invoice().invoiceNumber }}</div>
+              <div class="invoice-card__meta">
+                <span class="status-pill" [class]="'status-pill--' + invoice().statusType">
+                  {{ invoice().status }}
+                </span>
+                <span class="invoice-card__date">
+                  <lucide-icon name="calendar" [size]="12"></lucide-icon>
+                  {{ formatInvoiceDate(invoice().invoiceDate || invoice().createdAt) }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="invoice-card__actions">
+            <button class="action-btn" nz-tooltip nzTooltipTitle="View" (click)="viewOrderInvoice()">
+              <lucide-icon name="eye" [size]="16"></lucide-icon>
+            </button>
+            <button class="action-btn" nz-tooltip nzTooltipTitle="Download" (click)="downloadOrderInvoice()">
+              <lucide-icon name="download" [size]="16"></lucide-icon>
+            </button>
+            <button class="action-btn" nz-tooltip nzTooltipTitle="Print" (click)="printOrderInvoice()">
+              <lucide-icon name="printer" [size]="16"></lucide-icon>
+            </button>
+            @if (invoice().status !== 'sent' && invoice().status !== 'paid') {
+              <button class="action-btn" nz-tooltip nzTooltipTitle="Send" (click)="sendOrderInvoice()">
+                <lucide-icon name="send" [size]="16"></lucide-icon>
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Order Timeline -->
+    <div class="info-section">
+      <div class="section-label">Order Progress</div>
+      <div class="timeline">
+        @if (data.status === 'Cancelled') {
+          <div class="timeline-cancelled">
+            <lucide-icon name="x-circle" [size]="20"></lucide-icon>
+            <span>This order has been cancelled</span>
+          </div>
+        } @else {
+          @for (step of timeline(); track step.label; let last = $last) {
+            <div
+              class="timeline-step"
+              [class.timeline-step--completed]="step.completed"
+              [class.timeline-step--active]="step.active"
+            >
+              <div class="timeline-step__dot">
+                @if (step.completed) {
+                  <lucide-icon name="check" [size]="12"></lucide-icon>
+                } @else {
+                  <lucide-icon [name]="step.icon" [size]="12"></lucide-icon>
+                }
+              </div>
+              @if (!last) {
+                <div
+                  class="timeline-step__line"
+                  [class.timeline-step__line--filled]="step.completed"
+                ></div>
+              }
+              <span class="timeline-step__label">{{ step.label }}</span>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Footer -->
+  <footer class="modal-footer">
+    <div class="footer-left">
+      <button nz-button nzType="default" (click)="close()" class="btn-secondary">Close</button>
+    </div>
+    <div class="footer-right" style="display: flex; gap: 10px; align-items: center">
+      <button nz-button nzType="default" class="btn-print" (click)="printInvoice()">
+        <lucide-icon name="file-text" [size]="16"></lucide-icon>
+        <span>Print Invoice</span>
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        class="btn-download"
+        (click)="downloadInvoice()"
+        style="
+          background: #0f766e;
+          border-color: #0f766e;
+          color: #fff;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-weight: 700;
+          padding: 0 16px;
+          height: 36px;
+          border-radius: 8px;
+        "
+      >
+        <lucide-icon name="download" [size]="16"></lucide-icon>
+        <span>Download PDF</span>
+      </button>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,112 @@
+<div class="project-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="folder-kanban" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total Projects</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="check-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ publishedCount() }}</span>
+        <span class="stat-card__label">Published</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--neutral">
+        <lucide-icon name="pencil-line" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ draftCount() }}</span>
+        <span class="stat-card__label">Drafts</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--info">
+        <lucide-icon name="layers" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ categoryCount() }}</span>
+        <span class="stat-card__label">Categories</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #projectCell let-project>
+    <div class="project-cell">
+      <div class="project-cell__thumb">
+        <img [src]="project.imageUrl" [alt]="project.title" class="project-thumb" />
+      </div>
+      <div class="project-cell__info">
+        <span class="project-cell__title">{{ project.title }}</span>
+        <span class="project-cell__client">{{ project.client }}</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #categoryCell let-project>
+    <span class="category-chip">{{ project.category }}</span>
+  </ng-template>
+
+  <ng-template #technologiesCell let-project>
+    <div class="tech-list">
+      @for (
+        tech of project.technologies && project.technologies.split
+          ? project.technologies.split(',')
+          : project.technologies || [];
+        track tech
+      ) {
+        <span class="tech-tag">{{ tech.trim?.() || tech }}</span>
+      }
+    </div>
+  </ng-template>
+
+  <ng-template #statusCell let-project>
+    <span class="status-badge status-badge--{{ project.statusType }}">
+      {{ project.status }}
+    </span>
+  </ng-template>
+
+  <ng-template #actionsCell let-project>
+    <div class="action-btns">
+      <button class="action-btn" aria-label="Edit Project" nz-tooltip nzTooltipTitle="Edit Project" (click)="onEdit(project)">
+        <lucide-icon name="edit" [size]="16"></lucide-icon>
+      </button>
+      <button class="action-btn action-btn--danger" aria-label="Delete Project" nz-tooltip nzTooltipTitle="Delete Project" (click)="onDelete(project)">
+        <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="Projects"
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="paginatedProjects()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    searchPlaceholder="Search projects..."
+    [pageSize]="pageSize"
+    [cellTemplates]="{ project: projectCell, category: categoryCell, technologies: technologiesCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  >
+    <div actions>
+      
+      <button class="btn-primary" routerLink="create">
+        <lucide-icon name="plus" [size]="18"></lucide-icon>
+        <span>Add Project</span>
+      </button>
+    </div>
+  </app-base-list>
+</div>

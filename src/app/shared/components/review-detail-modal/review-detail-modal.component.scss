@@ -1,0 +1,353 @@
+::ng-deep .review-detail-modal {
+  .ant-modal-body {
+    padding: 0 !important;
+  }
+}
+
+.review-modal {
+  background: var(--bg-card);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* HEADER */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-base);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-primary), transparent 88%);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.title-group {
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  p {
+    font-size: 0.75rem;
+    color: var(--text-disabled);
+    margin: 2px 0 0;
+    font-weight: 500;
+  }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-pill {
+  padding: 4px 14px;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+
+  &--success {
+    background: color-mix(in srgb, #10b981, transparent 88%);
+    color: #047857;
+  }
+
+  &--warning {
+    background: color-mix(in srgb, #f59e0b, transparent 88%);
+    color: #b45309;
+  }
+
+  &--error {
+    background: color-mix(in srgb, #ef4444, transparent 88%);
+    color: #b91c1c;
+  }
+}
+
+.btn-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-disabled);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+}
+
+/* BODY */
+.modal-body {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: var(--text-disabled);
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+
+/* REVIEWER CARD */
+.reviewer-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-base);
+  border-radius: 14px;
+}
+
+.reviewer-card__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.reviewer-card__details {
+  flex: 1;
+}
+
+.reviewer-card__name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.reviewer-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    color: var(--text-disabled);
+    font-weight: 500;
+  }
+
+  lucide-icon {
+    color: var(--color-primary);
+  }
+}
+
+/* PRODUCT CARD */
+.product-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-base);
+  border-radius: 14px;
+}
+
+.product-card__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-primary), transparent 90%);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.product-card__name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* RATING CARD */
+.rating-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-base);
+  border-radius: 14px;
+}
+
+.rating-card__stars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.star {
+  color: var(--border-base);
+  transition: color 0.15s;
+
+  &--active {
+    color: #f59e0b;
+  }
+}
+
+::ng-deep .star--active svg {
+  fill: #f59e0b;
+}
+
+.rating-card__score {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.rating-card__number {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.rating-card__label {
+  font-size: 0.75rem;
+  color: var(--text-disabled);
+  font-weight: 500;
+}
+
+/* COMMENT CARD */
+.comment-card {
+  position: relative;
+  padding: 20px 24px 20px 24px;
+  background: color-mix(in srgb, var(--color-primary), transparent 95%);
+  border-radius: 14px;
+  border-left: 4px solid var(--color-primary);
+}
+
+.comment-card__quote {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  color: color-mix(in srgb, var(--color-primary), transparent 70%);
+}
+
+.comment-card__text {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* FOOTER */
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-base);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-left,
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-secondary {
+  height: 38px;
+  padding: 0 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border-base);
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.825rem;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+}
+
+.btn-reject {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, #ef4444, transparent 70%);
+  background: color-mix(in srgb, #ef4444, transparent 92%);
+  color: #dc2626;
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    background: color-mix(in srgb, #ef4444, transparent 85%);
+    border-color: #ef4444;
+  }
+}
+
+.btn-approve {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    opacity: 0.9;
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary), transparent 60%);
+  }
+}

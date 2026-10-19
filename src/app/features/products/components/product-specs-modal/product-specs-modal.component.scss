@@ -1,0 +1,20 @@
+.product-specs-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pf-hint {
+  font-size: 11px;
+  color: var(--text-disabled);
+  margin: 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-base);
+}

@@ -1,0 +1,182 @@
+<div class="editor-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header__left">
+      <button class="btn-icon" aria-label="Go back" (click)="goBack()">
+        <lucide-icon name="arrow-left" [size]="18"></lucide-icon>
+      </button>
+      <div class="page-header__info">
+        <div class="page-header__title-row">
+          <h1 class="page-header__title">{{ template()?.name }}</h1>
+          @if (template(); as tpl) {
+            <button
+              class="badge badge--clickable"
+              [class.badge--success]="tpl.status === 'Active'"
+              [class.badge--muted]="tpl.status === 'Inactive'"
+              (click)="toggleStatus()"
+            >
+              {{ tpl.status }}
+            </button>
+            <span class="badge badge--outline">{{ tpl.category }}</span>
+          }
+        </div>
+        <p class="page-header__subtitle">
+          Edit email template content and settings
+          @if (template(); as tpl) {
+            <span class="page-header__meta">&middot; Last modified {{ tpl.lastModified }}</span>
+          }
+        </p>
+      </div>
+    </div>
+    <div class="page-header__actions">
+      <button
+        class="btn-ghost btn-ghost--danger"
+        nz-popconfirm
+        nzPopconfirmTitle="Delete this template permanently?"
+        nzOkText="Delete"
+        nzCancelText="Cancel"
+        (nzOnConfirm)="deleteTemplate()"
+        [disabled]="deleting()"
+      >
+        <lucide-icon name="trash-2" [size]="15"></lucide-icon>
+        <span>Delete</span>
+      </button>
+      <button class="btn-ghost" (click)="sendTestEmail()" [disabled]="sendingTest()">
+        <lucide-icon name="send" [size]="15"></lucide-icon>
+        <span>{{ sendingTest() ? 'Sending...' : 'Send Test' }}</span>
+      </button>
+      <button class="btn-primary" (click)="saveTemplate()" [disabled]="saving()">
+        <lucide-icon name="save" [size]="15"></lucide-icon>
+        <span>{{ saving() ? 'Saving...' : 'Save Changes' }}</span>
+      </button>
+    </div>
+  </div>
+
+  @if (template(); as tpl) {
+    <!-- Settings (compact row) -->
+    <div class="settings-card">
+      <div class="settings-card__row">
+        <div class="form-group">
+          <label class="form-label">Template Name</label>
+          <input
+            nz-input
+            [(ngModel)]="templateName"
+            placeholder="e.g. Order Confirmation"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <nz-select [(ngModel)]="templateCategory" style="width: 100%;">
+            <nz-option nzValue="Orders" nzLabel="Orders"></nz-option>
+            <nz-option nzValue="Account" nzLabel="Account"></nz-option>
+            <nz-option nzValue="Admin" nzLabel="Admin"></nz-option>
+            <nz-option nzValue="Communication" nzLabel="Communication"></nz-option>
+            <nz-option nzValue="Inventory" nzLabel="Inventory"></nz-option>
+            <nz-option nzValue="Wishlist" nzLabel="Wishlist"></nz-option>
+            <nz-option nzValue="Promotions" nzLabel="Promotions"></nz-option>
+          </nz-select>
+        </div>
+        <div class="form-group form-group--wide">
+          <label class="form-label">Email Subject</label>
+          <input
+            nz-input
+            [(ngModel)]="templateSubject"
+            [placeholder]="'e.g. Your Order #\{\{orderId\}\} Has Been Confirmed'"
+          />
+        </div>
+      </div>
+      <div class="settings-card__row">
+        <div class="form-group form-group--full">
+          <label class="form-label">Description</label>
+          <textarea
+            nz-input
+            [(ngModel)]="templateDescription"
+            placeholder="Brief description of when this email is sent..."
+            [nzAutosize]="{ minRows: 1, maxRows: 2 }"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Variables Bar -->
+    <div class="variables-bar">
+      <div class="variables-bar__label">
+        <lucide-icon name="hash" [size]="14"></lucide-icon>
+        <span>Variables</span>
+        <span class="variables-bar__count">{{ templateVariables.length }}</span>
+      </div>
+      <div class="variables-bar__chips">
+        @for (v of templateVariables; track v) {
+          <div class="var-chip">
+            <button class="var-chip__copy" (click)="copyVariable(v)">
+              <span class="var-chip__text">{{ '{{' + v + '}}' }}</span>
+              <lucide-icon name="copy" [size]="10"></lucide-icon>
+            </button>
+            <button class="var-chip__remove" aria-label="Remove variable" (click)="removeVariable(v)">
+              <lucide-icon name="x" [size]="11"></lucide-icon>
+            </button>
+          </div>
+        }
+        <div class="var-add">
+          <input
+            class="var-add__input"
+            [(ngModel)]="newVariableName"
+            placeholder="Add variable..."
+            (keydown.enter)="addVariable()"
+            spellcheck="false"
+          />
+          <button class="var-add__btn" aria-label="Add variable" (click)="addVariable()">
+            <lucide-icon name="plus" [size]="13"></lucide-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code + Preview Split -->
+    <div class="editor-split">
+      <!-- Code Panel -->
+      <div class="code-panel">
+        <div class="panel-header">
+          <div class="panel-header__left">
+            <lucide-icon name="code" [size]="16"></lucide-icon>
+            <span>HTML Code</span>
+          </div>
+          <div class="panel-header__right">
+            <button class="header-btn" (click)="copyBody()">
+              <lucide-icon name="copy" [size]="13"></lucide-icon>
+              <span>Copy</span>
+            </button>
+            <button class="header-btn header-btn--accent" (click)="formatCode()">
+              <lucide-icon name="sparkles" [size]="13"></lucide-icon>
+              <span>Format</span>
+            </button>
+          </div>
+        </div>
+        <div class="code-panel__body">
+          <textarea
+            class="code-editor"
+            [(ngModel)]="templateBody"
+            spellcheck="false"
+            placeholder="Paste or write your HTML email template here..."
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Preview Panel -->
+      <div class="preview-card">
+        <div class="panel-header">
+          <div class="panel-header__left">
+            <lucide-icon name="eye" [size]="16"></lucide-icon>
+            <span>Live Preview</span>
+          </div>
+          <div class="panel-header__right">
+            <span class="preview-hint">Updates as you type</span>
+          </div>
+        </div>
+        <div class="preview-card__body">
+          <div class="preview-frame" [innerHTML]="safePreviewHtml"></div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

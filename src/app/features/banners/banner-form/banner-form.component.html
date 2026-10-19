@@ -1,0 +1,184 @@
+<div class="banner-workspace">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <button (click)="goBack()" class="btn-back" aria-label="Go back">
+          <lucide-icon name="arrow-left" [size]="18"></lucide-icon>
+        </button>
+        <div class="title-group">
+          <nav class="breadcrumb-nav">
+            <span class="nav-item">Marketing</span>
+            <lucide-icon name="chevron-right" [size]="14"></lucide-icon>
+            <span class="nav-item active">{{ isEditMode ? 'Edit Banner' : 'New Banner' }}</span>
+          </nav>
+          <h1>{{ isEditMode ? 'Update Promotional Banner' : 'Create Banner' }}</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button nz-button class="btn-cancel" (click)="goBack()">Discard</button>
+        <button nz-button nzType="primary" class="btn-primary" (click)="submit()">
+          <lucide-icon name="check" [size]="18"></lucide-icon>
+          <span>{{ isEditMode ? 'Save Changes' : 'Publish Banner' }}</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <form [formGroup]="form" nz-form nzLayout="vertical" class="workspace-body">
+    <div class="form-grid">
+      <!-- Main Content -->
+      <div class="form-main">
+        <!-- Banner Creative -->
+        <div class="form-card">
+          <div class="card-header">
+            <lucide-icon name="image" [size]="20"></lucide-icon>
+            <div>
+              <h3>Banner Creative</h3>
+              <p>Upload and configure the promotional banner</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="image-upload-wrapper">
+              <div
+                class="drag-drop-zone"
+                [class.has-image]="previewImage"
+                (click)="fileInput.click()"
+              >
+                @if (previewImage) {
+                  <img [src]="previewImage" class="preview-img" />
+                  <div class="overlay">
+                    <lucide-icon name="refresh-cw" [size]="24"></lucide-icon>
+                    <span>Replace Creative</span>
+                  </div>
+                } @else {
+                  <div class="placeholder">
+                    <lucide-icon name="upload" [size]="40"></lucide-icon>
+                    <p>Upload Banner Creative</p>
+                    <span>Drop your image here or click to browse</span>
+                  </div>
+                }
+              </div>
+              <input
+                #fileInput
+                type="file"
+                (change)="onFileSelected($event)"
+                accept="image/*"
+                hidden
+              />
+            </div>
+
+            <!-- AI Prompt -->
+            <div class="ai-prompt-card">
+              <div class="ai-prompt-card__glow"></div>
+              <div class="ai-prompt-card__header">
+                <lucide-icon name="sparkles" [size]="14"></lucide-icon>
+                <span>AI Image Prompt</span>
+                <button type="button" class="ai-prompt-card__copy-btn" (click)="copyImagePrompt()">
+                  <lucide-icon name="copy" [size]="12"></lucide-icon>
+                  Copy
+                </button>
+              </div>
+              <p class="ai-prompt-card__text">
+                {{ imagePrompt() || 'Enter a title to generate a prompt...' }}
+              </p>
+            </div>
+
+            <nz-form-item>
+              <nz-form-control [nzErrorTip]="titleErr">
+                <app-float-label label="Internal Title" [required]="true">
+                  <input nz-input formControlName="title" placeholder=" " />
+                </app-float-label>
+                <ng-template #titleErr>
+                  <app-form-error [control]="form.controls.title" label="Title" />
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+
+            <div class="field-row">
+              <nz-form-item>
+                <nz-form-control [nzErrorTip]="startDateErr">
+                  <app-float-label label="Start Date" [required]="true">
+                    <nz-date-picker
+                      formControlName="startDate"
+                      nzFormat="yyyy-MM-dd"
+                      nzPlaceHolder=" "
+                      class="w-full"
+                    ></nz-date-picker>
+                  </app-float-label>
+                  <ng-template #startDateErr>
+                    <app-form-error [control]="form.controls.startDate" label="Start Date" />
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+
+              <nz-form-item>
+                <nz-form-control>
+                  <app-float-label label="End Date">
+                    <nz-date-picker
+                      formControlName="endDate"
+                      nzFormat="yyyy-MM-dd"
+                      nzPlaceHolder=" "
+                      class="w-full"
+                    ></nz-date-picker>
+                  </app-float-label>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="form-sidebar">
+        <!-- Settings -->
+        <div class="sidebar-card">
+          <div class="card-header">
+            <lucide-icon name="monitor-smartphone" [size]="18"></lucide-icon>
+            <h3>Settings</h3>
+          </div>
+          <div class="card-body">
+            <nz-form-item>
+              <nz-form-control>
+                <app-float-label label="Device" [required]="true">
+                  <nz-select formControlName="device" nzPlaceHolder=" ">
+                    @for (d of deviceOptions; track d) {
+                      <nz-option [nzValue]="d" [nzLabel]="d"></nz-option>
+                    }
+                  </nz-select>
+                </app-float-label>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-divider></nz-divider>
+
+            <nz-form-item>
+              <nz-form-control>
+                <app-float-label label="Initial Status" [required]="true">
+                  <nz-select formControlName="status" nzPlaceHolder=" ">
+                    <nz-option nzValue="Active" nzLabel="Active"></nz-option>
+                    <nz-option nzValue="Scheduled" nzLabel="Scheduled"></nz-option>
+                    <nz-option nzValue="Expired" nzLabel="Expired"></nz-option>
+                    <nz-option nzValue="Inactive" nzLabel="Inactive"></nz-option>
+                  </nz-select>
+                </app-float-label>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+
+        <!-- Tip -->
+        <div class="info-card">
+          <div class="info-card__icon">
+            <lucide-icon name="megaphone" [size]="28"></lucide-icon>
+          </div>
+          <h4>Visibility Note</h4>
+          <p>
+            Banners set to "Active" will appear on the store immediately if they fall within the
+            scheduled dates.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </form>
+</div>

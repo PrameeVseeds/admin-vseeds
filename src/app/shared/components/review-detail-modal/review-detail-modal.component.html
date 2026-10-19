@@ -1,0 +1,104 @@
+<div class="review-modal">
+  <!-- Modal Header -->
+  <header class="modal-header">
+    <div class="header-left">
+      <div class="icon-box">
+        <lucide-icon name="message-square" [size]="20"></lucide-icon>
+      </div>
+      <div class="title-group">
+        <h3>Review #REV-{{ data().id }}</h3>
+        <p>Review Moderation</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="status-pill status-pill--{{ data().statusType }}">
+        {{ data().status }}
+      </span>
+      <button class="btn-close" aria-label="Close" (click)="close()">
+        <lucide-icon name="x" [size]="20"></lucide-icon>
+      </button>
+    </div>
+  </header>
+
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <!-- Reviewer Info -->
+    <div class="info-section">
+      <div class="section-label">Reviewer</div>
+      <div class="reviewer-card">
+        <div class="reviewer-card__avatar">{{ data().customer.charAt(0) }}</div>
+        <div class="reviewer-card__details">
+          <div class="reviewer-card__name">{{ data().customer }}</div>
+          <div class="reviewer-card__meta">
+            <span>
+              <lucide-icon name="calendar" [size]="12"></lucide-icon>
+              {{ data().date }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product -->
+    <div class="info-section">
+      <div class="section-label">Product</div>
+      <div class="product-card">
+        <div class="product-card__icon">
+          <lucide-icon name="package" [size]="16"></lucide-icon>
+        </div>
+        <span class="product-card__name">{{ data().product }}</span>
+      </div>
+    </div>
+
+    <!-- Rating -->
+    <div class="info-section">
+      <div class="section-label">Rating</div>
+      <div class="rating-card">
+        <div class="rating-card__stars">
+          @for (star of [1, 2, 3, 4, 5]; track star) {
+            <lucide-icon
+              name="star"
+              [size]="18"
+              class="star"
+              [class.star--active]="star <= data().rating"
+            ></lucide-icon>
+          }
+        </div>
+        <div class="rating-card__score">
+          <span class="rating-card__number">{{ data().rating }}.0</span>
+          <span class="rating-card__label">out of 5</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comment -->
+    <div class="info-section">
+      <div class="section-label">Comment</div>
+      <div class="comment-card">
+        <div class="comment-card__quote">
+          <lucide-icon name="quote" [size]="18"></lucide-icon>
+        </div>
+        <p class="comment-card__text">"{{ data().comment }}"</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Footer -->
+  <footer class="modal-footer">
+    <div class="footer-left">
+      <button class="btn-secondary" (click)="close()">Close</button>
+    </div>
+    <div class="footer-right">
+      @if (data().status === 'Pending') {
+        <button class="btn-reject" (click)="reject()">
+          <lucide-icon name="x-circle" [size]="16"></lucide-icon>
+          <span>Reject</span>
+        </button>
+        <button class="btn-approve" (click)="approve()">
+          <lucide-icon name="check-circle" [size]="16"></lucide-icon>
+          <span>Approve</span>
+        </button>
+      }
+    </div>
+  </footer>
+</div>

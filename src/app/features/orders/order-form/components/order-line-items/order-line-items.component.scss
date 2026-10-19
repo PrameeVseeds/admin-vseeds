@@ -1,0 +1,327 @@
+:host {
+  display: block;
+}
+
+.form-card {
+  background: var(--bg-component);
+  border: 1px solid var(--border-base);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-base);
+
+  lucide-icon {
+    color: var(--color-primary);
+    margin-top: 2px;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  p {
+    font-size: 0.8rem;
+    color: var(--text-disabled);
+    margin: 2px 0 0;
+  }
+}
+
+.card-body {
+  padding: 24px;
+
+  &--no-pad {
+    padding: 0;
+  }
+}
+
+.btn-add-item {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--color-primary);
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--color-primary), transparent 92%);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+$grid-cols: 1fr 90px 80px 110px 120px 40px;
+$grid-cols-mobile: 1fr 70px 60px 80px 90px 36px;
+
+.items-editor__head {
+  display: grid;
+  grid-template-columns: $grid-cols;
+  align-items: center;
+  padding: 10px 20px;
+  background: var(--bg-hover);
+  border-bottom: 1px solid var(--border-base);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  letter-spacing: 0.04em;
+  color: var(--text-disabled);
+  gap: 12px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: $grid-cols-mobile;
+    padding: 10px 14px;
+    gap: 8px;
+  }
+}
+
+.items-editor__row {
+  display: grid;
+  grid-template-columns: $grid-cols;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-base);
+  gap: 12px;
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--bg-hover);
+  }
+
+  &:last-of-type {
+    border-bottom: 1px solid var(--border-base);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: $grid-cols-mobile;
+    padding: 10px 14px;
+    gap: 8px;
+  }
+}
+
+.items-editor__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px 20px;
+  color: var(--text-disabled);
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border-base);
+}
+
+.product-name {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.items-editor__add-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border-base);
+  background: color-mix(in srgb, var(--color-primary), transparent 96%);
+
+  @media (max-width: 768px) {
+    padding: 10px 14px;
+  }
+}
+
+.add-row__select {
+  flex: 1;
+  min-width: 0;
+}
+
+.add-row__btn {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 1px solid var(--border-base);
+  background: var(--bg-component);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &--confirm {
+    color: #10b981;
+    border-color: #10b981;
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, #10b981, transparent 90%);
+    }
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+  }
+
+  &--cancel {
+    color: var(--text-disabled);
+
+    &:hover {
+      color: #ef4444;
+      border-color: #ef4444;
+      background: color-mix(in srgb, #ef4444, transparent 92%);
+    }
+  }
+}
+
+.product-option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 2px 0;
+}
+
+.product-option__name {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.product-option__meta {
+  font-size: 0.7rem;
+  color: var(--text-disabled);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.store-id-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-base);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.line-total {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  white-space: nowrap;
+}
+
+.btn-remove-item {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-disabled);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, #ef4444, transparent 92%);
+    color: #ef4444;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}
+
+::ng-deep {
+  .items-editor__row {
+    .ant-input {
+      font-size: 0.825rem;
+    }
+
+    .ant-select {
+      width: 100%;
+    }
+
+    .ant-input-number {
+      width: 100%;
+    }
+  }
+
+  .shipping-input .ant-input-number {
+    width: 140px;
+  }
+
+  .items-editor__footer {
+    padding: 16px 20px;
+    background: color-mix(in srgb, var(--color-primary), transparent 96%);
+  }
+
+  .footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+  }
+
+  .footer-row--shipping {
+    padding: 8px 0;
+  }
+
+  .footer-row--total {
+    padding: 4px 0 0;
+  }
+
+  .footer-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: capitalize;
+    letter-spacing: 0.03em;
+  }
+
+  .footer-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  .footer-value--primary {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+
+  .footer-divider {
+    margin: 8px 0 !important;
+  }
+
+  .shipping-input {
+    width: 140px;
+  }
+}

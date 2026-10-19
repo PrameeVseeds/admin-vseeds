@@ -1,0 +1,163 @@
+<div class="img-modal">
+  <!-- Header -->
+  <div class="img-modal__header">
+    <div class="img-modal__icon">
+      <lucide-icon name="images" [size]="20"></lucide-icon>
+    </div>
+    <div>
+      <h3 class="img-modal__title">Manage Product Media</h3>
+      <p class="img-modal__subtitle">Upload and organize your product images</p>
+    </div>
+    <button class="img-modal__close" aria-label="Close" (click)="modal.destroy()">
+      <lucide-icon name="x" [size]="18"></lucide-icon>
+    </button>
+  </div>
+
+  <div class="img-modal__content">
+    <!-- Thumbnail Section -->
+    <div class="img-section">
+      <div class="img-section__label">
+        <lucide-icon name="image" [size]="14"></lucide-icon>
+        <span>Primary Thumbnail</span>
+        <span class="img-section__badge" [class.img-section__badge--ok]="thumbnailFile.length > 0">
+          {{ thumbnailFile.length > 0 ? 'Set' : 'Required' }}
+        </span>
+      </div>
+
+      <div class="thumb-area">
+        @if (thumbnailFile.length > 0) {
+          <div class="thumb-preview">
+            <img
+              [src]="thumbnailFile[0].url || thumbnailFile[0].thumbUrl || thumbnailFile[0]['preview']"
+              alt="Thumbnail"
+              class="thumb-preview__img"
+            />
+            <div class="thumb-preview__overlay">
+              <button class="thumb-preview__action" aria-label="Preview thumbnail" (click)="previewThumbnail()">
+                <lucide-icon name="eye" [size]="16"></lucide-icon>
+              </button>
+              <button class="thumb-preview__action thumb-preview__action--danger" aria-label="Remove thumbnail" (click)="clearThumbnail()">
+                <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+              </button>
+            </div>
+          </div>
+        } @else {
+          <nz-upload
+            class="thumb-upload"
+            nzListType="picture-card"
+            [(nzFileList)]="thumbnailFile"
+            [nzShowButton]="true"
+            [nzBeforeUpload]="beforeUploadThumbnail"
+            [nzShowUploadList]="false"
+          >
+            <div class="upload-drop">
+              <div class="upload-drop__icon">
+                <lucide-icon name="upload" [size]="22"></lucide-icon>
+              </div>
+              <span class="upload-drop__text">Upload Thumbnail</span>
+              <span class="upload-drop__hint">PNG, JPG up to 5MB</span>
+            </div>
+          </nz-upload>
+        }
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="img-modal__divider"></div>
+
+    <!-- Gallery Section -->
+    <div class="img-section">
+      <div class="img-section__label">
+        <lucide-icon name="layout-grid" [size]="14"></lucide-icon>
+        <span>Product Gallery</span>
+        <span class="img-section__counter">{{ otherFiles.length }} / 6</span>
+      </div>
+
+      @if (otherFiles.length > 0) {
+        <div class="gallery-grid">
+          @for (file of otherFiles; track file.uid; let i = $index) {
+            <div class="gallery-item">
+              <img
+                [src]="file.url || file.thumbUrl || file['preview']"
+                alt="Gallery image {{ i + 1 }}"
+                class="gallery-item__img"
+              />
+              <div class="gallery-item__overlay">
+                <button class="gallery-item__action" aria-label="Preview image" (click)="previewGallery(i)">
+                  <lucide-icon name="eye" [size]="14"></lucide-icon>
+                </button>
+                <button class="gallery-item__action gallery-item__action--danger" aria-label="Remove image" (click)="removeGalleryImage(file)">
+                  <lucide-icon name="trash-2" [size]="14"></lucide-icon>
+                </button>
+              </div>
+              <span class="gallery-item__index">{{ i + 1 }}</span>
+            </div>
+          }
+
+          @if (otherFiles.length < 6) {
+            <nz-upload
+              class="gallery-add"
+              nzListType="picture-card"
+              [nzFileList]="[]"
+              [nzBeforeUpload]="beforeUploadOther"
+              [nzShowUploadList]="false"
+              nzMultiple
+            >
+              <div class="gallery-add__trigger">
+                <lucide-icon name="plus" [size]="20"></lucide-icon>
+                <span>Add</span>
+              </div>
+            </nz-upload>
+          }
+        </div>
+      } @else {
+        <nz-upload
+          class="gallery-empty-upload"
+          nzListType="picture-card"
+          [nzFileList]="[]"
+          [nzBeforeUpload]="beforeUploadOther"
+          [nzShowUploadList]="false"
+          nzMultiple
+        >
+          <div class="upload-drop upload-drop--wide">
+            <div class="upload-drop__icon">
+              <lucide-icon name="image-plus" [size]="24"></lucide-icon>
+            </div>
+            <span class="upload-drop__text">Add Gallery Images</span>
+            <span class="upload-drop__hint">Upload up to 6 images &middot; PNG, JPG</span>
+          </div>
+        </nz-upload>
+      }
+    </div>
+
+    <!-- AI Prompt (collapsible) -->
+    @if (data.imagePrompt) {
+      <div class="ai-card">
+        <div class="ai-card__header">
+          <lucide-icon name="sparkles" [size]="14"></lucide-icon>
+          <span>AI Image Prompt</span>
+          <button class="ai-card__copy" (click)="copyImagePrompt()">
+            <lucide-icon name="copy" [size]="12"></lucide-icon>
+            Copy
+          </button>
+        </div>
+        <p class="ai-card__text">{{ data.imagePrompt }}</p>
+      </div>
+    }
+  </div>
+
+  <!-- Footer -->
+  <div class="img-modal__footer">
+    <div class="img-modal__tip">
+      <lucide-icon name="info" [size]="12"></lucide-icon>
+      <span>Square (1:1) images recommended</span>
+    </div>
+    <div class="img-modal__actions">
+      <button nz-button nzType="default" (click)="modal.destroy()">Cancel</button>
+      <button nz-button nzType="primary" (click)="save()">
+        <lucide-icon name="check" [size]="14"></lucide-icon>
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>

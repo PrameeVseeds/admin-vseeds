@@ -1,0 +1,31 @@
+<div class="auth-layout">
+  <!-- Theme Toggle -->
+  <div class="auth-theme-toggle">
+    <button class="theme-btn" aria-label="Toggle theme" (click)="themeService.toggle()">
+      @if (themeService.theme() === 'light') {
+        <lucide-icon name="moon" [size]="20"></lucide-icon>
+      } @else {
+        <lucide-icon name="sun" [size]="20"></lucide-icon>
+      }
+    </button>
+  </div>
+
+  <!-- Dynamic Background -->
+  <div class="auth-bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <main class="auth-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="auth-footer">
+    <span class="copyright">VSEEDS &copy; {{ currentYear }}</span>
+    <span class="footer-dot">&bull;</span>
+    <!-- <span class="developer-credit"
+      >Developed by <a href="https://kajamohan.vercel.app/" target="_blank">Kajamohan K</a></span
+    > -->
+  </footer>
+</div>

@@ -1,0 +1,109 @@
+<div class="contact-page">
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--primary">
+        <lucide-icon name="message-square" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ totalCount() }}</span>
+        <span class="stat-card__label">Total Messages</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--info">
+        <lucide-icon name="mail" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ newCount() }}</span>
+        <span class="stat-card__label">New</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--warning">
+        <lucide-icon name="clock" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ pendingCount() }}</span>
+        <span class="stat-card__label">Pending</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__icon stat-card__icon--success">
+        <lucide-icon name="check-circle" [size]="20"></lucide-icon>
+      </div>
+      <div class="stat-card__info">
+        <span class="stat-card__value">{{ repliedCount() }}</span>
+        <span class="stat-card__label">Replied / Resolved</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #senderCell let-contact>
+    <div class="sender-cell">
+      <div class="sender-cell__avatar">
+        {{ contact.name.charAt(0) }}
+      </div>
+      <div class="sender-cell__info">
+        <span class="sender-cell__name">{{ contact.name }}</span>
+        <span class="sender-cell__detail">
+          <lucide-icon name="mail" [size]="11"></lucide-icon>
+          {{ contact.email }}
+        </span>
+        <span class="sender-cell__detail">
+          <lucide-icon name="phone" [size]="11"></lucide-icon>
+          {{ contact.phone }}
+        </span>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #subjectCell let-contact>
+    <span class="subject-text">{{ contact.subject }}</span>
+  </ng-template>
+
+  <ng-template #receivedCell let-contact>
+    <div class="date-cell">
+      <lucide-icon name="clock" [size]="12"></lucide-icon>
+      {{ contact.date }}
+    </div>
+  </ng-template>
+
+  <ng-template #statusCell let-contact>
+    <span class="status-badge" [class]="'status-badge--' + (contact.statusType || 'info')">
+      {{ contact.status }}
+    </span>
+  </ng-template>
+
+  <ng-template #actionsCell let-contact>
+    <div class="action-btns">
+      <button class="action-btn" aria-label="View Message" nz-tooltip nzTooltipTitle="View Message" (click)="viewContact(contact)">
+        <lucide-icon name="eye" [size]="16"></lucide-icon>
+      </button>
+      <button class="action-btn action-btn--danger" aria-label="Delete" nz-tooltip nzTooltipTitle="Delete" (click)="onDelete(contact)">
+        <lucide-icon name="trash-2" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <app-base-list
+    title="Contact Messages"
+    [tabs]="statusTabs()"
+    [columns]="columns"
+    [items]="filteredContacts()"
+    [paginationMeta]="paginationMeta()"
+    [loading]="loading()"
+    searchPlaceholder="Search messages..."
+    [pageSize]="pageSize"
+    [cellTemplates]="{ sender: senderCell, subject: subjectCell, received: receivedCell, status: statusCell }"
+    [rowActionsTemplate]="actionsCell"
+    (searchChange)="onSearchChange($event)"
+    (tabChange)="onTabChange($event.value)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  >
+    <div actions>
+      
+    </div>
+  </app-base-list>
+</div>
